@@ -521,9 +521,9 @@ def getFromJavBus(actorName, actorEncoded, metadata):
             break
 
     if actorID:
-        req = PAutils.HTTPRequest('https://www.javbus.com/en/star/' + actorID)
+        req = PAutils.HTTPRequest('https://www.javbus.com/star/' + actorID)
     else:
-        req = PAutils.HTTPRequest('https://www.javbus.com/en/searchstar/' + actorEncoded)
+        req = PAutils.HTTPRequest('https://www.javbus.com/searchstar/' + actorEncoded)
 
     actorSearch = HTML.ElementFromString(req.text)
     results = actorSearch.xpath('//div[@class="photo-frame"]//img')

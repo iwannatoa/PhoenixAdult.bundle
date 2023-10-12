@@ -189,6 +189,7 @@ import networkAuntJudys
 import siteColette
 import siteSINematica
 import networkThickCashOther
+import siteMgStage
 
 searchSites = {
     0: ('BlackedRaw', 'https://www.blackedraw.com', '/graphql'),
@@ -1103,7 +1104,7 @@ searchSites = {
     909: ('Sapphic Erotica', 'https://sapphix.com', '/movies?site[]=se&q='),
     910: ('Give Me Pink', 'https://sapphix.com', '/movies?site[]=gmp&q='),
     911: ('Fist Flush', 'https://sapphix.com', '/movies?site[]=ff&q='),
-    912: ('JavBus', 'https://www.javbus.com', '/en/'),
+    912: ('JavBus', 'https://www.javbus.com', '/'),
     913: ('Hucows', 'https://www.hucows.com', '/'),
     914: ('Mile High Media', 'https://milehighmedia.com', 'https://site-api.project1service.com'),
     915: ('Mile High', 'https://milehighmedia.com', 'https://site-api.project1service.com'),
@@ -1130,7 +1131,7 @@ searchSites = {
     936: ('FetishNetwork', 'http://www.kink.com', '/search?channelIds=fetishnetwork&q='),
     937: ('FetishNetwork Male', 'http://www.kink.com', '/search?channelIds=fetishnetworkmale&q='),
     938: ('ScrewMeToo', 'https://screwmetoo.com', '/?amp=1&s='),
-    939: (),
+    939: ('MGS', 'https://www.mgstage.com', '/search/cSearch.php?search_word='),
     940: ('Aussie Ass', 'https://www.aussieass.com', '/models/'),
     941: ('5Kporn', 'https://www.5kporn.com', '/episodes/search?search='),
     942: ('5Kteens', 'https://www.5kporn.com', '/episodes/search?search='),
@@ -2860,6 +2861,9 @@ def getProviderFromSiteNum(siteNum):
         # ScrewMeToo
         elif siteNum == 938:
             provider = siteScrewMeToo
+
+        elif siteNum == 939:
+            provider = siteMgStage
 
         # Aussie Ass
         elif siteNum == 940:

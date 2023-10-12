@@ -188,6 +188,7 @@ def HTTPRequest(url, method='GET', **kwargs):
     except:
         req = FakeResponse(None, url, 418, None)
 
+    Log('Req status %s' %req.status_code)
     req_bypass = None
     if not req.ok and bypass:
         if req.status_code == 403 or req.status_code == 503:
