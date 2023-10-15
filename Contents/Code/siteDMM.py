@@ -3,7 +3,7 @@ import PAutils
 import operator
 
 cookies = {
-    'adc': '1',
+    'age_check_done': '1',
 }
 
 
@@ -12,8 +12,8 @@ def search(results, lang, siteNum, searchData):
     splitSearchTitle = searchData.title.split()
     if len(splitSearchTitle) > 1:
         if unicode(splitSearchTitle[1], 'UTF-8').isdigit():
-            searchJAVID = '%s%%2B%s' % (splitSearchTitle[0], splitSearchTitle[1])
-            directJAVID = '%s-%s' % (splitSearchTitle[0], splitSearchTitle[1])
+            searchJAVID = '%s%%20%s' % (splitSearchTitle[0], splitSearchTitle[1])
+            directJAVID = ('%s%5s' % (splitSearchTitle[0], splitSearchTitle[1])).replace(' ', '0')
 
     if searchJAVID:
         searchData.encoded = searchJAVID
@@ -22,10 +22,11 @@ def search(results, lang, siteNum, searchData):
 
         req = PAutils.HTTPRequest(sceneURL, cookies=cookies)
         searchResults = HTML.ElementFromString(req.text)
-        for searchResult in searchResults.xpath('//div[@class="search_list"]//li'):
-            titleNoFormatting = searchResult.xpath('.//p[@class="title lineclamp"]')[0].text_content().replace('\t', '').replace('\r\n', '').strip()
-            sceneURL = searchResult.xpath('.//h5/a/@href')[0]
-            JAVID = sceneURL.replace('/product/product_detail/', '').replace('/', '').strip()
+        for searchResult in searchResults.xpath('//div[@class="d-sect"]//ul[@class="list-large"]/li'):
+            titleNoFormatting = searchResult.xpath('.//span[@class="txt"]')[0].text_content().replace('\t', '').replace('\r\n', '').strip()
+            sceneURL = searchResult.xpath('.//p[@class="tmb"]/a/@href')[0].rsplit('/', 1)[0]
+            fJAVID = searchResult.xpath('./@data-purchase-history-cid')[0].text_content()
+            JAVID = '%s-%s' % (fJAVID[0:-5], int(fJAVID[-5:]))
             curID = PAutils.Encode(sceneURL)
 
             if searchJAVID:
@@ -36,38 +37,40 @@ def search(results, lang, siteNum, searchData):
             results.Append(MetadataSearchResult(id='%s|%d|%s' % (curID, siteNum, JAVID), name='[%s] %s' % (JAVID, titleNoFormatting), score=score, lang=lang))
 
     if directJAVID:
-        sceneURL = PAsearchSites.getSearchBaseURL(siteNum) + '/product/product_detail/' + directJAVID.upper() + '/'
+        sceneURL = PAsearchSites.getSearchBaseURL(siteNum) + '/digital/videoa/-/detail/=/cid=' + directJAVID
         req = PAutils.HTTPRequest(sceneURL, cookies=cookies)
         searchResult = HTML.ElementFromString(req.text)
-        if not operator.contains(searchResult.xpath('//head/title')[0].text_content(), 'MGS動画'):
-            javTitle = searchResult.xpath('//div[@class="common_detail_cover"]//h1')[0].text_content().strip()
-            javTitle = javTitle
+        errSign = searchResult.xpath('//span[@class="d-txten"]')
+        Log('errSign: %s' % errSign)
+        if not errSign and not operator.contains(errSign[0].text_content(), '404'):
+            javTitle = searchResult.xpath('//h1[@id="title"]')[0].text_content().strip()
+            JAVID = '%s-%s' % (directJAVID[0:-5], int(directJAVID[-5:]))
             curID = PAutils.Encode(sceneURL)
             score = 100
-            results.Append(MetadataSearchResult(id='%s|%d|%s' % (curID, siteNum, directJAVID), name='[Direct][%s] %s' % (directJAVID, javTitle), score=score, lang=lang))
+            results.Append(MetadataSearchResult(id='%s|%d|%s' % (curID, siteNum, JAVID), name='[Direct][%s] %s' % (directJAVID, javTitle), score=score, lang=lang))
     return results
 
 
 def update(metadata, lang, siteNum, movieGenres, movieActors, art):
     metadata_id = str(metadata.id).split('|')
     sceneURL = PAutils.Decode(metadata_id[0])
+    JAVID = metadata_id[2]
 
     if not sceneURL.startswith('http'):
         sceneURL = PAsearchSites.getSearchBaseURL(siteNum) + sceneURL
     req = PAutils.HTTPRequest(sceneURL, cookies=cookies, allow_redirects=False)
     detailsPageElements = HTML.ElementFromString(req.text)
-    JAVID = sceneURL.rsplit('/', 2)[1]
 
     # Title
-    javStudio = ''
-    studio = detailsPageElements.xpath('//td/a[contains(@href, "maker")]')
-    if studio:
-        javStudio = studio[0].text_content().strip()
-    javTitle = detailsPageElements.xpath('//div[@class="common_detail_cover"]//h1')[0].text_content().strip()
+    javTitle = detailsPageElements.xpath('//h1[@id="title"]')[0].text_content().strip()
     javTitle = JAVID + ' ' + javTitle
     metadata.title = javTitle
 
     # Studio
+    javStudio = ''
+    studio = detailsPageElements.xpath('//td/a[contains(@href, "maker")]')
+    if studio:
+        javStudio = studio[0].text_content().strip()
     metadata.studio = javStudio
 
     #  Tagline and Collection(s)
@@ -88,7 +91,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
     else:
         metadata.collections.add(metadata.studio)
     # Release Date
-    dateOrigin = detailsPageElements.xpath('//td[contains(text(),"/")]')
+    dateOrigin = detailsPageElements.xpath('//td[@class="nw"]/../../tr[3]/td[2]')
     Log('dateOrigin: %s' % dateOrigin)
     # date = dateOrigin[dateOrigin.find(':')+2:]
     if dateOrigin:
@@ -98,14 +101,14 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
         metadata.year = metadata.originally_available_at.year
 
     # Genres
-    for genreLink in detailsPageElements.xpath('//td/a[contains(@href, "genre")]'):
+    for genreLink in detailsPageElements.xpath('//td/a[contains(@href, "keyword")]'):
         genreName = genreLink.text_content().lower().strip()
         movieGenres.addGenre(genreName)
 
     # Actor(s)
-    for actorLink in detailsPageElements.xpath('//div[@class="push_connect_list"]//div[@class="connect_cover"]/dl'):
-        fullActorName = actorLink.xpath('./dd')[0].text_content()
-        actorPhotoURL = actorLink.xpath('./dt/img/@src')[0]
+    for actorLink in detailsPageElements.xpath('//div[@class="tmb-actress-large"]'):
+        fullActorName = actorLink.xpath('.//span[@class="ttl"]')[0].text_content()
+        actorPhotoURL = actorLink.xpath('.//span[@class="img"]/img/@src')[0]
         Log('%s actorPhotoURL: %s' % (fullActorName, actorPhotoURL))
         if not actorPhotoURL.startswith('http'):
             actorPhotoURL = PAsearchSites.getSearchBaseURL(siteNum) + actorPhotoURL
@@ -117,9 +120,9 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
 
     # Posters
     xpaths = [
-        '//div[@class="detail_photo"]/h2/img/@src',
-        '//a[@id="EnlargeImage"]/@href',
-        '//a[@class="sample_image"]/@href',
+        '//div[@id="sample-video"]/a/img/@src',
+        '//div[@id="sample-video"]/a/@href'
+        '//div[@id="sample-image-block"]/a/@href',
     ]
     for xpath in xpaths:
         for poster in detailsPageElements.xpath(xpath):

@@ -71,14 +71,17 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
     JAVID = sceneURL.rsplit('/', 1)[1]
 
     # Title
-    javStudio = detailsPageElements.xpath('//p/a[contains(@href, "/studio/")]')[0].text_content().strip()
+    studio = ''
+    javStudio = detailsPageElements.xpath('//p/a[contains(@href, "/studio/")]')
+    if javStudio:
+        studio = javStudio[0].text_content().strip()
     javTitle = detailsPageElements.xpath('//head/title')[0].text_content().strip().replace(' - JavBus', '')
     if JAVID.replace('-', '').replace('_', '').replace(' ', '').isdigit():
-        javTitle = javStudio + ' ' + javTitle
+        javTitle = studio + ' ' + javTitle
     metadata.title = javTitle
 
     # Studio
-    metadata.studio = javStudio
+    metadata.studio = studio
 
     #  Tagline and Collection(s)
     data = {}

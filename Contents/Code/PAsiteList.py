@@ -190,6 +190,7 @@ import siteColette
 import siteSINematica
 import networkThickCashOther
 import siteMgStage
+import siteDMM
 
 searchSites = {
     0: ('BlackedRaw', 'https://www.blackedraw.com', '/graphql'),
@@ -926,7 +927,7 @@ searchSites = {
     731: ('Love Her Feet', 'https://www.loveherfeet.com', '/tour/search.php?query='),
     732: ('MomPOV', 'http://www.mompov.com', '/tour/?s='),
     733: ('Property Sex', 'https://www.propertysex.com', 'https://site-api.project1service.com'),
-    734: (),
+    734: ('DMM', 'https://www.dmm.co.jp', '/digital/videoa/-/list/search/=/?searchstr='),
     735: ('Fucked and Bound', 'http://www.kink.com', '/search?channelIds=fuckedandbound&q='),
     736: ('Captive Male', 'http://www.kink.com', '/search?channelIds=captivemale&q='),
     737: ('TransAngels', 'https://www.transangels.com', 'https://site-api.project1service.com'),
@@ -2533,6 +2534,11 @@ def getProviderFromSiteNum(siteNum):
         # Property Sex
         elif siteNum == 733:
             provider = network1service
+
+        #DMM
+        elif siteNum == 734:
+            provider = siteDMM
+
 
         # FuelVirtual
         elif (546 <= siteNum <= 547) or siteNum == 1395:
