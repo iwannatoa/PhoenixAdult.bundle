@@ -49,10 +49,43 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
   - Video Masturbation
   - Video Of Myself at Home
 + #### Adult Empire | ✅
-+ #### Adult Empire Cash | ✅
++ #### Adult Empire Cash | ✅ - **DVDs not supported**
+  - 18 Lust
+  - Bizarre Entertainment
+  - Black Massive Cocks
+  - Brutha's Inc
+  - Concoxxxion
   - Conor Coxxx
+  - Darkside Entertainment
+  - Digital Video Vision
+  - Elegant Angel
+  - Evasive Angles
+  - Forbidden Fruits Films
+  - Horny Household
+  - Hot Wife Fun
+  - Hot Wives Cheating
   - JaysPOV
+  - Joanna Angel
+  - Jodi West
+  - Jonathan Jordan XXX
+  - Kaiia Eve
+  - Kings of Fetish
+  - Lethal Hardcore
+  - Lethal Hardcore VR
+  - LeWood
+  - Only 3x
+  - Pornstar Stroker
+  - Reagan Foxx
+  - Real Girls Fuck
+  - Severe Sex Films
+  - SINematica
+  - Smut Factor
   - SpankMonster
+  - Star Strokers
+  - Step House XXX
+  - Vouyer Media
+  - West Coast Productions
+  - Whorecraft VR
 + #### Adult Prime Studios | ✅
   - 4K CFNM
   - Adult Prime
@@ -252,6 +285,8 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
   - Street Ranger
   - Tugjobs
   - Working Latinas
++ #### BangBros Other Sites | ✅
+  - Sex Selector
 + #### BangBros Other Sites | ✓ - **Title only**
   - Black Patrol
   - Blacks On Moms
@@ -281,6 +316,9 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
   - MonroeLee
   - See Him Fuck
   - TaliaShepard
++ #### Bellesa | ✅ - **Flaresolverr Required**
+  - Bellesa Films
+  - Bellesa House
 + #### Black PayBack | ✓
 + #### Black Valley Girls | ❌ - **SceneID**
 + #### Blowpass | ✅
@@ -296,6 +334,7 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
   - Hot Guys Fuck
   - Sugar Daddy Porn
 + #### Bound Honeys | ✓ - **Title only, Date Add**
++ #### Brand New Amateurs | ✓ - **Actor Name**
 + #### Brazzers Network
   ##### Matching type (main): ✓ - **Title only**
   ##### Matching type (alternate): ❌ - **SceneID**
@@ -473,6 +512,7 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
   - CandyMonroe
   - CuckoldSessions
   - CumBang
+  - DFXtra
   - DogfarBehindTheScenes
   - GloryHole
   - Gloryhole-Initiations
@@ -490,7 +530,6 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
   - ZebraGirls
 + #### Dorcel Club | ✅
 + #### Dorcel Vision | ✓ - **Title only**
-+ #### Elegant Angel | ✓ - **Only DVDs supported**
 + #### Erito | ✅
 + #### EvilAngel | ✅
 + #### Evolved Fights Network | ✅
@@ -669,7 +708,7 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
   - Karups Hometown Amateurs
   - Karups Older Women
   - Karups Private Collection
-+ #### Kelly Madison Media | ✅
++ #### Kelly Madison Productions | ✅ - **Episode ID or URL ID** (Date and Summary not always available)
   - Kelly Madison
   - PornFidelity
   - TeenFidelity
@@ -759,8 +798,6 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
   - SweetheartVideo
   - SweetSinner
 + #### MileHighNetwork Other Sites | ✅
-  - BellesaFilms
-  - BellesaHouse
   - Dilfed
   - FamilySinners
   - Gilfed
@@ -816,6 +853,7 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
 + #### MyDirtyHobby | ✅
 + #### Mylf Network | ✅ - **Date Add**
   - Anal Mom
+  - Ask Your Mother
   - Freeuse MILF
   - Full Of JOI
   - Got Mylf
@@ -837,13 +875,15 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
   - Mylf X Elegant Raw
   - Mylf X EvilAngel
   - Mylf X Fucking Awesome
-  - Mylf x Hussie Pass
+  - Mylf X Hussie Pass
   - Mylf X James Deen
-  - Mylf x Joybear
+  - Mylf X Joybear
   - Mylf X Karups Older Women
-  - Mylf x Lady Fyre
+  - Mylf X Lady Fyre
+  - Mylf X Little Puck
   - Mylf X Mandy Flores
   - Mylf X Marie McCray
+  - Mylf X Manko88
   - Mylf X MariskaX
   - Mylf X Mindi Mink
   - Mylf X Miss Lexa
@@ -853,7 +893,7 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
   - Mylf X SinfulXXX
   - Mylf X SpankMonster
   - Mylf X Steve Holmes
-  - Mylf x Teamskeet
+  - Mylf X Teamskeet
   - Mylf X ToughLoveX
   - MylfBlows
   - MylfBoss
@@ -864,7 +904,10 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
   - New Mylfs
   - PervNana
   - PervPrincipal
+  - Secrets
   - StayHomeMilf
+  - Tiger Moms
+  - Use POV
 + #### Naughty America Network | ✅
   - 2 Chicks Same Time
   - American Daydreams
@@ -1005,8 +1048,15 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
   - Oral Overdose
   - Up Her Asshole
 + #### PJGirls | ✅
++ #### PKJ Media | ✓ - **Title only**
+  - MyPOVFam
+  - PervertedPOV
+  - PetersKingdom
+  - RawWhiteMeat
+  - SlutsAroundTown
 + #### Playboy Plus | ✅
 + #### PlumperPass | ✅
++ #### Pornbox | ✅
 + #### PornCZ | ✓ - **Title or Actor**
   - Amateri Premium
   - Amateur From Bohemia
@@ -1265,9 +1315,11 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
 + #### Romero Multimedia Network | ✓
   - Deafeated XXX
   - Defeated Sex Fight
+  - Freeze
   - Futanari XXX
   - Hentaied
   - Parasited
+  - Plants vs Cunts
 + #### SapphiX Network | Matching type: ✅
   - Fist Flush
   - Give Me Pink
@@ -1285,7 +1337,6 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
   - MomXXX
 + #### She Will Cheat | ✓
 + #### Sicflics | ✅
-+ #### SINematica | ✅
 + #### SinsLife | ✓
 + #### SinX | ✓
   - Fully Clothed Pissing
@@ -1297,6 +1348,7 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
   - IntimateLesbians
   - JessicaJaymesXXX
   - MrLuckyPOV
+  - MrLuckyRAW
   - PornGoesPro
   - PornstarTease
   - RawAttack
@@ -1316,6 +1368,7 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
   - Blacked
   - BlackedRaw
   - Deeper
+  - Milfy
   - Slayed
   - Tushy
   - TushyRaw
@@ -1324,10 +1377,13 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
 + #### Swallow Bay | ❌ - **Direct URL**
 + #### Swallow Salon | ✓
 + #### TeamSkeet Network | ✅ - **Date Add**
+  - After Dark
   - Badmilfs
   - BFFs
   - Black Valley Girls
   - BraceFaced
+  - Brat Tamer
+  - Breeding Material
   - CFNM Teens
   - DadCrush
   - DaughterSwap
@@ -1346,6 +1402,7 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
   - Little Asians
   - Lust HD
   - My Babysitters Club
+  - Mormon Girlz
   - Not My Grandpa
   - Oye Loca
   - PervDoctor
@@ -1354,6 +1411,7 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
   - POV Life
   - Rub A Teen
   - Self Desire
+  - Sex and Grades
   - She's New
   - Shoplyfter
   - ShoplyfterMylf
@@ -1382,13 +1440,16 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
   - TeamSkeet X Erotique TV Live
   - TeamSkeet X Eva Elfie
   - TeamSkeet X EvilAngel
+  - TeamSkeet X Fit18
   - TeamSkeet X Flora Rodgers
   - TeamSkeet X Fucking Awesome
   - TeamSkeet X GrandDadz
+  - TeamSkeet X Harmony Films
   - TeamSkeet X Herb Collins
   - TeamSkeet X Impure Desire
   - TeamSkeet X James Deen
   - TeamSkeet X JAV Hub
+  - TeamSkeet X Jonathan Jordan
   - TeamSkeet X Joy Bear
   - TeamSkeet X Kriss Kiss
   - TeamSkeet X Layna Landry
@@ -1404,6 +1465,7 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
   - TeamSkeet X Reislin
   - TeamSkeet X Riley Cyriis
   - TeamSkeet X Screampies
+  - TeamSkeet X Slut Inspection
   - TeamSkeet X SpankMonster
   - TeamSkeet X Sweetie Fox
   - TeamSkeet X ToughLoveX
@@ -1416,6 +1478,7 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
   - Teens Love Black Cocks
   - Teens Love Money
   - Teeny Black
+  - The Loft
   - The Real Workout
   - Thickumz
   - This Girl Sucks
@@ -1534,8 +1597,11 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
   - Twistys
   - TwistysHard
   - WhenGirlsPlay
-+ #### TwoWebMedia | ✓
++ #### TwoWebMedia | ✅
   - Bopping Babes
+  - Downblouse Jerk
+  - Lingerie Tales
+  - Real Bikini Girls
   - Upskirt Jerk
   - Wank It Now
 + #### Ultrafilms | ✓
@@ -1648,6 +1714,7 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
   - Eroticax
   - Hardx
   - Lesbianx
++ #### Xev Unleashed | ✅
 + #### Xillimite | ✓ - **Title only, Date Add**
 + #### XVirtual | ✓ - **Title only, Date Add**
 + #### Zero Tolerance | ✅ - **DVDs not supported**

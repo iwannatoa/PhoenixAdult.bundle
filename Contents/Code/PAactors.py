@@ -321,6 +321,7 @@ def genderCheck(actorName):
     actorSearch = HTML.ElementFromString(req.text)
     actorResults = actorSearch.xpath('//table[@id="tblFem" or @id="tblMal"]//tbody//td[2]//a')
     actorAlias = actorSearch.xpath('//table[@id="tblFem" or @id="tblMal"]//tbody//td[@class="text-left"]')
+    maleActorURLs = actorSearch.xpath('//table[@id="tblMal"]//tbody//td[2]//a/@href')
 
     if actorResults:
         score = Util.LevenshteinDistance(actorName.lower(), actorResults[0].text_content().strip().lower()) + 1
@@ -343,7 +344,7 @@ def genderCheck(actorName):
             actor = random.choice(results)
             actorPageURL = actor.xpath('./@href')[0]
 
-        gender = 'male' if 'gender=m' in actorPageURL else 'female'
+        gender = 'male' if actorPageURL in maleActorURLs else 'female'
 
     return gender
 
@@ -460,6 +461,7 @@ def getFromIAFD(actorName, actorEncoded, metadata):
     actorThumbs = actorSearch.xpath('//table[@id="tblFem" or @id="tblMal"]//tbody//td[1]//a')
     actorResults = actorSearch.xpath('//table[@id="tblFem" or @id="tblMal"]//tbody//td[2]//a')
     actorAlias = actorSearch.xpath('//table[@id="tblFem" or @id="tblMal"]//tbody//td[@class="text-left"]')
+    maleActorURLs = actorSearch.xpath('//table[@id="tblMal"]//tbody//td[2]//a/@href')
 
     actorPageURL = ''
     if actorResults:
@@ -488,14 +490,13 @@ def getFromIAFD(actorName, actorEncoded, metadata):
             actorPageURL = actor.xpath('./@href')[0]
 
     if actorPageURL:
-        actorPageURL = 'http://www.iafd.com' + actorPageURL
-        req = PAutils.HTTPRequest(actorPageURL)
+        req = PAutils.HTTPRequest('http://www.iafd.com' + actorPageURL)
         actorPage = HTML.ElementFromString(req.text)
         img = actorPage.xpath('//div[@id="headshot"]//img/@src')
         if img and 'nophoto' not in img[0]:
             actorPhotoURL = img[0]
 
-        gender = 'male' if 'gender=m' in actorPageURL else 'female'
+        gender = 'male' if actorPageURL in maleActorURLs else 'female'
 
     return actorPhotoURL, gender
 

@@ -161,7 +161,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
     # Posters
     for imageType in ['poster', 'cover']:
         if imageType in detailsPageElements['images']:
-            for image in detailsPageElements['images'][imageType]:
+            for image in sorted(detailsPageElements['images'][imageType]):
                 if image.isdigit():
                     art.append(detailsPageElements['images'][imageType][image]['xx']['url'])
 

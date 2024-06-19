@@ -20,9 +20,7 @@ def search(results, lang, siteNum, searchData):
             releaseDate = ''
             Log('Scene found: %s | %s | %s' % (curID, titleNoFormatting, releaseDate))
             score = 100
-            results.Append(MetadataSearchResult(id='%s|%d|%s' % (curID, siteNum, releaseDate),
-                                                name='%s [AnalVids] %s' % (titleNoFormatting, releaseDate), score=score,
-                                                lang=lang))
+            results.Append(MetadataSearchResult(id='%s|%d|%s' % (curID, siteNum, releaseDate), name='%s [AnalVids] %s' % (titleNoFormatting, releaseDate), score=score, lang=lang))
         except:
             pass
 
@@ -40,8 +38,6 @@ def search(results, lang, siteNum, searchData):
 
             if sceneID and int(sceneID) == searchResult['source_id']:
                 score = 100
-            elif searchData.date:
-                score = 100 - Util.LevenshteinDistance(searchData.date, releaseDate)
             else:
                 score = 100 - Util.LevenshteinDistance(searchData.title.lower(), titleNoFormatting.lower())
 

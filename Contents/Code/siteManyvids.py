@@ -2,28 +2,52 @@ import PAsearchSites
 import PAutils
 
 
+def getJSONfromPage(url):
+    req = PAutils.HTTPRequest(url)
+    detailsPageElements = HTML.ElementFromString(req.text)
+
+    if req.ok:
+        data = None
+        node = detailsPageElements.xpath('//script[@type="application/ld+json"]')
+        if node:
+            data = node[0].text_content().strip()
+
+        if data:
+            return json.loads(data)
+
+    return None
+
+
 def search(results, lang, siteNum, searchData):
-    sceneID = searchData.title.split(' ', 1)[0]
-    try:
-        sceneTitle = searchData.encoded.split(' ', 1)[1]
-    except:
-        sceneTitle = ''
+    sceneID = None
+    parts = searchData.title.split()
+    if unicode(parts[0], 'UTF-8').isdigit():
+        sceneID = parts[0]
+        searchData.title = searchData.title.replace(sceneID, '', 1).strip()
 
     sceneURL = PAsearchSites.getSearchSearchURL(siteNum) + sceneID
-    req = PAutils.HTTPRequest(sceneURL)
-    searchResult = HTML.ElementFromString(req.text)
+    searchResult = getJSONfromPage(sceneURL)
 
-    titleNoFormatting = searchResult.xpath('//h1[contains(@class, "title")]')[0].text_content()
+    titleNoFormatting = searchResult['name']
     curID = PAutils.Encode(sceneURL)
-    subSite = searchResult.xpath('//a[@aria-label="model-profile"]')[0].text_content().strip()
-    releaseDate = searchData.dateFormat() if searchData.date else ''
+    searchID = sceneURL.rsplit('/')[-1].split('-')[0]
+    subSite = searchResult['creator']['name']
 
-    if sceneTitle:
-        score = 100 - Util.LevenshteinDistance(sceneTitle.lower(), titleNoFormatting.lower())
+    date = searchResult['uploadDate']
+    if date:
+        releaseDate = parse(date).strftime('%Y-%m-%d')
     else:
-        score = 90
+        releaseDate = searchData.dateFormat() if searchData.date else ''
+    displayDate = releaseDate if date else ''
 
-    results.Append(MetadataSearchResult(id='%s|%d|%s' % (curID, siteNum, releaseDate), name='%s [ManyVids/%s]' % (titleNoFormatting, subSite), score=score, lang=lang))
+    if sceneID and sceneID == searchID:
+        score = 100
+    elif searchData.date:
+        score = 100 - Util.LevenshteinDistance(searchData.date, releaseDate)
+    else:
+        score = 100 - Util.LevenshteinDistance(searchData.title.lower(), titleNoFormatting.lower())
+
+    results.Append(MetadataSearchResult(id='%s|%d|%s' % (curID, siteNum, releaseDate), name='%s [ManyVids/%s] %s' % (titleNoFormatting, subSite, displayDate), score=score, lang=lang))
 
     return results
 
@@ -32,30 +56,16 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
     metadata_id = metadata.id.split('|')
     sceneDate = metadata_id[2]
     sceneURL = PAutils.Decode(metadata_id[0])
-    req = PAutils.HTTPRequest(sceneURL)
-    detailsPageElements = HTML.ElementFromString(req.text)
-    videoURL = 'https://video-player-bff.estore.kiwi.manyvids.com/videos/%s' % sceneURL.rsplit('/')[-1]
-    videoPageElements = PAutils.HTTPRequest(videoURL).json()
+
+    videoURL = 'https://www.manyvids.com/bff/store/video/%s' % sceneURL.rsplit('/')[-1].split('-')[0]
+    videoPageElements = PAutils.HTTPRequest(videoURL).json()['data']
 
     # Title
     metadata.title = PAutils.parseTitle(videoPageElements['title'].strip(), siteNum)
 
     # Summary
-    try:
-        paragraphs = videoPageElements['description']
-        summary = paragraphs[0].text_content().strip()
-        if len(paragraphs) > 1:
-            for paragraph in paragraphs:
-                if summary == '':
-                    summary = paragraph.text_content()
-                else:
-                    summary = summary + '\n\n' + paragraph.text_content()
-        if not re.search(r'.$(?<=(!|\.|\?))', summary.strip()):
-            summary = summary.strip() + '.'
-    except:
-        summary = ''
-
-    metadata.summary = summary.strip()
+    if 'description' in videoPageElements:
+        metadata.summary = videoPageElements['description'].strip()
 
     # Studio
     metadata.studio = 'ManyVids'
@@ -72,8 +82,8 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
         metadata.year = metadata.originally_available_at.year
 
     # Genres
-    for genreLink in videoPageElements['tags']:
-        genreName = genreLink.strip()
+    for genreLink in videoPageElements['tagList']:
+        genreName = genreLink['label'].strip()
 
         movieGenres.addGenre(genreName)
 
@@ -85,7 +95,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
     movieActors.addActor(actorName, actorPhotoURL)
 
     # Posters
-    art.append(videoPageElements['thumbnail'])
+    art.append(videoPageElements['screenshot'])
 
     Log('Artwork found: %d' % len(art))
     for idx, posterUrl in enumerate(art, 1):

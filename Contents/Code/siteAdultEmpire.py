@@ -47,7 +47,7 @@ def search(results, lang, siteNum, searchData):
         req = PAutils.HTTPRequest(searchURL, headers={'Referer': 'http://www.data18.empirestores.co'})
         searchPageElements = HTML.ElementFromString(req.text)
 
-        for searchResult in searchPageElements.xpath('//small[not(contains(., "Sex Toy"))]//parent::div'):
+        for searchResult in searchPageElements.xpath('//div[@class="product-details__item-title"]'):
             resultType = searchResult.xpath('.//@href')[0].rsplit('-')[-1].replace('.html', '').replace('ray', 'Blu-Ray').title()
             urlID = searchResult.xpath('.//@href')[0].split('/')[1]
             movieURL = '%s/%s' % (PAsearchSites.getSearchBaseURL(siteNum), urlID)

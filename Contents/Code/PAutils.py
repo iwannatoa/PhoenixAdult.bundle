@@ -47,11 +47,10 @@ def flareSolverrRequest(url, method, **kwargs):
     req = HTTPRequest('%s/v1' % Prefs['flaresolverr_endpoint'], headers={'Content-Type': 'application/json'}, params=json.dumps(req_params), timeout=60, bypass=False)
     if req.ok:
         data = req.json()['solution']
-        headers = data['headers']
-        headers['User-Agent'] = data['userAgent']
+        headers = {'User-Agent': data['userAgent']}
         cookies = {cookie['name']: cookie['value'] for cookie in data['cookies']}
 
-        return FakeResponse(req, url, int(data['headers']['status']), data['response'], headers, cookies)
+        return FakeResponse(req, url, data['status'], data['response'], headers, cookies)
 
     return None
 
@@ -353,7 +352,7 @@ def any(s):
 
 def parseTitleSymbol(word, siteNum, symbol):
     lower_exceptions = ['vs']
-    contraction_exceptions = ['re', 't', 's', 'd', 'll', 've', 'm']
+    contraction_exceptions = ['re', 't', 's', 'd', 'll', 've', 'm', 'am', 'ed']
     word_list = re.split(symbol, word)
     symbols = ['-', '/', r'\.', r'\+']
     pattern = re.compile(r'\W')
@@ -388,20 +387,23 @@ def parseTitleSymbol(word, siteNum, symbol):
 
 
 def postParseTitle(output):
-    replace = [('“', '\"'), ('”', '\"'), ('’', '\''), ('W/', 'w/'), ('Aj', 'AJ')]
+    replace = [(r'“', '\"'), (r'”', '\"'), (r'’', '\''), (r'W/', 'w/'), (r'A\.\sJ\.', 'A.J.'), (r'T\.\sJ\.', 'T.J.'), (r'(?<!\S)AJ(?!\S)', 'A.J.')]
+    lower_exceptions = ['a', 'y', 'n', 'an', 'of', 'the', 'and', 'for', 'to', 'onto', 'but', 'or', 'nor', 'at', 'with', 'vs', 'com', 'co', 'org']
 
     # Add space after a punctuation if missing
     output = re.sub(r'(?=[\!|\:|\?|\.](?=(\w{2,}))\b)\S(?!(co\b|net\b|com\b|org\b|porn\b|E\d|xxx\b))', lambda m: m.group(0) + ' ', output, flags=re.IGNORECASE)
     # Remove single period at end of title
     output = re.sub(r'(?<=[^\.].)(?<=\w)(?:\.)$', '', output)
-    # Remove space between word and punctuation
+    # Remove space between word and certain punctuation
     output = re.sub(r'\s+(?=[.,!:\'\)])', '', output)
+    # Add space between word and opening quote
+    output = re.sub(r'(?<=\S)([\"]\S+)', lambda m: ' ' + m.group(1), output)
     # Remove space between punctuation and word
-    output = re.sub(r'(?<=[#\(])\s+', '', output)
+    output = re.sub(r'(?<=[#\(\"])\s+', '', output)
     # Override lowercase if word follows a punctuation
-    output = re.sub(ur'(?<=!|:|\?|\.|-|\u2013)(\s)(\S)', lambda m: m.group(1) + m.group(2).upper(), output)
-    # Override lowercase if word follows a parenthesis
-    output = re.sub(r'(?<=[\(|\&|\"|\[|\*|\~])(\w)', lambda m: m.group(0).upper() + m.group(1)[1:], output)
+    output = re.sub(ur'(?<!vs\.)(?<=!|:|\?|\.|-|\u2013)(\s)(\S)', lambda m: m.group(1) + m.group(2).upper(), output)
+    # Override lowercase if word follows certain punctuation
+    output = re.sub(r'(?<=[\(|\&|\"|\[|\*|\~])(\w)', lambda m: m.group(0).upper() + m.group(1)[1:] if m.group(1).lower() not in lower_exceptions else m.group(1), output)
     # Override lowercase if last word in section
     output = re.sub(r'\S+[\]\)\"\~\:]', lambda m: m.group(0)[0].capitalize() + m.group(0)[1:], output)
     # Override lowercase if last word
@@ -437,18 +439,41 @@ def preParseTitle(input):
     return output
 
 
+def cleanSummary(summary):
+    replace = [(r'“', '\"'), (r'”', '\"'), (r'’', '\''), (r'W/', 'w/'), (r'A\.\sJ\.', 'A.J.'), (r'T\.\sJ\.', 'T.J.'), (r'(?<!\S)AJ(?!\S)', 'A.J.'), ('\xc2\xa0', ' ')]
+
+    # Initialize to first word only being capitalized
+    summary = summary.lower().capitalize()
+    # Replace common issues
+    for value in replace:
+        summary = re.sub(value[0], value[1], summary, flags=re.IGNORECASE)
+    # Add space after a punctuation if missing
+    summary = re.sub(r'(?=[\!|\:|\?|\.](?=(\w{1,}))\b)\S(?!(co\b|net\b|com\b|org\b|porn\b|E\d|xxx\b))', lambda m: m.group(0) + ' ', summary, flags=re.IGNORECASE)
+    # Remove space between word and punctuation
+    summary = re.sub(r'\s+(?=[.,!:\'\)])', '', summary)
+    # Remove space between punctuation and word
+    summary = re.sub(r'(?<=[#\(])\s+', '', summary)
+    # Override lowercase if word follows a punctuation
+    summary = re.sub(ur'(?<!vs\.)(?<=!|:|\?|\.)(\s)(\S)', lambda m: m.group(1) + m.group(2).upper(), summary)
+    # Add period to end of summary if no other punctuation present
+    if re.search(r'.$(?<=(!|\.|\?))', summary) is None:
+        summary = summary + '.'
+
+    return summary
+
+
 def manualWordFix(word):
     exceptions = (
         'im', 'theyll', 'cant', 'ive', 'shes', 'theyre', 'tshirt', 'dont', 'wasnt', 'youre', 'ill', 'whats', 'didnt',
         'isnt', 'senor', 'senorita', 'thats', 'gstring', 'milfs', 'oreilly', 'bangbros', 'bday', 'dms', 'bffs',
-        'ohmy', 'wont', 'whos', 'shouldnt'
+        'ohmy', 'wont', 'whos', 'shouldnt', 'lasirena'
     )
     corrections = (
         'I\'m', 'They\'ll', 'Can\'t', 'I\'ve', 'She\'s', 'They\'re', 'T-Shirt', 'Don\'t', 'Wasn\'t', 'You\'re', 'I\'ll', 'What\'s', 'Didn\'t',
         'Isn\'t', 'Señor', 'Señorita', 'That\'s', 'G-String', 'MILFs', 'O\'Reilly', 'BangBros', 'B-Day', 'DMs', 'BFFs',
-        'OhMy', 'Won\'t', 'Who\'s', 'Shouldn\'t'
+        'OhMy', 'Won\'t', 'Who\'s', 'Shouldn\'t', 'LaSirena'
     )
-    pattern = re.compile(r'\W')
+    pattern = re.compile(r'\d|\W')
     cleanWord = re.sub(pattern, '', word)
 
     if cleanWord.lower() in exceptions:
