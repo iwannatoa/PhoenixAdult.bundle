@@ -137,13 +137,20 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
     xpaths = [
         '//a[contains(@href, "/cover/")]/@href',
         '//a[@class="sample-box"]/@href',
+        '//a[@class="bigImage"]/@href',
     ]
     coverImage = detailsPageElements.xpath('//a[contains(@href, "/cover/")]/@href')
-    coverImageCode = coverImage[0].rsplit('/', 1)[1].split('.')[0].split('_')[0]
-    imageHost = coverImage[0].rsplit('/', 2)[0]
-    coverImage = imageHost + '/thumb/' + coverImageCode + '.jpg'
+    if coverImage:
+        coverImageCode = coverImage[0].rsplit('/', 1)[1].split('.')[0].split('_')[0]
+        imageHost = coverImage[0].rsplit('/', 2)[0]
+        coverImage = imageHost + '/thumb/' + coverImageCode + '.jpg'
+    else:
+        coverImage = detailsPageElements.xpath('//a[@class="bigImage"]/@href')
     if coverImage.count('/images.') == 1:
         coverImage = coverImage.replace('thumb', 'thumbs')
+
+    if coverImage.count('pics.dmm.co.jp') == 1:
+        coverImage = coverImage.replace('pl.jpg', 'ps.jpg')
 
     if not coverImage.startswith('http'):
         coverImage = PAsearchSites.getSearchBaseURL(siteNum) + coverImage
