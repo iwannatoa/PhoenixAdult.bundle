@@ -1,3 +1,4 @@
+# coding=utf-8
 import PAsearchSites
 import PAutils
 import operator
@@ -91,6 +92,8 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
         metadata.collections.add(metadata.studio)
     # Release Date
     dateOrigin = detailsPageElements.xpath('//td[@class="nw"]/../../tr[3]/td[2]')
+    if dateOrigin and dateOrigin[0].text_content().find('～') != -1:
+        dateOrigin = detailsPageElements.xpath('//td[@class="nw"]/../../tr[4]/td[2]')
     # date = dateOrigin[dateOrigin.find(':')+2:]
     if dateOrigin:
         date = dateOrigin[0].text_content().replace('\n', '').strip()
