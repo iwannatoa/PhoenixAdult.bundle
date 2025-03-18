@@ -14,7 +14,7 @@ def search(results, lang, siteNum, searchData):
     if len(splitSearchTitle) > 1:
         if unicode(splitSearchTitle[1], 'UTF-8').isdigit():
             searchJAVID = '%s%%20%s' % (splitSearchTitle[0], splitSearchTitle[1])
-            directJAVID = ('%s%5s' % (splitSearchTitle[0], splitSearchTitle[1])).replace(' ', '0')
+            directJAVID = ('%s%5s' % (splitSearchTitle[0], splitSearchTitle[1])).replace(' ', '')
 
     if searchJAVID:
         searchData.encoded = searchJAVID
@@ -23,9 +23,9 @@ def search(results, lang, siteNum, searchData):
 
         req = PAutils.HTTPRequest(sceneURL, cookies=cookies)
         searchResults = HTML.ElementFromString(req.text)
-        for searchResult in searchResults.xpath('//div[@class="d-sect"]//ul[@class="list-large"]/li'):
-            titleNoFormatting = searchResult.xpath('.//span[@class="txt"]')[0].text_content().replace('\t', '').replace('\r\n', '').strip()
-            sceneURL = searchResult.xpath('.//p[@class="tmb"]/a/@href')[0].rsplit('/', 1)[0]
+        for searchResult in searchResults.xpath('//div[contains(@class,"mt-4")]//ul[contains(@class,"grid")]/li'):
+            titleNoFormatting = searchResult.xpath('.//span[contains(@class,"hover:underline")]')[0].text_content().replace('\t', '').replace('\r\n', '').strip()
+            sceneURL = searchResult.xpath('.//div[@class="relative"]//a/@href')[0].rsplit('/', 1)[0]
             fJAVID = sceneURL.rsplit('cid=', 1)[1].replace('/', '').strip()
             JAVID = '%s-%s' % (fJAVID[0:-5], int(fJAVID[-5:]))
             curID = PAutils.Encode(sceneURL)

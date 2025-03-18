@@ -145,7 +145,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
         imageHost = coverImage[0].rsplit('/', 2)[0]
         coverImage = imageHost + '/thumb/' + coverImageCode + '.jpg'
     else:
-        coverImage = detailsPageElements.xpath('//a[@class="bigImage"]/@href')
+        coverImage = detailsPageElements.xpath('//a[@class="bigImage"]/@href')[0]
     if coverImage.count('/images.') == 1:
         coverImage = coverImage.replace('thumb', 'thumbs')
 
@@ -170,8 +170,11 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
         if not PAsearchSites.posterAlreadyExists(posterUrl, metadata):
             # Download image file for analysis
             try:
+                headers = {}
+                if posterUrl.count('www.javbus.com') == 1:
+                    headers = {'Referer': 'https://www.javbus.com/'}
                 fixedUrl = posterUrl.replace('www.prestige-av.com/images/corner/goods', 'image.mgstage.com/images')
-                image = PAutils.HTTPRequest(fixedUrl)
+                image = PAutils.HTTPRequest(fixedUrl, cookies=cookies, headers=headers)
                 im = StringIO(image.content)
                 images.append(image)
                 resized_image = Image.open(im)
