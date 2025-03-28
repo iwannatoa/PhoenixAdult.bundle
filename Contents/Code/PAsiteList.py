@@ -1983,6 +1983,7 @@ searchSites = {
     1889: ('Score Classics', 'https://www.scoreclassics.com', '/classic-boob-videos/'),
     1890: ('LustCinema', 'https://next-prod-api.lustcinema.com', '/api/search'),
     1891: ('CzechAR', 'https://www.czechar.com', '/model-'),
+    1892: ('Strippers 4K', 'https://strippers4k.com', '/video/'),
 }
 
 abbreviations = (
@@ -2459,7 +2460,7 @@ def getProviderFromSiteNum(siteNum):
             provider = sitePrivate
 
         # PornPros Network
-        elif (306 <= siteNum <= 327) or (479 <= siteNum <= 489) or siteNum == 624 or siteNum == 769 or siteNum == 844 or siteNum == 890 or siteNum == 1263 or siteNum == 1364 or siteNum == 1393 or (1688 <= siteNum <= 1692) or siteNum == 1693 or (1695 <= siteNum <= 1702) or siteNum == 1704:
+        elif (306 <= siteNum <= 327) or (479 <= siteNum <= 489) or siteNum == 624 or siteNum == 769 or siteNum == 844 or siteNum == 890 or siteNum == 1263 or siteNum == 1364 or siteNum == 1393 or (1688 <= siteNum <= 1692) or siteNum == 1693 or (1695 <= siteNum <= 1702) or siteNum == 1704 or siteNum == 1892:
             provider = networkPornPros
 
         # DigitalPlayground
