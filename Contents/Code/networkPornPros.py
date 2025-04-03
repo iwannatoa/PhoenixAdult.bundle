@@ -50,6 +50,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
     if not sceneURL.startswith('http'):
         sceneURL = PAsearchSites.getSearchBaseURL(siteNum) + sceneURL
     actorDate = None
+    actorSubSite = None
 
     req = PAutils.HTTPRequest(sceneURL)
     detailsPageElements = HTML.ElementFromString(req.text)
@@ -72,11 +73,6 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
 
     # Studio
     metadata.studio = 'PornPros'
-
-    # Tagline and Collection(s)
-    siteName = PAsearchSites.getSearchSiteName(siteNum)
-    metadata.tagline = siteName
-    metadata.collections.add(siteName)
 
     # Actor(s)
     if 'pornplus' or 'tiny4k' in sceneURL or 'wetvr' in sceneURL:
@@ -115,19 +111,33 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
                     sceneLinkxPath = '//div[contains(@class, "video-thumbnail flex")]'
                     sceneTitlexPath = './/a[contains(@class, "dropshadow")]'
                     sceneDatexpath = './/span[contains(@class, "font-extra-light")]/text()'
+                    subsitexPath = './/a[contains(@class, "series-link")]/img/@alt'
                     dateFormat = '%m/%d/%Y'
                 else:
                     sceneLinkxPath = '//div[@class="row"]//div[contains(@class, "box-shadow")]'
                     sceneTitlexPath = './/h5[@class="card-title"]'
                     sceneDatexpath = './/@data-date'
+                    subsitexPath = ''
                     dateFormat = '%B %d, %Y'
 
                 for sceneLink in actorPageElements.xpath(sceneLinkxPath):
                     sceneTitle = re.sub(r'\W', '', sceneLink.xpath(sceneTitlexPath)[0].text_content().strip().replace(' ', '')).lower()
                     date = sceneLink.xpath(sceneDatexpath)
-                    if re.sub(r'\W', '', metadata.title.replace(' ', '')).lower() == sceneTitle and date:
-                        actorDate = date[0].strip()
+                    subSite = sceneLink.xpath(subsitexPath)
+                    if re.sub(r'\W', '', metadata.title.replace(' ', '')).lower() == sceneTitle:
+                        if subSite:
+                            actorSubSite = subSite[0].strip()
+                        if date:
+                            actorDate = date[0].strip()
                         break
+
+    # Tagline and Collection(s)
+    if actorSubSite and 'pornplus' in sceneURL:
+        siteName = PAutils.parseTitle(actorSubSite, siteNum)
+    else:
+        siteName = PAsearchSites.getSearchSiteName(siteNum)
+    metadata.tagline = siteName
+    metadata.collections.add(siteName)
 
     # Manually Add Actors
     # Add Actor Based on Title

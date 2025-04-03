@@ -1791,7 +1791,7 @@ searchSites = {
     1697: ('Girl Scout Sex', 'https://pornplus.com', '/video/'),
     1698: ('Exploited Cheerleaders', 'https://pornplus.com', '/video/'),
     1699: ('School of Cock', 'https://pornplus.com', '/video/'),
-    1700: ('GloryHole 4K', 'https://pornplus.com', '/video/'),
+    1700: ('Glory Hole 4K', 'https://pornplus.com', '/video/'),
     1701: ('Creepy Pa', 'https://pornplus.com', '/video/'),
     1702: ('Caged Sex', 'https://pornplus.com', '/video/'),
     1703: ('Teeny Taboo', 'https://teenytaboo.com', '/videos/'),
