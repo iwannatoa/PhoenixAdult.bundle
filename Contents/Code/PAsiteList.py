@@ -1984,6 +1984,7 @@ searchSites = {
     1890: ('LustCinema', 'https://next-prod-api.lustcinema.com', '/api/search'),
     1891: ('CzechAR', 'https://www.czechar.com', '/model-'),
     1892: ('Strippers 4K', 'https://strippers4k.com', '/video/'),
+    1893: ('Wifey', 'https://www.wifey.com', '/graphql')
 }
 
 abbreviations = (
@@ -2288,7 +2289,7 @@ def getProviderFromSiteNum(siteNum):
 
     if siteNum is not None:
         # Strike3
-        if (0 <= siteNum <= 1) or siteNum == 52 or siteNum == 136 or (670 <= siteNum <= 671) or siteNum == 1357 or siteNum == 1806:
+        if (0 <= siteNum <= 1) or siteNum == 52 or siteNum == 136 or (670 <= siteNum <= 671) or siteNum == 1357 or siteNum == 1806 or siteNum == 1893:
             provider = networkStrike3
 
         # Brazzers
