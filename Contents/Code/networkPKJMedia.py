@@ -5,6 +5,7 @@ import PAutils
 def search(results, lang, siteNum, searchData):
     req = PAutils.HTTPRequest(PAsearchSites.getSearchSearchURL(siteNum) + searchData.encoded)
     searchResults = HTML.ElementFromString(req.text)
+
     for searchResult in searchResults.xpath('//ul[@class="bricks-layout-wrapper"]'):
         titleNoFormatting = PAutils.parseTitle(searchResult.xpath('//div[@class="bricks-layout-inner"]/div/h3/a/text()')[0], siteNum)
         curID = PAutils.Encode(searchResult.xpath('//div[@class="bricks-layout-inner"]/div/h3/a/@href')[0])
