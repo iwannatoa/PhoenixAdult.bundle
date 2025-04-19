@@ -5,10 +5,9 @@ import PAutils
 def search(results, lang, siteNum, searchData):
     req = PAutils.HTTPRequest(PAsearchSites.getSearchSearchURL(siteNum) + searchData.encoded)
     searchResults = HTML.ElementFromString(req.text)
-
-    for searchResult in searchResults.xpath('//div[@class="video-section"]/div/div'):
-        titleNoFormatting = PAutils.parseTitle(searchResult.xpath('//div[@class="post-header"]/h3/a/text()')[0], siteNum)
-        curID = PAutils.Encode(searchResult.xpath('//div[@class="post-header"]/h3/a/@href')[0])
+    for searchResult in searchResults.xpath('//ul[@class="bricks-layout-wrapper"]'):
+        titleNoFormatting = PAutils.parseTitle(searchResult.xpath('//div[@class="bricks-layout-inner"]/div/h3/a/text()')[0], siteNum)
+        curID = PAutils.Encode(searchResult.xpath('//div[@class="bricks-layout-inner"]/div/h3/a/@href')[0])
         score = 100 - Util.LevenshteinDistance(searchData.title.lower(), titleNoFormatting.lower())
 
         results.Append(MetadataSearchResult(id='%s|%d' % (curID, siteNum), name='%s [%s]' % (titleNoFormatting, PAsearchSites.getSearchSiteName(siteNum)), score=score, lang=lang))
@@ -24,13 +23,13 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
     detailsPageElements = HTML.ElementFromString(req.text)
 
     # Title
-    metadata.title = detailsPageElements.xpath('//div[@class="video-details"]/div/h1/text()')[0].strip()
+    metadata.title = detailsPageElements.xpath('//h1[contains(@class, "brxe-post-title")]/text()')[0].strip()
 
     # Summary
     try:
-        summary = detailsPageElements.xpath('//div[@class="post-entry"]/p/text()')[0]
+        summary = detailsPageElements.xpath('//div[contains(@class, "brxe-post-content")]/p/span/text()')[0]
     except:
-        summary = detailsPageElements.xpath('//div[@class="post-entry"]/p/span/text()')[0]
+        summary = detailsPageElements.xpath('//div[contains(@class, "brxe-post-content")]/p/text()')[0]
 
     if summary:
         metadata.summary = summary.strip()
@@ -48,13 +47,13 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
         movieGenres.addGenre(genreName)
 
     # Actor(s)
-    for actorLink in detailsPageElements.xpath('//div[@class="post-entry"]/div/span[2]/a'):
+    for actorLink in detailsPageElements.xpath('//div[contains(@class, "brxe-post-meta")]/span/a'):
         actorName = actorLink.text_content().strip()
 
         movieActors.addActor(actorName, '')
 
     # Posters
-    art.append(detailsPageElements.xpath('//video/@poster')[0])
+    art.append(detailsPageElements.xpath('//video[@class="bricks-plyr"]/@poster')[0])
 
     Log('Artwork found: %d' % len(art))
     for idx, posterUrl in enumerate(art, 1):
