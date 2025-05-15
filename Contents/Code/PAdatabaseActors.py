@@ -769,7 +769,7 @@ ActorsReplaceStudios = {
         'Lexis Star': ['LexisStar'],
         'London Keyes': ['LondonKeyes'],
         'Mariana Martinez': ['Marianamartix'],
-        'Mira David': ['Miradavid', 'MiraDavid'],
+        'Mira David': ['Miradavid', 'MiraDavid', 'YummyMira'],
         'Nala Brooks': ['Nalabrooksxxx'],
         'Noemie Bilas': ['Noemiexbilas'],
         'Paige Owens': ['PaigeOwensXXX'],
