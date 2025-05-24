@@ -106,7 +106,8 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
         movieGenres.addGenre(genreName)
 
     # Compilation genre
-    if detailsPageElements['is_compilation'] or "compilation" in metadata.title.lower() or "compilation" in metadata.summary.lower():
+    is_compilation = detailsPageElements.get('is_compilation', False)
+    if is_compilation or "compilation" in metadata.title.lower() or "compilation" in metadata.summary.lower():
         movieGenres.addGenre('Compilation')
 
     # Rating
