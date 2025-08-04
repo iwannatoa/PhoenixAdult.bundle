@@ -238,6 +238,7 @@ ActorsReplace = {
     'Monica Sweet': ['Jo', 'Monica Naggy', 'Monika Sweet'],
     'Monika Unco': ['Liana Peace', 'Monica Unco', 'Monika Kerr'],
     'Monte Luxe': ['Monte Cooper'],
+    'Montse Swinger': ['Montse'],
     'Monty Memphis': ['Monty', 'Monty Cash', 'Monty Manthis', 'Monty Mathis'],
     'Murgur': ['Mogur', 'Mugor', 'Mugur Porn', 'Mugur'],
     'Mya Mason': ['Maya Mason', 'Maya Madison', 'Mya Manson', 'Mya Madison'],
