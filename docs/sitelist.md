@@ -230,6 +230,7 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
   - BabeVR
   - BaDoinkVR
   - KinkVR
+  - PassthroughVR
   - VRCosplayX
 + #### BAMVisions | ✓
 + #### Bang Bros Network | ✅
@@ -1173,29 +1174,29 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
   - Stepfamily Channel PornPortal
   - Teen Channel PornPortal
   - VR Channel PornPortal
-+ #### PornPros Network | ✅
-  - 18YearsOld
-  - 40ozBounce
-  - CockCompetition
-  - CrueltyParty
-  - CumDisgrace
-  - CumshotSurprise
-  - DeepThroatLove
-  - Disgraced18
-  - EuroHumpers
-  - FreaksOfBoobs
-  - FreaksOfCock
++ #### PornPros Network | ❌ - **Direct URL, Date Add** (Only need the end of the URL after last /)
+  - 18 Years Old
+  - 40oz Bounce
+  - Cock Competition
+  - Cruelty Party
+  - Cum Disgrace
+  - Cumshot Surprise
+  - Deep Throat Love
+  - Disgraced 18
+  - Euro Humpers
+  - Freaks Of Boobs
+  - Freaks Of Cock
   - GirlCum
-  - JurassicCock
-  - MassageCreep
-  - MilfHumiliation
-  - PimpParade
+  - Jurassic Cock
+  - Massage Creep
+  - Milf Humiliation
+  - Pimp Parade
   - PornPros
-  - RealExGirlfriends
-  - ShadyPi
-  - SquirtDisgrace
+  - Real ExGirlfriends
+  - Shady Pi
+  - Squirt Disgrace
   - TeenBFF
-+ #### PornPros Other Sites | ✅
++ #### PornPros Other Sites | ❌ - **Direct URL, Date Add** (Only need the end of the URL after last /)
   - Asians Exploited
   - Baeb
   - BBCPie
@@ -1215,7 +1216,7 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
   - Lubed
   - Mom4k
   - MomCum
-  - MyVeryFirstTime
+  - My Very First Time
   - NannySpy
   - Passion-HD
   - PornPlus
