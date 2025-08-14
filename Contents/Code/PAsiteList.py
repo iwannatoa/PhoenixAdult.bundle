@@ -1555,7 +1555,7 @@ searchSites = {
     1361: ('Swallow Bay', 'https://swallowbay.com', '/video/'),
     1362: ('SisSwap', 'https://www.teamskeet.com', '/movies/'),
     1363: ('IMadePorn', 'https://www.teamskeet.com', '/movies/'),
-    1364: ('Facials4K', 'https://facials4k.com', '/'),
+    1364: ('Facials4K', 'https://facials4k.com', '/api'),
     1365: ('Bang Movies', 'https://www.bang.com', '/movies?term='),
     1366: ('VirtualPorn', 'https://virtualporn.com', '/videos?q='),
     1367: ('JAVLibrary', 'https://www.javlibrary.com', '/en/vl_searchbyid.php?keyword='),
