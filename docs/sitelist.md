@@ -1174,7 +1174,7 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
   - Stepfamily Channel PornPortal
   - Teen Channel PornPortal
   - VR Channel PornPortal
-+ #### PornPros Network | ❌ - **Direct URL, Date Add** (Only need the end of the URL after last /)
++ #### PornPros Network | ✅ - **Title Only** (Must match the title in the URL after last /)
   - 18 Years Old
   - 40oz Bounce
   - Cock Competition
@@ -1196,7 +1196,7 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
   - Shady Pi
   - Squirt Disgrace
   - TeenBFF
-+ #### PornPros Other Sites | ❌ - **Direct URL, Date Add** (Only need the end of the URL after last /)
++ #### PornPros Other Sites | ✅ - **Title Only** (Must match the title in the URL after last /)
   - Asians Exploited
   - Baeb
   - BBCPie

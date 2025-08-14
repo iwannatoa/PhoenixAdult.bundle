@@ -572,3 +572,8 @@ def functionTimer(fun, msg, *args):
     fun(*args)
     end_time = time.time()
     Log('%s: %s' % (msg, str(timedelta(seconds=(end_time - start_time)))))
+
+
+def rreplace(s, r, n, o):
+    li = s.rsplit(r, o)
+    return n.join(li)
