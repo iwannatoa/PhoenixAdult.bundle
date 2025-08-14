@@ -2,30 +2,31 @@ import PAsearchSites
 import PAutils
 
 
-def getDataFromAPI(siteNum, searchType, slug):
-    headers = {'x-site': PAsearchSites.getSearchBaseURL(siteNum)}
+def getDataFromAPI(siteNum, searchType, slug, site, searchSite):
+    headers = {'x-site': site}
 
-    url = '%s/%s/%s' % (PAsearchSites.getSearchSearchURL(siteNum), searchType, slug)
+    url = '%s/%s/%s' % (searchSite, searchType, slug)
 
     req = PAutils.HTTPRequest(url, headers=headers)
 
     data = None
     if req.ok:
         data = req.json()
+    
+    if not data and siteNum == 1693 and 'momcum' not in searchSite:
+        data = getDataFromAPI(siteNum, searchType, slug, site.replace('pornplus', 'momcum'), searchSite.replace('pornplus', 'momcum'))
+    if not data and '-' in slug and '--' not in slug:
+        data = getDataFromAPI(siteNum, 'releases', PAutils.rreplace(slug, '-', '--', 1), site, searchSite)
 
     return data
 
 
 def search(results, lang, siteNum, searchData):
-    searchData.encoded = slugify(searchData.title.lower())
-    try:
-        searchResult = getDataFromAPI(siteNum, 'releases', searchData.encoded)
-        title = searchResult['title']
-    except:
-        searchResult = getDataFromAPI(siteNum, 'releases', PAutils.rreplace(searchData.encoded, '-', '--', 1))
-        title = searchResult['title']
+    searchData.encoded = slugify(searchData.title.lower().replace('\'', '').replace('.', ''))
 
-    titleNoFormatting = PAutils.parseTitle(title, siteNum)
+    searchResult = getDataFromAPI(siteNum, 'releases', searchData.encoded, PAsearchSites.getSearchBaseURL(siteNum), PAsearchSites.getSearchSearchURL(siteNum))
+
+    titleNoFormatting = PAutils.parseTitle(searchResult['title'], siteNum)
     subSite = searchResult['sponsor']['name']
     curID = PAutils.Encode(searchData.encoded)
 
@@ -51,28 +52,21 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
     slug = PAutils.Decode(metadata_id[0])
     sceneDate = metadata_id[2]
 
-    try:
-        detailsPageElements = getDataFromAPI(siteNum, 'releases', slug)
-        title = detailsPageElements['title']
-    except:
-        detailsPageElements = getDataFromAPI(siteNum, 'releases', PAutils.rreplace(slug, '-', '--', 1))
-        title = detailsPageElements['title']
+    detailsPageElements = getDataFromAPI(siteNum, 'releases', slug, PAsearchSites.getSearchBaseURL(siteNum), PAsearchSites.getSearchSearchURL(siteNum))
 
     # Title
-    metadata.title = PAutils.parseTitle(title, siteNum)
+    metadata.title = PAutils.parseTitle(str(detailsPageElements['title']), siteNum)
 
     # Summary
-    summary = detailsPageElements['description'].strip()
+    summary = str(detailsPageElements['description'].strip())
     if summary.lower() != 'n/a':
         metadata.summary = summary
-    else:
-        metadata.summary = ''
 
     # Studio
     metadata.studio = 'PornPros'
 
     # Tagline and Collection(s)
-    tagline = detailsPageElements['sponsor']['name']
+    tagline = str(detailsPageElements['sponsor']['name'])
     metadata.tagline = tagline
     metadata.collections.add(metadata.tagline)
 
@@ -88,19 +82,27 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
         metadata.year = metadata.originally_available_at.year
 
     # Genres
+    junkTags = [str(actorName['name']).replace(' ', '').lower() for actorName in detailsPageElements['actors']]
+    junkTags.append(tagline.replace(' ', '').lower())
     genres = detailsPageElements['tags'] + PAutils.getDictValuesFromKey(genresDB, PAsearchSites.getSearchSiteName(siteNum).replace(' ', '').lower())
     for genreLink in genres:
-        genreName = genreLink.replace('_', ' ').replace('-', ' ')
+        genreName = genreLink.replace('_', ' ').replace('-', ' ').strip()
 
-        if genreName.replace(' ', '').lower() != tagline.replace(' ', '').lower() and genreName not in [str(actorName['name']).lower() for actorName in detailsPageElements['actors']] and genreName not in junkTags:
-            movieGenres.addGenre(genreName)
+        if '.' in genreName and 'st.' not in genreName:
+            for genreLink in genreName.split('.'):
+                genreName = genreLink.strip()
+                if genreName.replace(' ', '').lower() not in junkTags:
+                    movieGenres.addGenre(genreName)
+        else:
+            if genreName.replace(' ', '').lower() not in junkTags:
+                movieGenres.addGenre(genreName)
 
     # Actor(s)
     for actorLink in detailsPageElements['actors']:
         actorName = actorLink['name']
         actorPhotoURL = ''
 
-        modelPageElements = getDataFromAPI(siteNum, 'actors', actorLink['cached_slug'])
+        modelPageElements = getDataFromAPI(siteNum, 'actors', actorLink['cached_slug'], PAsearchSites.getSearchBaseURL(siteNum), PAsearchSites.getSearchSearchURL(siteNum))
         if modelPageElements:
             actorPhotoURL = modelPageElements['thumbUrl'].split('?')[0]
 
@@ -191,6 +193,3 @@ actorsDB = {
     'Best Friends With Nice Tits!': ['April O\'Neil', 'Victoria Rae Black'],
 }
 
-junkTags = (
-    't4k', 'kyle mason', 'danny mountain', 'oliver faze', 'johnny castle. anal4k', 'pornplus', 'liza rowwe', 'marika hase'
-)
