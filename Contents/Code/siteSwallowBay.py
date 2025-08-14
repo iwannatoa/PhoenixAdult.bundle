@@ -18,7 +18,7 @@ def search(results, lang, siteNum, searchData):
     return results
 
 
-def update(metadata, lang, siteNum, movieGenres, movieActors, art):
+def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, art):
     metadata_id = str(metadata.id).split('|')
     scene_url = PAutils.Decode(metadata_id[0])
     req = PAutils.HTTPRequest(scene_url)
@@ -34,7 +34,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
     metadata.studio = 'Swallow Bay'
 
     # Tagline and Collection(s)
-    metadata.collections.add(metadata.studio)
+    movieCollections.addCollection(metadata.studio)
 
     # Release Date
     str_date = detailsPageElements.xpath('//div//div[@class="content-date"]')[0].text_content().strip().replace('Date: ', '')

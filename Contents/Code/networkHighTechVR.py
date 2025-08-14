@@ -56,7 +56,7 @@ def search(results, lang, siteNum, searchData):
     return results
 
 
-def update(metadata, lang, siteNum, movieGenres, movieActors, art):
+def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, art):
     metadata_id = str(metadata.id).split('|')
     sceneURL = PAsearchSites.getSearchSearchURL(siteNum) + metadata_id[0]
     req = PAutils.HTTPRequest(sceneURL)
@@ -84,7 +84,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
         tagline = tagline.split('-')[0].strip()
 
     metadata.tagline = tagline
-    metadata.collections.add(tagline)
+    movieCollections.addCollection(tagline)
 
     # Release Date
     maybeDate = detailsPageElements.xpath(siteXPath['date'])

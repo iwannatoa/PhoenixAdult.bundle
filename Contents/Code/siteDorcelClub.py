@@ -37,7 +37,7 @@ def search(results, lang, siteNum, searchData):
     return results
 
 
-def update(metadata, lang, siteNum, movieGenres, movieActors, art):
+def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, art):
     metadata_id = str(metadata.id).split('|')
     sceneURL = PAutils.Decode(metadata_id[0])
     if not sceneURL.startswith('http'):
@@ -60,7 +60,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
     # Tagline and Collection(s)
     tagline = PAsearchSites.getSearchSiteName(siteNum)
     metadata.tagline = tagline
-    metadata.collections.add(tagline)
+    movieCollections.addCollection(tagline)
 
     # Release Date
     if 'porn-movie' not in sceneURL:
@@ -76,7 +76,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
 
     movieName = detailsPageElements.xpath('//span[@class="movie"]/a')
     if movieName:
-        metadata.collections.add(movieName[0].text_content().strip())
+        movieCollections.addCollection(movieName[0].text_content().strip())
     movieGenres.addGenre('Blockbuster Movie')
 
     # Actor(s)

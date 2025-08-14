@@ -50,7 +50,7 @@ def search(results, lang, siteNum, searchData):
     return results
 
 
-def update(metadata, lang, siteNum, movieGenres, movieActors, art):
+def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, art):
     metadata_id = str(metadata.id).split('|')
     sceneURL = PAutils.Decode(metadata_id[0])
     if not sceneURL.starstswith('http'):
@@ -111,7 +111,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
         # Tagline and Collection(s)
         tagline = dvdPageElements.xpath('//h3[@class="dvdTitle"]')[0].text_content().strip().title().replace('Xxx', 'XXX')
         metadata.tagline = tagline
-        metadata.collections.add(tagline)
+        movieCollections.addCollection(tagline)
 
         # Summary
         try:
@@ -171,7 +171,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
         # Tagline/collections
         tagline = 'Wicked Pictures'
         metadata.tagline = tagline
-        metadata.collections.add(tagline)
+        movieCollections.addCollection(tagline)
 
         # Summary
         try:

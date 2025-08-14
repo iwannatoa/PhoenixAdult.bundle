@@ -56,7 +56,7 @@ def search(results, lang, siteNum, searchData):
     return results
 
 
-def update(metadata, lang, siteNum, movieGenres, movieActors, art):
+def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, art):
     metadata_id = str(metadata.id).split('|')
     sceneURL = PAutils.Decode(metadata_id[0])
 
@@ -92,7 +92,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
     tagline = content['site'] if siteNum == 1677 else video['site']
     if metadata.studio != tagline:
         metadata.tagline = tagline
-    metadata.collections.add(tagline)
+    movieCollections.addCollection(tagline)
 
     # Release Date
     date_object = parse(video['publish_date'])

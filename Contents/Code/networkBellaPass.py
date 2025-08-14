@@ -52,7 +52,7 @@ def search(results, lang, siteNum, searchData):
     return results
 
 
-def update(metadata, lang, siteNum, movieGenres, movieActors, art):
+def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, art):
     metadata_id = str(metadata.id).split('|')
     sceneURL = PAutils.Decode(metadata_id[0])
     sceneDate = metadata_id[2]
@@ -77,7 +77,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
         metadata.studio = 'BellaPass'
         tagline = PAsearchSites.getSearchSiteName(siteNum)
         metadata.tagline = tagline
-    metadata.collections.add(tagline)
+    movieCollections.addCollection(tagline)
 
     # Genres
     for genreLink in detailsPageElements.xpath('//div[contains(@class, "featuring")]//a[contains(@href, "/categories/")]'):

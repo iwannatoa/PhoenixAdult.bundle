@@ -63,7 +63,7 @@ def search(results, lang, siteNum, searchData):
     return results
 
 
-def update(metadata, lang, siteNum, movieGenres, movieActors, art):
+def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, art):
     metadata_id = str(metadata.id).split('|')
     sceneName = metadata_id[0]
     sceneDate = metadata_id[2]
@@ -86,7 +86,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
     else:
         subSite = PAsearchSites.getSearchSiteName(siteNum)
     metadata.tagline = subSite
-    metadata.collections.add(subSite)
+    movieCollections.addCollection(subSite)
 
     # Release Date
     if sceneDate:

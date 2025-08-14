@@ -44,7 +44,7 @@ def search(results, lang, siteNum, searchData):
     return results
 
 
-def update(metadata, lang, siteNum, movieGenres, movieActors, art):
+def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, art):
     metadata_id = str(metadata.id).split('|')
     sceneID = metadata_id[0]
 
@@ -77,7 +77,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
         metadata.studio = studio_name
 
         for collection in collections:
-            metadata.collections.add(collection)
+            movieCollections.addCollection(collection)
 
     # Release Date
     date = detailsPageElements['date']

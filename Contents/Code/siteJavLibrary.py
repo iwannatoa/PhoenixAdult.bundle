@@ -61,7 +61,7 @@ def search(results, lang, siteNum, searchData):
     return results
 
 
-def update(metadata, lang, siteNum, movieGenres, movieActors, art):
+def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, art):
     metadata_id = str(metadata.id).split('|')
     sceneURL = PAutils.Decode(metadata_id[0])
     req = PAutils.HTTPRequest(sceneURL)
@@ -86,11 +86,11 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
     tagline = detailsPageElements.xpath('//td[contains(text(), "Label:")]/following-sibling::td/span/a')
     if tagline:
         metadata.tagline = tagline[0].text_content().strip()
-        metadata.collections.add(metadata.tagline)
+        movieCollections.addCollection(metadata.tagline)
     elif studio:
-        metadata.collections.add(metadata.studio)
+        movieCollections.addCollection(metadata.studio)
     else:
-        metadata.collections.add('Japan Adult Video')
+        movieCollections.addCollection('Japan Adult Video')
 
     # Director
     directorLink = detailsPageElements.xpath('//td[contains(text(), "Director:")]/following-sibling::td/span/a')
