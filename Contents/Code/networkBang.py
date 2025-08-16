@@ -70,7 +70,7 @@ def search(results, lang, siteNum, searchData):
     return results
 
 
-def update(metadata, lang, siteNum, movieGenres, movieActors, art):
+def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, art):
     metadata_id = str(metadata.id).split('|')
     sceneURL = PAutils.Decode(metadata_id[0])
     sceneDate = metadata_id[2]
@@ -98,9 +98,9 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
 
     if tagline:
         metadata.tagline = tagline
-        metadata.collections.add(tagline)
+        movieCollections.addCollection(tagline)
     else:
-        metadata.collections.add(metadata.studio)
+        movieCollections.addCollection(metadata.studio)
 
     try:
         dvdTitle = PAutils.parseTitle(detailsPageElements.xpath('//p[contains(., "Movie")]/a[contains(@href, "dvd")]')[0].text_content(), siteNum)
@@ -108,7 +108,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
         pass
 
     if dvdTitle and siteNum == 1365:
-        metadata.collections.add(dvdTitle)
+        movieCollections.addCollection(dvdTitle)
 
     # Release Date
     date = videoPageElements['datePublished']

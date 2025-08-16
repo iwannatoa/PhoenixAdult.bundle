@@ -90,7 +90,7 @@ def search(results, lang, siteNum, searchData):
     return results
 
 
-def update(metadata, lang, siteNum, movieGenres, movieActors, art):
+def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, art):
     metadata_id = str(metadata.id).split('|')
     sceneID = int(metadata_id[0])
     sceneType = metadata_id[2]
@@ -138,10 +138,10 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
         metadata.tagline = detailsPageElements['serie_name']
     for collectionName in ['studio_name', 'serie_name']:
         if collectionName in detailsPageElements:
-            metadata.collections.add(detailsPageElements[collectionName])
+            movieCollections.addCollection(detailsPageElements[collectionName])
     if (':' in detailsPageElements['title'] or '#' in detailsPageElements['title']) and len(scenesPagesElements) > 1:
         if 'movie_title' in detailsPageElements:
-            metadata.collections.add(detailsPageElements['movie_title'])
+            movieCollections.addCollection(detailsPageElements['movie_title'])
 
     # Release Date
     date_object = parse(sceneDate)

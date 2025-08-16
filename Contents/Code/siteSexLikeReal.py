@@ -33,7 +33,7 @@ def search(results, lang, siteNum, searchData):
     return results
 
 
-def update(metadata, lang, siteNum, movieGenres, movieActors, art):
+def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, art):
     metadata_id = str(metadata.id).split('|')
     sceneURL = PAutils.Decode(metadata_id[0])
     if not sceneURL.startswith('http'):
@@ -53,7 +53,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
     metadata.studio = detailsPageElements.xpath('//div[contains(@class, "u-inline-block u-align-y--m u-relative u-fw--bold")]')[0].text_content().strip()
 
     # Tagline and Collection(s)
-    metadata.collections.add(metadata.studio)
+    movieCollections.addCollection(metadata.studio)
 
     # Release Date
     maybeDate = detailsPageElements.xpath('//div[contains(@class, "u-flex u-flex-wrap u-align-i--center u-fs--fo u-dw u-mt--three u-flex-grow--one desktop:u-mt--four desktop:u-fs--si")]/time/@datetime')[0]

@@ -35,7 +35,7 @@ def search(results, lang, siteNum, searchData):
     return results
 
 
-def update(metadata, lang, siteNum, movieGenres, movieActors, art):
+def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, art):
     cookies = {'warningHidden': 'hide'}
     metadata_id = metadata.id.split('|')
     sceneURL = PAutils.Decode(metadata_id[0])
@@ -59,7 +59,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
     # Tagline and Collection(s)
     tagline = detailsPageElements.xpath('//h1//span[@class="sup-title"]//span')[0].text_content().strip()
     metadata.tagline = tagline
-    metadata.collections.add(tagline)
+    movieCollections.addCollection(tagline)
 
     # Release Date
     date = detailsPageElements.xpath('//span[@class="date"]/span[@class="content"]')[0].text_content().replace(tagline, '').replace('Video added on', '').strip()

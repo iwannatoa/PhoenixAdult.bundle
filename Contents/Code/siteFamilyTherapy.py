@@ -51,7 +51,7 @@ def search(results, lang, siteNum, searchData):
     return results
 
 
-def update(metadata, lang, siteNum, movieGenres, movieActors, art):
+def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, art):
     metadata_id = str(metadata.id).split('|')
     sceneURL = PAutils.Decode(metadata_id[0])
     siteNum = metadata_id[1]
@@ -105,7 +105,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
     # Tagline and Collection(s)
     tagline = 'Family Therapy'
     metadata.tagline = tagline
-    metadata.collections.add(tagline)
+    movieCollections.addCollection(tagline)
 
     # Genres
     genres = detailsPageElements.xpath('//a[@rel="category tag"]/text()')

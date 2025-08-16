@@ -45,7 +45,7 @@ def search(results, lang, siteNum, searchData):
     return results
 
 
-def update(metadata, lang, siteNum, movieGenres, movieActors, art):
+def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, art):
     metadata_id = str(metadata.id).split('|')
     sceneURL = PAutils.Decode(metadata_id[0])
 
@@ -154,7 +154,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
     else:
         tagline = PAsearchSites.getSearchSiteName(siteNum)
     metadata.tagline = tagline
-    metadata.collections.add(tagline)
+    movieCollections.addCollection(tagline)
 
     # Studio
     if tagline == 'Chantas Bitches' or tagline == 'Fucked and Bound' or tagline == 'Captive Male':

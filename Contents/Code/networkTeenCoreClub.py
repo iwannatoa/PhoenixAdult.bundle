@@ -36,7 +36,7 @@ def search(results, lang, siteNum, searchData):
     return results
 
 
-def update(metadata, lang, siteNum, movieGenres, movieActors, art):
+def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, art):
     metadata_id = str(metadata.id).split('|')
     sceneURL = PAutils.Decode(metadata_id[0])
 
@@ -55,7 +55,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
     # Tagline and Collection(s)
     tagline = data['video']['labels'][0]['name'].replace('.com', '').strip()
     metadata.tagline = tagline
-    metadata.collections.add(tagline)
+    movieCollections.addCollection(tagline)
 
     # Actor(s)
     actors = []

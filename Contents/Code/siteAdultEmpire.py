@@ -204,7 +204,7 @@ def search(results, lang, siteNum, searchData):
     return results
 
 
-def update(metadata, lang, siteNum, movieGenres, movieActors, art):
+def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, art):
     cookies = {'ageConfirmed': 'true'}
     splitScene = False
     metadata_id = str(metadata.id).split('|')
@@ -243,16 +243,16 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
     metadata.studio = studio
 
     # Tagline and Collection(s)
-    metadata.collections.add(metadata.studio)
+    movieCollections.addCollection(metadata.studio)
     try:
         tagline = re.sub(r'\(.*\)', '', detailsPageElements.xpath('//h2/a[@label="Series"]/text()')[0].strip().split('"')[1]).strip()
         tagline = PAutils.parseTitle(tagline, siteNum)
 
         metadata.tagline = tagline
-        metadata.collections.add(tagline)
+        movieCollections.addCollection(tagline)
     except:
         if splitScene:
-            metadata.collections.add(PAutils.parseTitle(detailsPageElements.xpath('//h1/text()')[0], siteNum).strip())
+            movieCollections.addCollection(PAutils.parseTitle(detailsPageElements.xpath('//h1/text()')[0], siteNum).strip())
 
     # Release Date
     if sceneDate:

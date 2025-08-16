@@ -21,7 +21,7 @@ def search(results, lang, siteNum, searchData):
     return results
 
 
-def update(metadata, lang, siteNum, movieGenres, movieActors, art):
+def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, art):
     metadata_id = str(metadata.id).split('|')
     sceneURL = '%s/iod/%s' % (PAsearchSites.getSearchBaseURL(siteNum), PAutils.Decode(metadata_id[0]))
     scenePoster = PAutils.Decode(metadata_id[2])
@@ -60,7 +60,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
     else:
         tagline = 'Intersex'
     metadata.tagline = tagline
-    metadata.collections.add(tagline)
+    movieCollections.addCollection(tagline)
 
     # Release Date
     date = detailsPageElements.xpath('//div[contains(@class, "has-text-white-ter")][1]//span[contains(@class, "is-dark")][1]/text()')[0]

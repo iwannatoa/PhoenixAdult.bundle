@@ -51,7 +51,7 @@ def search(results, lang, siteNum, searchData):
     return results
 
 
-def update(metadata, lang, siteNum, movieGenres, movieActors, art):
+def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, art):
     cookies = {'WarningModal': 'true'}
     metadata_id = str(metadata.id).split('|')
     sceneURL = PAutils.Decode(metadata_id[0])
@@ -73,11 +73,11 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
     # Tagline and Collection(s)
     tagline = PAutils.parseTitle(detailsPageElements.xpath('//a[contains(@href, "/studio/profile/")]')[0].text_content().strip(), siteNum)
     metadata.tagline = tagline
-    metadata.collections.add(tagline)
+    movieCollections.addCollection(tagline)
 
     dvd = detailsPageElements.xpath('//div[@class="post_item dvd"]/h1')
     if dvd:
-        metadata.collections.add(PAutils.parseTitle(dvd[0].text_content().lower(), siteNum))
+        movieCollections.addCollection(PAutils.parseTitle(dvd[0].text_content().lower(), siteNum))
 
     # Release Date
     date = detailsPageElements.xpath('//h3[@class="post_date"]')

@@ -76,8 +76,7 @@ def search(results, lang, siteNum, searchData):
 
     return results
 
-
-def update(metadata, lang, siteNum, movieGenres, movieActors, art):
+def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, art):
     metadata_id = str(metadata.id).split('|')
     sceneID = metadata_id[0]
     sceneType = metadata_id[2]
@@ -129,7 +128,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
         seriesNames.insert(0, PAsearchSites.getSearchSiteName(siteNum))
 
     for seriesName in seriesNames:
-        metadata.collections.add(seriesName)
+        movieCollections.addCollection(seriesName)
 
     # Release Date
     date_object = parse(detailsPageElements['dateReleased'])

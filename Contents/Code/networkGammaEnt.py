@@ -246,7 +246,7 @@ def search(results, lang, siteNum, searchData):
     return results
 
 
-def update(metadata, lang, siteNum, movieGenres, movieActors, art):
+def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, art):
     metadata_id = metadata.id.split('|')
     sceneURL = PAutils.Decode(metadata_id[0])
     if not sceneURL.startswith('http'):
@@ -304,12 +304,12 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
     except:
         tagline = PAsearchSites.getSearchSiteName(siteNum)
     metadata.tagline = tagline
-    metadata.collections.add(tagline)
+    movieCollections.addCollection(tagline)
 
     # Title DVD
     try:
         dvdTitle = detailsPageElements.xpath('//a[contains(@class, "dvdLink")][1]/@title')[0].strip()
-        metadata.collections.add(dvdTitle.replace('#0', '').replace('#', ''))
+        movieCollections.addCollection(dvdTitle.replace('#0', '').replace('#', ''))
     except:
         try:
             dvdTitleScript = detailsPageElements.xpath('//script[contains(text(), "dvdName")]')[0].text_content()
@@ -317,7 +317,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
             omega = dvdTitleScript.find('"', alpha)
             dvdTitle = dvdTitleScript[alpha:omega]
             if dvdTitle:
-                metadata.collections.add(dvdTitle.replace('#0', '').replace('#', ''))
+                movieCollections.addCollection(dvdTitle.replace('#0', '').replace('#', ''))
         except:
             try:
                 dvdTitle = detailsPageElements.xpath('//h1[@class="sceneTitle"]')[0].text_content().strip()
@@ -325,7 +325,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
                 dvdTitle = dvdTitle.replace('BONUS', '')
                 dvdTitle = dvdTitle.replace('BTS-', '').replace('BTS - ', '')
                 dvdTitle = dvdTitle.replace('BTS', '')
-                metadata.collections.add(dvdTitle.replace('#0', '').replace('#', ''))
+                movieCollections.addCollection(dvdTitle.replace('#0', '').replace('#', ''))
             except:
                 dvdTitle = 'This is some damn nonsense that should never match the scene title'
 

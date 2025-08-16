@@ -32,7 +32,7 @@ def search(results, lang, siteNum, searchData):
     return results
 
 
-def update(metadata, lang, siteNum, movieGenres, movieActors, art):
+def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, art):
     metadata_id = str(metadata.id).split('|')
     sceneURL = PAutils.Decode(metadata_id[0])
     if not sceneURL.startswith('http'):
@@ -51,11 +51,11 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
     metadata.studio = 'Jules Jordan'
 
     # Tagline and Collection(s)
-    metadata.collections.add(metadata.studio)
+    movieCollections.addCollection(metadata.studio)
     try:
         dvdName = detailsPageElements.xpath('//div[@class="player-scene-description"]//span[contains(text(), "Movie:")]/..')[0].text_content().replace('Movie:', '').replace('Feature: ', '').strip()
         metadata.tagline = dvdName
-        metadata.collections.add(dvdName)
+        movieCollections.addCollection(dvdName)
     except:
         pass
 

@@ -35,7 +35,7 @@ def search(results, lang, siteNum, searchData):
     return results
 
 
-def update(metadata, lang, siteNum, movieGenres, movieActors, art):
+def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, art):
     metadata_id = str(metadata.id).split('|')
     sceneURL = PAutils.Decode(metadata_id[0])
     req = PAutils.HTTPRequest(sceneURL, headers={'Referer': 'https://www.puba.com/pornstarnetwork/index.php'}, cookies={'PHPSESSID': 'rvo9ieo5bhoh81knnmu88c3lf3'})
@@ -48,7 +48,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
     metadata.studio = PAsearchSites.getSearchSiteName(siteNum)
 
     # Tagline and Collection(s)
-    metadata.collections.add(metadata.studio)
+    movieCollections.addCollection(metadata.studio)
 
     # Genres
     genres = detailsPageElements.xpath('//center//div//a[contains(@class, "btn-outline-secondary")]')

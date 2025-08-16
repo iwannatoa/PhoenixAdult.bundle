@@ -62,7 +62,7 @@ def search(results, lang, siteNum, searchData):
     return results
 
 
-def update(metadata, lang, siteNum, movieGenres, movieActors, art):
+def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, art):
     metadata_id = metadata.id.split('|')
     sceneDate = metadata_id[2]
     sceneID = metadata_id[0]
@@ -81,7 +81,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
     # Tagline and Collection(s)
     tagline = detailsPageElements['content_provider'][0]['name']
     metadata.tagline = tagline
-    metadata.collections.add(tagline)
+    movieCollections.addCollection(tagline)
 
     # Release Date
     if sceneDate:

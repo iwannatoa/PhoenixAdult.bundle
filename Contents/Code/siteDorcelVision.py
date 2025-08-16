@@ -18,7 +18,7 @@ def search(results, lang, siteNum, searchData):
     return results
 
 
-def update(metadata, lang, siteNum, movieGenres, movieActors, art):
+def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, art):
     metadata_id = str(metadata.id).split('|')
     sceneURL = PAutils.Decode(metadata_id[0])
 
@@ -48,12 +48,12 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
     tagline = 'Dorcel Vision'
     studioNode = detailsPageElements.xpath('//div[@class="entries"]//strong[contains(., "Studio")]/following-sibling::a')
     if studioNode:
-        metadata.collections.add(tagline)
+        movieCollections.addCollection(tagline)
         tagline = studioNode[0].text_content().strip()
 
     metadata.tagline = tagline
     metadata.studio = tagline
-    metadata.collections.add(tagline)
+    movieCollections.addCollection(tagline)
 
     # Release Date
     if releaseDate:

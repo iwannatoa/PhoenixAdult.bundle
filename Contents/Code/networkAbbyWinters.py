@@ -61,7 +61,7 @@ def search(results, lang, siteNum, searchData):
     return results
 
 
-def update(metadata, lang, siteNum, movieGenres, movieActors, art):
+def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, art):
     metadata_id = str(metadata.id).split('|')
     sceneURL = PAutils.Decode(metadata_id[0])
     sceneDate = metadata_id[2]
@@ -82,7 +82,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
 
     # Tagline and Collection(s)
     metadata.tagline = PAutils.parseTitle(detailsPageElements.xpath('//div[@id="shoot-featured-image"]//h4')[0].text_content().strip(), siteNum)
-    metadata.collections.add(metadata.tagline)
+    movieCollections.addCollection(metadata.tagline)
 
     # Release Date
     if sceneDate:

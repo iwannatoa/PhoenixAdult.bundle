@@ -57,7 +57,7 @@ def search(results, lang, siteNum, searchData):
     return results
 
 
-def update(metadata, lang, siteNum, movieGenres, movieActors, art):
+def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, art):
     metadata_id = str(metadata.id).split('|')
     poster = PAutils.Decode(metadata_id[0])
     if not poster.startswith('http'):
@@ -74,7 +74,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
 
     # Studio
     metadata.studio = 'Jesse Loads Monster Facials'
-    metadata.collections.add(metadata.studio)
+    movieCollections.addCollection(metadata.studio)
 
     # Release Date
     if sceneDate:

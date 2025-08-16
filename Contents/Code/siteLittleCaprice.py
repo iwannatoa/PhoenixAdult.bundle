@@ -20,7 +20,7 @@ def search(results, lang, siteNum, searchData):
     return results
 
 
-def update(metadata, lang, siteNum, movieGenres, movieActors, art):
+def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, art):
     metadata_id = metadata.id.split('|')
     sceneURL = PAutils.Decode(metadata_id[0])
     if not sceneURL.startswith('http'):
@@ -70,7 +70,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
     elif 'category_xpervo' in attributes:
         tagline = 'Xpervo'
     metadata.tagline = tagline
-    metadata.collections.add(tagline)
+    movieCollections.addCollection(tagline)
 
     # Title
     title = detailsPageElements.xpath('//div[@class="project-details"]//h1')[0].text_content().strip()
