@@ -1199,16 +1199,20 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
 + #### PornPros Other Sites | ✅ - **Title Only** (Must match the title in the URL after last /)
   - Asians Exploited
   - Baeb
-  - BBCPie
   - BBC POVD
+  - BBCPie
+  - Bikini Smash
   - Caged Sex
   - CastingCouch-X
   - Creepy Pa
   - Cum4K
+  - Double Trouble
   - Exotic4k
   - Exploited Cheerleaders
+  - Facials Galore
   - Facials4k
   - FantasyHD
+  - Game On
   - Girl Scout Sex
   - GloryHole 4K
   - Holed
@@ -1218,17 +1222,24 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
   - MomCum
   - My Very First Time
   - NannySpy
+  - Passion Fuck
   - Passion-HD
   - PornPlus
   - POVD
   - Property Exploits
   - PureMature
+  - RV Adventures
   - School of Cock
+  - Sexercise
   - Shower 4K
   - SpyFam
+  - Squirt Bomb
   - Strippers 4K
+  - Throat Creampies
   - Tiny4k
+  - Waxxxed
   - WetVR
+  - Zoom POV
 + #### PornstarPlatinum | ✅
 + #### POVR | ✓
 + #### PrettyDirty | ✅
