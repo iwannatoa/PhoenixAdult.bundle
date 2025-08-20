@@ -1680,6 +1680,12 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
   - TwistysHard
   - WhenGirlsPlay
 + #### Ultrafilms | ✓
++ #### Unzip VR | ✅
+  - Blow VR
+  - VR Bangers
+  - VR Conk
+  - VRB Gay
+  - VRB Trans
 + #### VIPissy | ✓
 + #### VirtualPorn | ✅
 + #### VirtualRealPorn | ❌ - **Direct URL**
@@ -1729,8 +1735,6 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
   - Women By Julia Ann
 + #### VogoV | ✓ - **Title only**
 + #### VRAllure | ❌ - Direct URL
-+ #### VRBangers | ✅
-+ #### VRConk | ✅
 + #### VRHush | ❌ - **Direct URL**
 + #### VRLatina | ✅
 + #### VRP Films | ✅

@@ -12,7 +12,7 @@ import siteJulesJordan
 import networkPerfectGonzo
 import networkKellyMadison
 import networkBadoinkVR
-import siteVRBangers
+import networkUnzipVR
 import networkHighTechVR
 import siteMilfVR
 import networkPornPros
@@ -90,7 +90,6 @@ import siteSexLikeReal
 import siteXillimite
 import siteVRPFilms
 import siteVRLatina
-import siteVRConk
 import networkEvolvedFights
 import networkJavBus
 import siteHucows
@@ -1095,7 +1094,7 @@ searchSites = {
     901: ('Xillimite', 'https://www.xillimite.com', '/en/search?type=4&keyword='),
     902: ('VRPFilms', 'https://vrpfilms.com', '/m/'),
     903: ('VR Latina', 'https://vrlatina.com', '/video/'),
-    904: ('VRConk', 'https://www.vrconk.com', '/api/content/v1/search/'),
+    904: ('VR Conk', 'https://www.vrconk.com', '/api/content/v1/search/'),
     905: (),
     906: ('Evolved Fights', 'https://www.evolvedfights.com', '/updates/'),
     907: ('Evolved Fights Lesbian Edition', 'https://www.evolvedfightslez.com', '/updates/'),
@@ -1997,6 +1996,9 @@ searchSites = {
     1903: ('RV Adventures', 'https://pornplus.com', '/api'),
     1904: ('Double Trouble', 'https://pornplus.com', '/api'),
     1905: ('Bikini Smash', 'https://pornplus.com', '/api'),
+    1906: ('Blow VR', 'https://www.blowvr.com', '/api/content/v1/search/'),
+    1907: ('VRB Trans', 'https://www.vrbtrans.com', '/api/content/v1/search/'),
+    1908: ('VRB Gay', 'https://www.vrbgay.com', '/api/content/v1/search/'),
 }
 
 abbreviations = (
@@ -2528,9 +2530,9 @@ def getProviderFromSiteNum(siteNum):
         elif (469 <= siteNum <= 473) or siteNum == 1894:
             provider = networkBadoinkVR
 
-        # VRBangers
-        elif siteNum == 474:
-            provider = siteVRBangers
+        # Unzip VR
+        elif siteNum == 474 or siteNum == 904 or (1906 <= siteNum <= 1908):
+            provider = networkUnzipVR
 
         # SexBabesVR
         elif siteNum == 475:
@@ -2935,10 +2937,6 @@ def getProviderFromSiteNum(siteNum):
         # VR Latina
         elif siteNum == 903:
             provider = siteVRLatina
-
-        # VRConk
-        elif siteNum == 904:
-            provider = siteVRConk
 
         # Evolved Fights Network
         elif siteNum == 906 or siteNum == 907:
