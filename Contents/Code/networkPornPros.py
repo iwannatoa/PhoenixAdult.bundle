@@ -12,7 +12,7 @@ def getDataFromAPI(siteNum, searchType, slug, site, searchSite):
     data = None
     if req.ok:
         data = req.json()
-    
+
     subSite = PAsearchSites.getSearchSiteName(siteNum).replace(' ', '').lower()
     if not data and subSite not in searchSite and 'pornplus' in site:
         data = getDataFromAPI(siteNum, searchType, slug, site.replace('pornplus', subSite), searchSite.replace('pornplus', subSite))
