@@ -59,9 +59,16 @@ def search(results, lang, siteNum, searchData):
                 subSite = PAsearchSites.getSearchSiteName(siteNum)
 
             curID = PAutils.Encode(sceneURL)
-            releaseDate = searchData.dateFormat() if searchData.date else ''
 
-            if searchData.date:
+            date = searchResult.xpath('.//div[@class="item__date"]')
+            if date:
+                releaseDate = parse(date[0].text_content().strip()).strftime('%Y-%m-%d')
+            else:
+                releaseDate = searchData.dateFormat() if searchData.date else ''
+
+            displayDate = releaseDate if date else ''
+
+            if searchData.date and displayDate:
                 score = 100 - Util.LevenshteinDistance(searchData.date, releaseDate)
             else:
                 score = 100 - Util.LevenshteinDistance(searchData.title.lower(), titleNoFormatting.lower())
@@ -69,7 +76,7 @@ def search(results, lang, siteNum, searchData):
             if not subSite.lower() == PAsearchSites.getSearchSiteName(siteNum).lower():
                 score = score - 1
 
-            results.Append(MetadataSearchResult(id='%s|%d|%s' % (curID, siteNum, releaseDate), name='%s [VIP4K/%s] %s' % (titleNoFormatting, subSite, releaseDate), score=score, lang=lang))
+            results.Append(MetadataSearchResult(id='%s|%d|%s' % (curID, siteNum, releaseDate), name='%s [VIP4K/%s] %s' % (titleNoFormatting, subSite, displayDate), score=score, lang=lang))
 
     return results
 
@@ -93,7 +100,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, 
     metadata.studio = 'VIP4K'
 
     # Tagline and Collection(s)
-    tagline = detailsPageElements.xpath('//a[@class="player-additional__site ph_register"]')[0].text_content().strip()
+    tagline = detailsPageElements.xpath('//a[@class="player-additional__site ph_register"]')[0].text_content().strip().replace('Sis', 'Sis.Porn')
     metadata.tagline = tagline
     movieCollections.addCollection(tagline)
 
@@ -128,6 +135,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, 
     # Posters
     xpaths = [
         '//div[@class="player-item__block"]//img/@data-src',
+        '//div[@class="player-item__block"]//img/@src',
     ]
 
     for xpath in xpaths:
