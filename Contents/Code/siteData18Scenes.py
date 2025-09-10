@@ -209,7 +209,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, 
             metadata.title = ("%s [Scene %s]" % (metadata_id[3], metadata_id[4]))
         if not metadata.studio:
             metadata.studio = tagline
-        else:
+        elif metadata.studio.replace(' ', '').lower() != tagline.replace(' ', '').lower():
             metadata.tagline = tagline
         movieCollections.addCollection(tagline)
     except:
