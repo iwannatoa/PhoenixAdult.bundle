@@ -1999,6 +1999,7 @@ searchSites = {
     1907: ('VRB Trans', 'https://www.vrbtrans.com', '/api/content/v1/search/'),
     1908: ('VRB Gay', 'https://www.vrbgay.com', '/api/content/v1/search/'),
     1909: ('MyGF', 'https://www.mygf.com', 'https://site-api.project1service.com'),
+    1910: ('DP Diva', 'https://www.dpdiva.com', '/'),
 }
 
 abbreviations = (
@@ -3125,7 +3126,7 @@ def getProviderFromSiteNum(siteNum):
             provider = siteMelenaMariaRya
 
         # PervCity
-        elif (1160 <= siteNum <= 1165):
+        elif (1160 <= siteNum <= 1165) or siteNum == 1910:
             provider = networkPervCity
 
         # Abby Winters
