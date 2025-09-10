@@ -287,12 +287,11 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
   - Tugjobs
   - Working Latinas
 + #### BangBros Other Sites | ✅
-  - Sex Selector
-+ #### BangBros Other Sites | ✓ - **Title only**
-  - Black Patrol
   - Blacks On Moms
   - Filthy Family
   - Mia Khalifa
+  - MyGF
+  - Sex Selector
   - XXXPawn
 + #### Bang! | ✓ - **Title only**
 + #### Bang! Movies | ✓ - **Title only**

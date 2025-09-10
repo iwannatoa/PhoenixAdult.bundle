@@ -1342,12 +1342,12 @@ searchSites = {
     1150: ('Videos Enfermos', 'https://www.fakings.com', '/en/buscar/'),
     1151: ('De Paseo con FAKings', 'https://www.fakings.com', '/en/buscar/'),
     1152: ('Clases de Mamadas', 'https://www.fakings.com', '/en/buscar/'),
-    1153: ('XXXPawn', 'http://bangbrosportal.com', '/?s='),
-    1154: ('Black Patrol', 'http://bangbrosportal.com', '/?s='),
+    1153: ('XXXPawn', 'http://xxxpawn.com', 'https://site-api.project1service.com'),
+    1154: (),
     1155: ('Putalocura', 'https://www.putalocura.com', '/buscar?q='),
-    1156: ('Mia Khalifa', 'http://bangbrosportal.com', '/?s='),
-    1157: ('Blacks On Moms', 'http://bangbrosportal.com', '/?s='),
-    1158: ('Filthy Family', 'http://bangbrosportal.com', '/?s='),
+    1156: ('Mia Khalifa', 'http://miakhalifa.com', 'https://site-api.project1service.com'),
+    1157: ('Blacks On Moms', 'http://blacksonmoms.com', 'https://site-api.project1service.com'),
+    1158: ('Filthy Family', 'http://filthyfamily.com', 'https://site-api.project1service.com'),
     1159: ('Melena Maria Rya', 'https://www.melenamariarya.com', '/scene/'),
     1160: ('Anal Overdose', 'https://analoverdose.com', '/'),
     1161: ('Banging Beauties', 'https://www.bangingbeauties.com', '/'),
@@ -1762,7 +1762,7 @@ searchSites = {
     1670: ('Vintage Classic Porn', 'https://adultprime.com', '/studios/search?type='),
     1671: ('VR Teens', 'https://adultprime.com', '/studios/search?type='),
     1672: ('Young Busty', 'https://adultprime.com', '/studios/search?type='),
-    1673: ('Abuse Me', 'http://bangbrosportal.com', '/?s='),
+    1673: (),
     1674: ('DirtyAuditions', 'https://dirtyauditions.com', '/_next/data/'),
     1675: ('Sexy Modern Bull', 'https://sexymodernbull.com', '/videos'),
     1676: ('GotFilled', 'https://gotfilled.com', '/videos'),
@@ -1998,6 +1998,7 @@ searchSites = {
     1906: ('Blow VR', 'https://www.blowvr.com', '/api/content/v1/search/'),
     1907: ('VRB Trans', 'https://www.vrbtrans.com', '/api/content/v1/search/'),
     1908: ('VRB Gay', 'https://www.vrbgay.com', '/api/content/v1/search/'),
+    1909: ('MyGF', 'https://www.mygf.com', 'https://site-api.project1service.com'),
 }
 
 abbreviations = (
@@ -2212,6 +2213,8 @@ abbreviations = (
     ('^nw ', 'NaughtyWeddings '),
     ('^obj ', 'OnlyBlowjob '),
     ('^otb ', 'OnlyTeenBlowjobs '),
+    ('^partyofthree ', 'Partyof3 '),
+    ('^passion hd ', 'PassionHD '),
     ('^passion-hd ', 'PassionHD '),
     ('^pav ', 'PixAndVideo '),
     ('^pba ', 'PublicAgent '),
@@ -3110,8 +3113,8 @@ def getProviderFromSiteNum(siteNum):
             provider = networkFAKings
 
         # Other BangBros Sites
-        elif (1153 <= siteNum <= 1154) or (1156 <= siteNum <= 1158) or siteNum == 1673:
-            provider = networkBangBrosOther
+        elif siteNum == 1153 or (1156 <= siteNum <= 1158) or siteNum == 1909:
+            provider = network1service
 
         # Putalocura
         elif siteNum == 1155:
