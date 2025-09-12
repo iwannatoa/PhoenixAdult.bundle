@@ -4,12 +4,38 @@ import PAutils
 
 def search(results, lang, siteNum, searchData):
     cookies = {'warning_cookie': '1'}
+    siteSearchResults = []
     searchResults = []
+
+    req = PAutils.HTTPRequest(PAsearchSites.getSearchSearchURL(siteNum) + slugify(searchData.title, separator='+'))
+    searchPageElements = HTML.ElementFromString(req.text)
+
+    for searchResult in searchPageElements.xpath('//div[@class="videoBlock"]'):
+        titleNoFormatting = PAutils.parseTitle(searchResult.xpath('.//h2 | .//h3')[0].text_content().strip(), siteNum)
+        sceneURL = searchResult.xpath('.//h2//@href | .//h3//@href')[0].strip()
+        curID = PAutils.Encode(sceneURL)
+        siteSearchResults.append(sceneURL)
+
+        releaseDate = searchData.dateFormat() if searchData.date else ''
+
+        date = searchResult.xpath('.//div[@class="date"]')
+        if date:
+            releaseDate = parse(date[0].text_content().strip()).strftime('%Y-%m-%d')
+        else:
+            releaseDate = searchData.dateFormat() if searchData.date else ''
+        displayDate = releaseDate if date else ''
+
+        if searchData.date and displayDate:
+            score = 100 - Util.LevenshteinDistance(searchData.date, releaseDate)
+        else:
+            score = 100 - Util.LevenshteinDistance(searchData.title.lower(), titleNoFormatting.lower())
+
+        results.Append(MetadataSearchResult(id='%s|%d|%s' % (curID, siteNum, releaseDate), name='%s [PervCity] %s' % (titleNoFormatting, displayDate), score=score, lang=lang))
 
     googleResults = PAutils.getFromGoogleSearch(searchData.title, siteNum)
     for sceneURL in googleResults:
         sceneURL = sceneURL.replace('www.', '')
-        if ('trailers' in sceneURL) and 'as3' not in sceneURL and sceneURL not in searchResults:
+        if ('trailers' in sceneURL) and 'as3' not in sceneURL and sceneURL not in searchResults and sceneURL not in siteSearchResults:
             searchResults.append(sceneURL)
 
     for sceneURL in searchResults:
@@ -44,6 +70,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, 
     cookies = {'warning_cookie': '1'}
     metadata_id = str(metadata.id).split('|')
     sceneURL = PAutils.Decode(metadata_id[0])
+    sceneDate = metadata_id[2] if len(metadata_id) > 2 else ''
 
     req = PAutils.HTTPRequest(sceneURL, cookies=cookies)
     detailsPageElements = HTML.ElementFromString(req.text)
@@ -71,6 +98,12 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, 
     else:
         movieCollections.addCollection(metadata.studio)
 
+    # Release Date
+    if sceneDate:
+        date_object = parse(sceneDate)
+        metadata.originally_available_at = date_object
+        metadata.year = metadata.originally_available_at.year
+
     # Genres
     for genreLink in detailsPageElements.xpath('//div[@class="tagcats"]/a'):
         genreName = genreLink.text_content().strip()
@@ -78,7 +111,6 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, 
         movieGenres.addGenre(genreName)
 
     # Actor(s)
-    date = ''
     actors = detailsPageElements.xpath('//h2/span/a | //h3/span/a')
     for actorLink in actors:
         actorName = actorLink.text_content().strip()
@@ -95,17 +127,22 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, 
             actorsPageElements = HTML.ElementFromString(req.text)
             actorPhotoURL = actorsPageElements.xpath('//div[@class="starPic" or @class="bioBPic"]/img/@src')[0]
 
-
-        if not date:
+        if not sceneDate:
             for scene in actorsPageElements.xpath('//div[@class="videoBlock" or @class="videoContent"]'):
                 cleanTitle = re.sub(r'\W', '', metadata.title).lower()
-                h2CleanTitle = re.sub(r'\W', '', scene.xpath('.//h3')[0].text_content().replace('...', '').strip()).lower()
-                h3CleanTitle = re.sub(r'\W', '', scene.xpath('.//h2/a')[0].text_content().replace('...', '').strip()).lower()
+                try:
+                    h2CleanTitle = re.sub(r'\W', '', scene.xpath('.//h2')[0].text_content().replace('...', '').strip()).lower()
+                except:
+                    h2CleanTitle = ''
+                try:
+                    h3CleanTitle = re.sub(r'\W', '', scene.xpath('.//h3/a')[0].text_content().replace('...', '').strip()).lower()
+                except:
+                    h3CleanTitle = ''
                 if h2CleanTitle in cleanTitle or h3CleanTitle in cleanTitle:
-                    date = actorsPageElements.xpath('.//div[@class="date"]')[0].text_content()
+                    sceneDate = actorsPageElements.xpath('.//div[@class="date"]')
 
-            if date:
-                date_object = parse(date)
+            if sceneDate:
+                date_object = parse(sceneDate[0].text_content())
                 metadata.originally_available_at = date_object
                 metadata.year = metadata.originally_available_at.year
 

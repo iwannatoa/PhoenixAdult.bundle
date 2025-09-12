@@ -36,7 +36,7 @@ def search(results, lang, siteNum, searchData):
         for idx in range(2):
             for searchResult in searchPageElements.xpath('//ul[@id="studio-videos-container"]/li'):
                 titleNoFormatting = PAutils.parseTitle(searchResult.xpath('.//span[contains(@class, "title")]')[0].text_content().strip(), siteNum)
-                galleryID = searchResult.xpath('.//a/@href')[0].split('=')[-1]
+                galleryID = searchResult.xpath('.//div[contains(@class, "overlay inline-preview")]/@data-id')[0]
                 sceneURL = '%s/studios/video/%s' % (PAsearchSites.getSearchBaseURL(siteNum), galleryID)
                 curID = PAutils.Encode(sceneURL)
 
@@ -72,7 +72,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, 
     detailsPageElements = HTML.ElementFromString(req.text)
 
     # Title
-    metadata.title = PAutils.parseTitle(detailsPageElements.xpath('//h1')[0].text_content().split(':')[-1].strip(), siteNum)
+    metadata.title = PAutils.parseTitle(detailsPageElements.xpath('//h1')[0].text_content().split(':')[-1].split('Full video by')[0].strip(), siteNum)
 
     # Summary
     summary = detailsPageElements.xpath('//p[contains(@class, "description")]')[0].text_content().strip()
