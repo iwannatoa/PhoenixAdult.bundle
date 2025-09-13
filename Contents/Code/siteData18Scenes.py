@@ -204,7 +204,6 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, 
                     movieCollections.addCollection(metadata.studio)
 
         if len(metadata_id) > 3:
-            Log('Using original series information')
             tagline = detailsPageElements.xpath('//p[contains(., "Serie")]//a[@title]')[0].text_content().strip()
             metadata.title = ("%s [Scene %s]" % (metadata_id[3], metadata_id[4]))
         if not metadata.studio:
@@ -217,15 +216,12 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, 
 
     # Release Date
     date = detailsPageElements.xpath('//span[contains(., "Release date")]')
-    Log('date: %s', repr(date))
     if date:
         date = date[0].text_content().strip()
-        Log('date: %s', date)
         date = date.replace("Release date: ", "")
         date = date.replace(", more updates...\n[Nav X]", "")
         date = date.replace("* Movie Release", "")
         date = date.strip()
-        Log('date: %s', repr(date))
     else:
         date = sceneDate if sceneDate else None
 
