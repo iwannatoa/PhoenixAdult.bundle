@@ -20,6 +20,11 @@
 ## MetadataAPI Token
  - API Token for MetadataAPI https://metadataapi.net/user/api-tokens
 
+## Adult (DVD) Empire Login Token
+ - Login Cookie (etoken cookie) required to bypass login screen (search "how to view cookies in browser" for more information)
+ - Must have an Adult Empire account to obtain a login cookie
+ - Note: The cookie has an expiration and it will need to be changed each time it expires
+
 ## Enable FileName Strip
  - Enable/Disable strip text before/after a specified symbol
 

@@ -24,7 +24,11 @@ def getReleaseDateAndDisplayDate(detailsPageElements, searchData=None):
 
 
 def search(results, lang, siteNum, searchData):
-    cookies = {'ageConfirmed': 'true'}
+    token = Prefs['adultempire_login_token']
+    cookies = {
+        'ageConfirmed': 'true',
+        'etoken': token
+    }
     searchResults = []
     siteResults = []
     temp = []
@@ -205,7 +209,11 @@ def search(results, lang, siteNum, searchData):
 
 
 def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, art):
-    cookies = {'ageConfirmed': 'true'}
+    token = Prefs['adultempire_login_token']
+    cookies = {
+        'ageConfirmed': 'true',
+        'etoken': token
+    }
     splitScene = False
     metadata_id = str(metadata.id).split('|')
     sceneURL = PAutils.Decode(metadata_id[0])
