@@ -435,7 +435,15 @@ def getFromIndexxx(actorName, actorEncoded, metadata):
 
 
 def getFromAdultDVDEmpire(actorName, actorEncoded, metadata):
-    cookies = {'ageConfirmed': 'true'}
+    token = Prefs['adultempire_login_token']
+    if token:
+        cookies = {
+            'ageConfirmed': 'true',
+            'etoken': token
+        }
+    else:
+        cookies = {'ageConfirmed': 'true'}
+
     actorPhotoURL = ''
 
     req = PAutils.HTTPRequest('https://www.adultdvdempire.com/performer/search?q=' + actorEncoded, cookies=cookies)

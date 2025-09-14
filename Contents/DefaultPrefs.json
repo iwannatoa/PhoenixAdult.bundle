@@ -43,6 +43,13 @@
         "default": ""
     },
     {
+        "id": "adultempire_login_token",
+        "label": "Adult Empire Login Token",
+        "type": "text",
+        "option": "hidden",
+        "default": ""
+    },
+    {
         "id": "strip_enable",
         "label": "Enable FileName Strip",
         "type": "bool",
