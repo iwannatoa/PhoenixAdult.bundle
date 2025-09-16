@@ -11,7 +11,7 @@ def search(results, lang, siteNum, searchData):
         PAsearchSites.getSearchSearchURL(siteNum) + 'dvds/' + searchData.encoded + '.html'
     ]
 
-    googleResults = PAutils.getFromGoogleSearch(searchData.title, siteNum)
+    googleResults = PAutils.getFromSearchEngine(searchData.title, siteNum)
     for sceneURL in googleResults:
         if sceneURL not in searchResultsURLs:
             if ('/updates/' in sceneURL or '/dvds/' in sceneURL or '/scenes/' in sceneURL) and ('/tour_ns/' in sceneURL or '/tour_famxxx/' in sceneURL) and sceneURL not in searchResultsURLs:

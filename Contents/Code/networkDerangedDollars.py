@@ -5,7 +5,7 @@ import PAutils
 def search(results, lang, siteNum, searchData):
     searchResults = []
 
-    googleResults = PAutils.getFromGoogleSearch(searchData.title, siteNum)
+    googleResults = PAutils.getFromSearchEngine(searchData.title, siteNum)
     for sceneURL in googleResults:
         if '/session/' in sceneURL not in searchResults:
             searchResults.append(sceneURL)

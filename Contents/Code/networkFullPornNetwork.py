@@ -5,7 +5,7 @@ import PAutils
 def search(results, lang, siteNum, searchData):
     modelResultsURLs = []
     searchResultsURLs = []
-    googleResults = PAutils.getFromGoogleSearch(searchData.title, siteNum)
+    googleResults = PAutils.getFromSearchEngine(searchData.title, siteNum)
 
     if searchData.title.count(' ') > 1:
         directSearch = searchData.title.replace(' ', '-').lower()

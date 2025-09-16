@@ -19,7 +19,7 @@ def search(results, lang, siteNum, searchData):
     directURL = PAsearchSites.getSearchSearchURL(siteNum) + directURL
     searchResultsURLs = [directURL]
 
-    googleResults = PAutils.getFromGoogleSearch(searchData.title, siteNum)
+    googleResults = PAutils.getFromSearchEngine(searchData.title, siteNum)
 
     for sceneURL in googleResults:
         sceneURL = sceneURL.rsplit('?', 1)[0]

@@ -14,7 +14,7 @@ def search(results, lang, siteNum, searchData):
 
         searchResults.append(directURL)
 
-    googleResults = PAutils.getFromGoogleSearch(searchData.title, siteNum)
+    googleResults = PAutils.getFromSearchEngine(searchData.title, siteNum)
     for sceneURL in googleResults:
         if ('/update/' in sceneURL) and sceneURL not in searchResults:
             searchResults.append(sceneURL)
@@ -109,7 +109,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, 
     ]
 
     scenes = photoLookup(sceneID)
-    googleResults = PAutils.getFromGoogleSearch(' '.join(actors).strip(), siteNum)
+    googleResults = PAutils.getFromSearchEngine(' '.join(actors).strip(), siteNum)
     for photoURL in googleResults:
         for scene in scenes:
             if ('galleries' in photoURL or 'preview' in photoURL) and (scene in photoURL or scene == 'none'):

@@ -4,7 +4,7 @@ import PAutils
 
 def search(results, lang, siteNum, searchData):
     searchResults = []
-    googleResults = PAutils.getFromGoogleSearch(searchData.title, siteNum)
+    googleResults = PAutils.getFromSearchEngine(searchData.title, siteNum)
     for sceneURL in googleResults:
         if ('/tour1/' in sceneURL and sceneURL.endswith('.html') and sceneURL not in searchResults):
             searchResults.append(sceneURL)

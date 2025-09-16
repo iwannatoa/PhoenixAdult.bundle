@@ -34,7 +34,7 @@ def search(results, lang, siteNum, searchData):
         googleResultsURLs = []
         if '?v=jav' in req.url:
             googleResultsURLs.append(req.url)
-        googleResults = PAutils.getFromGoogleSearch('%s %s' % (splitSearchTitle[0], splitSearchTitle[1]), siteNum)
+        googleResults = PAutils.getFromSearchEngine('%s %s' % (splitSearchTitle[0], splitSearchTitle[1]), siteNum)
         for sceneURL in googleResults:
             if '?v=jav' in sceneURL and 'videoreviews' not in sceneURL:
                 englishSceneURL = sceneURL.replace('/ja/', '/en/').replace('/tw/', '/en/').replace('/cn/', '/en/')

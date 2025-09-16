@@ -2,6 +2,7 @@ import gzip
 import uuid
 
 import googlesearch
+import ddgsearch
 import fake_useragent
 import base58
 import cloudscraper
@@ -207,7 +208,7 @@ def HTTPRequest(url, method='GET', **kwargs):
     return req
 
 
-def getFromGoogleSearch(searchText, site='', **kwargs):
+def getFromSearchEngine(searchText, site='', **kwargs):
     stop = kwargs.pop('stop', 10)
     lang = kwargs.pop('lang', 'en')
 
@@ -216,21 +217,25 @@ def getFromGoogleSearch(searchText, site='', **kwargs):
         if site.startswith('www.'):
             site = site.replace('www.', '', 1)
 
-    googleResults = []
+    results = []
     searchTerm = 'site:%s %s' % (site, searchText) if site else searchText
 
     if not searchText:
-        return googleResults
+        return results
 
-    Log('Using Google Search "%s"' % searchTerm)
-
+    Log('Using Google Search "%s"' % searchText)
     try:
-        googleResults = list(googlesearch.search(searchText, site, lang=lang, sleep_interval=1))
+        results = list(googlesearch.search(searchText, site, lang=lang, sleep_interval=1))
     except:
         Log('Google Search Error')
-        pass
 
-    return googleResults
+        Log('Using Duck Duck Go Search "%s"' % searchTerm)
+        try:
+            results = list(ddgsearch.search(searchTerm, site, lang=lang, sleep_interval=1))
+        except:
+            Log('Duck Duck Go Search Error')
+
+    return results
 
 
 def Encode(text):

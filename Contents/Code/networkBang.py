@@ -9,7 +9,7 @@ def search(results, lang, siteNum, searchData):
     req = PAutils.HTTPRequest(PAsearchSites.getSearchSearchURL(siteNum) + searchData.encoded)
     searchPageElements = HTML.ElementFromString(req.text)
 
-    googleResults = PAutils.getFromGoogleSearch(searchData.title, siteNum)
+    googleResults = PAutils.getFromSearchEngine(searchData.title, siteNum)
     for sceneURL in googleResults:
         sceneURL = sceneURL.split('?')[0]
         if 'com/video/' in sceneURL and 'index.php/' not in sceneURL not in searchResults:

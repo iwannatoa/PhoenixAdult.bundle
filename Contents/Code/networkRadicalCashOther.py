@@ -51,7 +51,7 @@ def search(results, lang, siteNum, searchData):
         if result:
             results.Append(result)
 
-    googleResults = PAutils.getFromGoogleSearch(searchData.title, siteNum)
+    googleResults = PAutils.getFromSearchEngine(searchData.title, siteNum)
     for sceneURL in googleResults:
         sceneURL = sceneURL.split('?')[0].replace('dev.', '', 1)
 

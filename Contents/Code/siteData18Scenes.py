@@ -80,7 +80,7 @@ def search(results, lang, siteNum, searchData):
             req = PAutils.HTTPRequest(searchURL, headers={'Referer': 'https://www.data18.com'}, cookies={'data_user_captcha': '1'})
             searchPageElements = HTML.ElementFromString(req.text)
 
-    googleResults = PAutils.getFromGoogleSearch(searchData.title, siteNum)
+    googleResults = PAutils.getFromSearchEngine(searchData.title, siteNum)
     for sceneURL in googleResults:
         sceneURL = sceneURL.replace('/content/', '/scenes/').replace('http:', 'https:')
         if ('/scenes/' in sceneURL and '.html' not in sceneURL and sceneURL not in searchResults and sceneURL not in siteResults):

@@ -138,7 +138,7 @@ def search(results, lang, siteNum, searchData):
                     else:
                         results.Append(MetadataSearchResult(id='%s|%d|%s' % (curID, siteNum, releaseDate), name='%s [%s] %s' % (titleNoFormatting, resultType, displayDate), score=score, lang=lang))
 
-        googleResults = PAutils.getFromGoogleSearch(searchData.title, siteNum)
+        googleResults = PAutils.getFromSearchEngine(searchData.title, siteNum)
         for movieURL in googleResults:
             cleanURL = movieURL.rsplit('/', 1)[0]
             if ('movies' in movieURL and '.html' not in movieURL and cleanURL not in searchResults and cleanURL not in siteResults):

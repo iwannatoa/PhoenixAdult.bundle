@@ -136,7 +136,7 @@ def getFanArt(site, art, actors, actorName, title, match, siteName):
     if getNoMatchID(title) == 9999:
         try:
             if match is 0 or match is 2:
-                urls = PAutils.getFromGoogleSearch(actorName + ' ' + title, site, stop=2)
+                urls = PAutils.getFromSearchEngine(actorName + ' ' + title, site, stop=2)
                 if overrideSettings != 9999:
                     urls = [None] * 1
                     urls[0] = ['test.com']

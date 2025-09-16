@@ -54,7 +54,7 @@ def search(results, lang, siteNum, searchData):
 
         results.Append(MetadataSearchResult(id='%s|%d|%s|%s|%s|%s' % (curID, siteNum, releaseDate, PAutils.Encode(titleNoFormatting), actors, img), name='%s [%s]' % (titleNoFormatting, PAsearchSites.getSearchSiteName(siteNum)), score=score, lang=lang))
 
-    googleResults = PAutils.getFromGoogleSearch(searchData.title, siteNum)
+    googleResults = PAutils.getFromSearchEngine(searchData.title, siteNum)
     for sceneURL in googleResults:
         if urlID in sceneURL and '?' not in sceneURL and sceneURL not in searchResults and sceneURL not in searchPageResults:
             searchResults.append(sceneURL)

@@ -12,7 +12,7 @@ def search(results, lang, siteNum, searchData):
         sceneURL = PAsearchSites.getSearchBaseURL(siteNum) + '/t1/refstat.php?lid=%s&sid=584' % sceneID
         searchResults.append(sceneURL)
 
-    googleResults = PAutils.getFromGoogleSearch(searchData.title, siteNum)
+    googleResults = PAutils.getFromSearchEngine(searchData.title, siteNum)
     for result in googleResults:
         match = re.search(r'((?<=\dpp\/)|(?<=\dbbwd\/)|(?<=\dhsp\/)|(?<=\dbbbj\/)|(?<=\dpatp\/)|(?<=\dftf\/)|(?<=\dbgb\/))\d+(?=\/)', result)
         if match:

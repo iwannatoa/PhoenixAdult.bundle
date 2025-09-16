@@ -121,7 +121,7 @@ def search(results, lang, siteNum, searchData):
             req = PAutils.HTTPRequest(searchURL, headers={'Referer': 'https://www.data18.com'}, cookies={'data_user_captcha': '1'})
             searchPageElements = HTML.ElementFromString(req.text)
 
-    googleResults = PAutils.getFromGoogleSearch(searchData.title, siteNum)
+    googleResults = PAutils.getFromSearchEngine(searchData.title, siteNum)
     for movieURL in googleResults:
         movieURL = movieURL.split('-')[0].replace('http:', 'https:')
         if ('/movies/' in movieURL and '.html' not in movieURL and movieURL not in searchResults and movieURL not in siteResults):
