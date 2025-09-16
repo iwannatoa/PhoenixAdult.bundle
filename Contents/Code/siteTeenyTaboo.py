@@ -11,7 +11,7 @@ def search(results, lang, siteNum, searchData):
         searchData.title = searchData.title.replace(sceneID, '', 1).strip()
         searchResults.append(PAsearchSites.getSearchSearchURL(siteNum) + sceneID)
 
-    googleResults = PAutils.getFromGoogleSearch(searchData.title, siteNum)
+    googleResults = PAutils.getFromSearchEngine(searchData.title, siteNum)
     for sceneURL in googleResults:
         sceneURL = sceneURL.rsplit('/', 1)[0]
         if '/videos/' in sceneURL and sceneURL not in searchResults:

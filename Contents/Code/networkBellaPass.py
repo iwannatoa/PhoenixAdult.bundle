@@ -19,7 +19,7 @@ def search(results, lang, siteNum, searchData):
                 sceneURL = 'http:' + sceneURL
             directResults.append(sceneURL)
 
-    googleResults = PAutils.getFromGoogleSearch(searchData.title, siteNum)
+    googleResults = PAutils.getFromSearchEngine(searchData.title, siteNum)
     for sceneURL in googleResults:
         if '/trailers/' in sceneURL and sceneURL not in searchResults:
             directResults.append(sceneURL)

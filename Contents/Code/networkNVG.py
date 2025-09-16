@@ -14,7 +14,7 @@ def search(results, lang, siteNum, searchData):
     result = getPageData(siteNum, sceneID)
 
     searchResults = []
-    googleResults = PAutils.getFromGoogleSearch(searchData.title, siteNum)
+    googleResults = PAutils.getFromSearchEngine(searchData.title, siteNum)
     for sceneURL in googleResults:
         if '/tag/' not in sceneURL and '/category/' not in sceneURL:
             searchResults.append(sceneURL)

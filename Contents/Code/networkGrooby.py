@@ -5,7 +5,7 @@ import PAsearchSites
 def search(results, lang, siteNum, searchData):
     searchResults = []
 
-    googleResults = PAutils.getFromGoogleSearch(searchData.title, siteNum)
+    googleResults = PAutils.getFromSearchEngine(searchData.title, siteNum)
     for sceneURL in googleResults:
         sceneURL = sceneURL.split('?', 1)[0]
         if '/trailers/' in sceneURL and sceneURL not in searchResults:

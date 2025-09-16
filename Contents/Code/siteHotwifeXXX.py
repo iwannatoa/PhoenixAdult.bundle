@@ -6,7 +6,7 @@ def search(results, lang, siteNum, searchData):
     searchData.encoded = searchData.title.replace(' ', '-')
 
     searchResults = []
-    googleResults = PAutils.getFromGoogleSearch(searchData.title, siteNum)
+    googleResults = PAutils.getFromSearchEngine(searchData.title, siteNum)
     for sceneURL in googleResults:
         if ('/updates/' in sceneURL and '/tour_hwxxx/' in sceneURL) and sceneURL not in searchResults:
             searchResults.append(sceneURL)

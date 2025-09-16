@@ -15,7 +15,7 @@ def search(results, lang, siteNum, searchData):
         searchResults.append(PAsearchSites.getSearchSearchURL(siteNum) + sceneID)
 
     if searchData.title:
-        googleResults = PAutils.getFromGoogleSearch(searchData.title, siteNum)
+        googleResults = PAutils.getFromSearchEngine(searchData.title, siteNum)
         for sceneURL in googleResults:
             if '/video/' in sceneURL and sceneURL not in searchResults:
                 searchResults.append(sceneURL)

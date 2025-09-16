@@ -18,7 +18,7 @@ def search(results, lang, siteNum, searchData):
                 if '/nude_girl/' not in sceneURL and '/shoots/' not in sceneURL and '/fetish/' not in sceneURL and '/updates/' not in sceneURL and sceneURL not in searchResults:
                     searchResults.append(sceneURL)
 
-    googleResults = PAutils.getFromGoogleSearch(searchData.title, siteNum)
+    googleResults = PAutils.getFromSearchEngine(searchData.title, siteNum)
     for sceneURL in googleResults:
         sceneURL = sceneURL.replace('/cn/', '/').replace('/de/', '/').replace('/jp/', '/').replace('/ja/', '/').replace('/en/', '/')
         if '/nude_girl/' not in sceneURL and '/shoots/' not in sceneURL and '/fetish/' not in sceneURL and '/updates/' not in sceneURL and sceneURL not in searchResults:

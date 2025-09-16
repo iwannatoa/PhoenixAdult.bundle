@@ -5,7 +5,7 @@ import PAutils
 def search(results, lang, siteNum, searchData):
     searchResults = []
 
-    googleResults = PAutils.getFromGoogleSearch(searchData.title, siteNum, lang='enes')
+    googleResults = PAutils.getFromSearchEngine(searchData.title, siteNum, lang='enes')
     for sceneURL in googleResults:
         sceneURL = sceneURL.replace('index.php/', '')
         sceneURL = sceneURL.replace('es/', '')

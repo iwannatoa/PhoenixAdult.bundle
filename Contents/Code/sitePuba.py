@@ -14,7 +14,7 @@ def search(results, lang, siteNum, searchData):
         directURL = PAsearchSites.getSearchSearchURL(siteNum) + 'show_video.php?galid=' + sceneID
         searchResults.append(directURL)
 
-    googleResults = PAutils.getFromGoogleSearch(searchData.title, siteNum)
+    googleResults = PAutils.getFromSearchEngine(searchData.title, siteNum)
     for sceneURL in googleResults:
         if ('show_video' in sceneURL and 'index' not in sceneURL) and sceneURL not in searchResults:
             searchResults.append(sceneURL)

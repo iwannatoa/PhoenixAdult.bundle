@@ -10,7 +10,7 @@ def search(results, lang, siteNum, searchData):
     except:
         modelID = searchData.title.split(' ', 1)[0]
 
-    googleResults = PAutils.getFromGoogleSearch(searchData.title, siteNum)
+    googleResults = PAutils.getFromSearchEngine(searchData.title, siteNum)
     for sceneURL in googleResults:
         if '/videos/' in sceneURL and sceneURL not in searchResults:
             searchResults.append(sceneURL)

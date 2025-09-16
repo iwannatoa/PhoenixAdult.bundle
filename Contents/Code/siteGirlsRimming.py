@@ -6,7 +6,7 @@ def search(results, lang, siteNum, searchData):
     directURL = '%s%s.html' % (PAsearchSites.getSearchSearchURL(siteNum), searchData.title.lower().replace(' ', '-'))
     searchResults = [directURL]
 
-    googleResults = PAutils.getFromGoogleSearch(searchData.title, siteNum)
+    googleResults = PAutils.getFromSearchEngine(searchData.title, siteNum)
     for sceneURL in googleResults:
         sceneURL = sceneURL.lower()
         if ('/trailers/' in sceneURL) and sceneURL not in searchResults:
@@ -79,7 +79,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, 
         actorPageURL = '%s/tour/models/%s.html' % (PAsearchSites.getSearchBaseURL(siteNum), actorName.lower().replace(' ', '-'))
         data = PAutils.HTTPRequest(actorPageURL)
         if not data or data == 'Page not found':
-            googleResults = PAutils.getFromGoogleSearch(actorName, siteNum)
+            googleResults = PAutils.getFromSearchEngine(actorName, siteNum)
             for actorURL in googleResults:
                 actorURL = actorURL.lower()
                 if ('/models/' in actorURL):

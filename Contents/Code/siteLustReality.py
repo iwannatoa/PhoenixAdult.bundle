@@ -6,7 +6,7 @@ def search(results, lang, siteNum, searchData):
     directURL = PAsearchSites.getSearchSearchURL(siteNum) + searchData.title.replace(' ', '-').lower()
 
     searchResults = [directURL]
-    googleResults = PAutils.getFromGoogleSearch(searchData.title, siteNum)
+    googleResults = PAutils.getFromSearchEngine(searchData.title, siteNum)
     for sceneURL in googleResults:
         if ('/scene/' in sceneURL and sceneURL not in searchResults):
             searchResults.append(sceneURL)
