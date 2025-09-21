@@ -192,20 +192,46 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, 
     # Tagline and Collection(s)
     try:
         try:
-            tagline = detailsPageElements.xpath('//p[contains(., "Site:")]//following-sibling::a[@class="bold"]')[0].text_content().strip()
+            siteName = detailsPageElements.xpath('//p[contains(., "Site:")]//following-sibling::a[@class="bold"]')[0].text_content().strip()
+        except:
+            siteName = None
+
+        try:
+            subSite = detailsPageElements.xpath('//b[contains(., "Network")]//following-sibling::a')[0].text_content().strip()
         except:
             try:
-                tagline = detailsPageElements.xpath('//b[contains(., "Network")]//following-sibling::a')[0].text_content().strip()
+                subSite = detailsPageElements.xpath('//b[contains(., "Network")]//following-sibling::text()')[2].split('|')[-1].strip()
+                if subSite not in ['Brazzers Exxtra', 'Brazzers Live']:
+                    subSite = None
             except:
-                try:
-                    tagline = detailsPageElements.xpath('//p[contains(., "Webserie:")]/a')[0].text_content().strip()
-                except:
-                    tagline = detailsPageElements.xpath('//p[contains(., "Movie:")]/a')[0].text_content().strip()
-                    movieCollections.addCollection(metadata.studio)
+                subSite = None
+
+        try:
+            serieName = detailsPageElements.xpath('//p[contains(., "Webserie:") or contains(., "Miniserie")/a')[0].text_content().strip()
+        except:
+            serieName = None
+
+        try:
+            movieName = detailsPageElements.xpath('//p[contains(., "Movie:")]/a')[0].text_content().strip()
+        except:
+            movieName = None
 
         if len(metadata_id) > 3:
             tagline = detailsPageElements.xpath('//p[contains(., "Serie")]//a[@title]')[0].text_content().strip()
             metadata.title = ("%s [Scene %s]" % (metadata_id[3], metadata_id[4]))
+        elif siteName:
+            tagline = siteName
+        elif subSite:
+            tagline = subSite
+        elif serieName:
+            tagline = serieName
+        elif movieName:
+            tagline = movieName
+        else:
+            tagline = ''
+
+        tagline = PAutils.parseTitle(tagline, siteNum)
+
         if not metadata.studio:
             metadata.studio = tagline
         elif metadata.studio.replace(' ', '').lower() != tagline.replace(' ', '').lower():
@@ -275,7 +301,8 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, 
 
             for xpath in xpaths:
                 for img in photoPageElements.xpath(xpath):
-                    art.append(img.replace('/th8', '').replace('-th8', ''))
+                    if '/th8_2' not in img:
+                        art.append(img.replace('/th8', '').replace('-th8', ''))
     except:
         pass
 
