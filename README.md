@@ -64,6 +64,18 @@ Real world examples:
 - `MomsTeachSex - 314082` (taken from the URL [https://momsteachsex.com/tube/watch/**314082**](https://momsteachsex.com/tube/watch/314082))
 - `Babes - 3075191 - Give In to Desire` (taken from the URL [https://www.babes.com/scene/**3075191**/1](https://www.babes.com/scene/3075191/1))
 
+Locally Stored Actor Images
+-----------
+The agent will try to find actor images automatically. In the case that the agent cannot you can provide an image in the <Plex_Media_Folder>/Plug-ins/PhoenixAdult.bundle/Contents/Resources folder for the agent to use. Additionaly there is a [preference](./docs/preferences.md#actor-image-caching) available to enable the caching of actor images found when matching metadata.
+
+#### Here is the required naming structure:
+- `actor`.`actor-name`_`gender`.`[ext]` - Gender is optional and only [valid image extensions](https://linkthe.net/?https://support.plex.tv/articles/200220677-local-media-assets-movies/) are supported
+
+Real world examples:
+- `actor.angela-white_female.png`
+- `actor.kieran-lee_male.png`
+- `actor.kieran-lee.jpg`
+
 Installation
 ------------
 How to find the plug-in folder location:

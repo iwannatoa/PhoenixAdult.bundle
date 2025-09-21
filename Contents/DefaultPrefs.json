@@ -12,6 +12,18 @@
         "default": "false"
     },
     {
+        "id": "actor_cache_enable",
+        "label": "Enable Actor Image Caching",
+        "type": "bool",
+        "default": "false"
+    },
+    {
+        "id": "actor_cache_replace_enable",
+        "label": "Enable Replacement of Cached Actor Images",
+        "type": "bool",
+        "default": "false"
+    },
+    {
         "id": "validate_image_keys",
         "label": "Remove Obsolete Images",
         "type": "bool",
