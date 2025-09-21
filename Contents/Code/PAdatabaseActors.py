@@ -150,6 +150,7 @@ ActorsReplace = {
     'Jmac': ['J Mac', 'JMac'],
     'Johnny Bravo': ['Jhonny Bravo'],
     'Johnny Love': ['Johnny The Kid', 'Myles Long'],
+    'Johnny Savage': ['Greek Savage'],
     'Jojo Kiss': ['Jo Jo Kiss'],
     'Jonas Kaizer': ['Chris Сatharsis'],
     'Jordan Ashe': ['Jordan Ash', 'Jordan Ashley', 'Jorden Ashley'],
