@@ -112,27 +112,41 @@ class PhoenixActors:
                 else:
                     displayActorName = actorName.replace('\xc2\xa0', '').strip()
                     req = None
-                    if actorPhoto:
+
+                    if not Prefs['actor_cache_replace_enable']:
+                        (localActorPhoto, gender) = getFromLocalStorage(displayActorName, '', metadata) if Prefs['actor_cache_enable'] else ('', '')
+                    else:
+                        localActorPhoto = ''
+
+                    if localActorPhoto:
+                        actorPhoto = localActorPhoto
+                        if gender:
+                            actorLink['gender'] = gender
+                    elif actorPhoto:
                         req = PAutils.HTTPRequest(actorPhoto, 'HEAD', bypass=False)
 
-                    if not req or not req.ok:
+                        if req.ok and Prefs['actor_cache_enable']:
+                            (actorPhoto, gender) = cacheActorPhoto(actorPhoto, displayActorName, actorLink['gender'], bypass=False)
+
+                    if (not req or not req.ok) and not localActorPhoto:
                         (actorPhoto, gender) = actorDBfinder(displayActorName, metadata)
-                        if actorLink['gender']:
+                        if not actorLink['gender']:
                             gender = actorLink['gender']
                         else:
                             actorLink['gender'] = gender
-                        Log('Gender: %s' % gender)
-                        if Prefs['gender_enable']:
-                            if gender == 'male':
-                                continue
+
+                        if actorPhoto and Prefs['actor_cache_enable']:
+                            (actorPhoto, gender) = cacheActorPhoto(actorPhoto, displayActorName, actorLink['gender'], bypass=False)
+                    elif actorLink['gender']:
+                        gender = actorLink['gender']
                     elif Prefs['gender_enable']:
-                        if actorLink['gender']:
-                            gender = actorLink['gender']
-                        else:
-                            gender = genderCheck(actorName)
-                            actorLink['gender'] = gender
+                        gender = genderCheck(actorName)
+                        actorLink['gender'] = gender
+
+                    if Prefs['gender_enable']:
                         Log('Gender: %s' % gender)
-                        if gender == 'male':
+                        if actorLink['gender'] == 'male':
+                            Log('Actor: %s %s' % (displayActorName, actorPhoto))
                             continue
 
                     if actorPhoto:
@@ -306,6 +320,9 @@ def actorDBfinder(actorName, metadata):
     for sourceName in searchOrder:
         task = searchResults[sourceName]
 
+        if sourceName == 'Local Storage' and Prefs['actor_cache_replace_enable']:
+            continue
+
         url = None
         try:
             (url, gender) = task(actorName, actorEncoded, metadata)
@@ -429,7 +446,7 @@ def getFromIndexxx(actorName, actorEncoded, metadata):
         img = actorPage.xpath('//img[@class="model-img"]/@src')
         if img:
             actorPhotoURL = img[0]
-            actorPhotoURL = cacheActorPhoto(actorPhotoURL, actorName, headers={'Referer': actorPageURL})
+            (actorPhotoURL, gender) = cacheActorPhoto(actorPhotoURL, actorName, 'female', headers={'Referer': actorPageURL})
 
     return actorPhotoURL, 'female'
 
@@ -529,7 +546,10 @@ def getFromIAFD(actorName, actorEncoded, metadata):
             actorPageURL = actor.xpath('./@href')[0]
 
     if actorPageURL:
-        req = PAutils.HTTPRequest('http://www.iafd.com' + actorPageURL)
+        if not actorPageURL.startswith('http'):
+            actorPageURL = 'http://www.iafd.com' + actorPageURL
+
+        req = PAutils.HTTPRequest(actorPageURL)
         actorPage = HTML.ElementFromString(req.text)
         img = actorPage.xpath('//div[@id="headshot"]//img/@src')
         if img and 'nophoto' not in img[0] and 'th_iafd_ad' not in img[0]:
@@ -622,7 +642,7 @@ def getFromLocalStorage(actorName, actorEncoded, metadata):
     actorPhotoURL = ''
 
     actorsResourcesPath = os.path.join(Core.bundle_path, 'Contents', 'Resources')
-    filename = filename = 'actor.' + actorName.replace(' ', '-').lower()
+    filename = 'actor.' + actorName.replace(' ', '-').lower()
     for root, dirs, files in os.walk(actorsResourcesPath):
         for file in files:
             if file.startswith(filename):
@@ -634,12 +654,17 @@ def getFromLocalStorage(actorName, actorEncoded, metadata):
     if localPhoto:
         actorPhotoURL = localPhoto
 
-    return actorPhotoURL, ''
+    gender = filename.split('_')[-1].split('.')[0] if '_' in filename else ''
+
+    return actorPhotoURL, gender
 
 
 # fetches a copy of an actor image and stores it locally, then returns a URL from which Plex can fetch it later
-def cacheActorPhoto(url, actorName, **kwargs):
+def cacheActorPhoto(url, actorName, gender, **kwargs):
     localPhoto = ''
+    genderCheck = gender if gender else ''
+    baseFileName = 'actor.%s' % actorName.replace(' ', '-').lower()
+    validExtensions = ['.jpg', '.png', '.webp', '.tbn', '.jfif', '.jpe', '.jpeg']
 
     req = PAutils.HTTPRequest(url, **kwargs)
 
@@ -647,9 +672,28 @@ def cacheActorPhoto(url, actorName, **kwargs):
     if not os.path.exists(actorsResourcesPath):
         os.makedirs(actorsResourcesPath)
 
-    extension = mimetypes.guess_extension(req.headers['Content-Type'])
-    if extension:
-        filename = 'actor.' + actorName.replace(' ', '-').lower() + extension
+    # Check if file already exists
+    if not Prefs['actor_cache_replace_enable']:
+        for root, dirs, files in os.walk(actorsResourcesPath):
+            for file in files:
+                if file.startswith(baseFileName):
+                    genderCheck = file.split('_')[-1].split('.')[0] if '_' in file else genderCheck
+                    return Resource.ExternalPath(file), genderCheck
+
+    try:
+        extension = mimetypes.guess_extension(req.headers['Content-Type'], strict=False).replace('jpe', 'jpg')
+    except:
+        extension = '.%s' % url.split('.')[-1]
+
+    if extension and extension in validExtensions:
+        if not gender and Prefs['gender_enable']:
+            genderCheck = genderCheck(actorName)
+
+        if gender:
+            filename = '%s_%s%s' % (baseFileName, gender, extension)
+        else:
+            filename = '%s%s' % (baseFileName, extension)
+
         filepath = os.path.join(actorsResourcesPath, filename)
 
         Log('Saving actor image as: "%s"' % filename)
@@ -660,4 +704,4 @@ def cacheActorPhoto(url, actorName, **kwargs):
         if not localPhoto:
             localPhoto = ''
 
-    return localPhoto, ''
+    return localPhoto, genderCheck

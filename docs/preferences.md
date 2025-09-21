@@ -3,6 +3,12 @@
 ## Male Actor Filter
  - Enable/Disable the adding of Male Actors
 
+## Actor Image Caching
+ - Enable/Disable the saving of Actor Images locally, if found in Metdata Search (speeds up refreshes and searches significantly)
+
+## Replace Cached Actor Images
+ - Enable/Disable the replacement of existing Actor Images on next Metadata Search/Refresh
+
 ## Remove Obsolete Images
  - Enable/Disable removal of images no longer found in scrape from metadata when running the "Refresh Metadata" Operation
 
