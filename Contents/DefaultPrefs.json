@@ -104,6 +104,18 @@
         "default": "Local Storage, Freeones, IAFD, Indexxx, AdultDVDEmpire, Boobpedia, Babes and Stars, Babepedia, JAVBus, JAVDatabase"
     },
     {
+        "id": "blacklist_enable",
+        "label": "Enable Restoring Words in Filname Deleted By Plex Scanners",
+        "type": "bool",
+        "default": "false"
+    },
+    {
+        "id": "blacklist_list",
+        "label": "List of Words Deleted from Filename to be Used in Searches",
+        "type": "text",
+        "default": "web, cam, internal, xxx"
+    },
+    {
         "id": "proxy_enable",
         "label": "Enable Proxy",
         "type": "bool",

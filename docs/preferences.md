@@ -60,6 +60,14 @@
  - Allows for ranking perferred actor metadata source
  - Default: Local Storage, Freeones, IAFD, Indexxx, AdultDVDEmpire, Boobpedia, Babes and Stars, Babepedia, JavBus, JAVDatabase
 
+## Enable Restoring Words Deleted By Plex Scanners
+ - Enable/Disable a list of words to be restored to the search title
+ - Allows automatic re-insertion of a list of words that may have been deleted by the media scanner to be used in metadata searches
+
+## List of Deleted Words to Restore
+ - List of words to restore to metadata searches
+ - Default: web, cam, internal, xxx
+
 ## Proxy Preferences
 
  * ### Proxy Enable
