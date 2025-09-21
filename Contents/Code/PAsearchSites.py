@@ -51,7 +51,7 @@ def getSearchSettings(mediaTitle, filename):
     plexScannerBlacklist = map(str.strip, map(str.lower, Prefs['blacklist_list'].split(',')))
 
     if filename and Prefs['blacklist_enable']:
-        cleanFilename = re.sub('\W', ' ', filename.rsplit('/', 1)[-1].lower()).strip().split()
+        cleanFilename = re.sub(r'\W', ' ', filename.rsplit('/', 1)[-1].lower()).strip().split()
         splitMediaTitle = mediaTitle.split()
 
         for word in plexScannerBlacklist:

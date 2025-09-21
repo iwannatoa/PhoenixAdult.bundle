@@ -99,7 +99,7 @@ class PhoenixActors:
                         if actorLink['gender']:
                             gender = actorLink['gender']
                         else:
-                            actorLink['gender'] = gender
+                            actorLink.update({'gender': gender})
                         Log('Actor: %s %s' % (displayActorName, actorPhoto))
                         Log('Gender: %s' % gender)
                         if Prefs['gender_enable']:
@@ -111,12 +111,11 @@ class PhoenixActors:
                         role.photo = actorPhoto
                 else:
                     displayActorName = actorName.replace('\xc2\xa0', '').strip()
+                    localActorPhoto = ''
                     req = None
 
                     if not Prefs['actor_cache_replace_enable']:
                         (localActorPhoto, gender) = getFromLocalStorage(displayActorName, '', metadata) if Prefs['actor_cache_enable'] else ('', '')
-                    else:
-                        localActorPhoto = ''
 
                     if localActorPhoto:
                         actorPhoto = localActorPhoto
@@ -131,9 +130,9 @@ class PhoenixActors:
                     if (not req or not req.ok) and not localActorPhoto:
                         (actorPhoto, gender) = actorDBfinder(displayActorName, metadata)
                         if not actorLink['gender']:
-                            gender = actorLink['gender']
+                            actorLink.update({'gender': gender})
                         else:
-                            actorLink['gender'] = gender
+                            gender = actorLink['gender']
 
                         if actorPhoto and Prefs['actor_cache_enable']:
                             (actorPhoto, gender) = cacheActorPhoto(actorPhoto, displayActorName, actorLink['gender'], bypass=False)
@@ -141,7 +140,7 @@ class PhoenixActors:
                         gender = actorLink['gender']
                     elif Prefs['gender_enable']:
                         gender = genderCheck(actorName)
-                        actorLink['gender'] = gender
+                        actorLink.update({'gender': gender})
 
                     if Prefs['gender_enable']:
                         Log('Gender: %s' % gender)
@@ -298,6 +297,7 @@ def actorDBfinder(actorName, metadata):
     actorEncoded = urllib.quote(re.sub(r'(?<=\w)\.\s(?=\w\.)', '', actorName).replace('.', ''))
 
     actorPhotoURL = ''
+    gender = ''
     databaseName = ''
 
     searchResults = {
@@ -475,6 +475,7 @@ def getFromAdultDVDEmpire(actorName, actorEncoded, metadata):
             actorPhotoURL = img[0]
 
     return actorPhotoURL, ''
+
 
 
 def getFromBoobpedia(actorName, actorEncoded, metadata):
@@ -662,7 +663,7 @@ def getFromLocalStorage(actorName, actorEncoded, metadata):
 # fetches a copy of an actor image and stores it locally, then returns a URL from which Plex can fetch it later
 def cacheActorPhoto(url, actorName, gender, **kwargs):
     localPhoto = ''
-    genderCheck = gender if gender else ''
+    checkGender = gender if gender else ''
     baseFileName = 'actor.%s' % actorName.replace(' ', '-').lower()
     validExtensions = ['.jpg', '.png', '.webp', '.tbn', '.jfif', '.jpe', '.jpeg']
 
@@ -677,8 +678,8 @@ def cacheActorPhoto(url, actorName, gender, **kwargs):
         for root, dirs, files in os.walk(actorsResourcesPath):
             for file in files:
                 if baseFileName == file.rsplit('.', 1)[0].split('_')[0]:
-                    genderCheck = file.split('_')[-1].split('.')[0] if '_' in file else genderCheck
-                    return Resource.ExternalPath(file), genderCheck
+                    checkGender = file.split('_')[-1].split('.')[0] if '_' in file else checkGender
+                    return Resource.ExternalPath(file), checkGender
 
     try:
         extension = mimetypes.guess_extension(req.headers['Content-Type'], strict=False).replace('jpe', 'jpg')
@@ -687,7 +688,7 @@ def cacheActorPhoto(url, actorName, gender, **kwargs):
 
     if extension and extension in validExtensions:
         if not gender and Prefs['gender_enable']:
-            genderCheck = genderCheck(actorName)
+            checkGender = genderCheck(actorName)
 
         if gender:
             filename = '%s_%s%s' % (baseFileName, gender, extension)
@@ -704,4 +705,4 @@ def cacheActorPhoto(url, actorName, gender, **kwargs):
         if not localPhoto:
             localPhoto = ''
 
-    return localPhoto, genderCheck
+    return localPhoto, checkGender
