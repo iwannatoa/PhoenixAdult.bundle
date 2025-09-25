@@ -722,14 +722,14 @@ def cacheActorPhoto(url, actorName, gender, **kwargs):
     try:
         extension = mimetypes.guess_extension(req.headers['Content-Type'], strict=False).replace('jpe', 'jpg')
     except:
-        extension = '.%s' % url.split('.')[-1]
+        extension = '.%s' % url.split('.')[-1].split('?')[0]
 
     if extension and extension in validExtensions:
         if not checkGender and Prefs['gender_enable']:
             checkGender = genderCheck(actorName)
 
         if checkGender:
-            filename = '%s_%s%s' % (baseFileName, gender, extension)
+            filename = '%s_%s%s' % (baseFileName, checkGender, extension)
         else:
             filename = '%s%s' % (baseFileName, extension)
 
