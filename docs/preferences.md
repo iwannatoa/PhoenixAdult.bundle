@@ -9,6 +9,9 @@
 ## Replace Cached Actor Images
  - Enable/Disable the replacement of existing Actor Images on next Metadata Search/Refresh
 
+## Generic Actor Images
+ - Enable/Disable the use of a generic male/female silhouette if actor gender is identified, but image is not
+
 ## Remove Obsolete Images
  - Enable/Disable removal of images no longer found in scrape from metadata when running the "Refresh Metadata" Operation
 

@@ -24,6 +24,12 @@
         "default": "false"
     },
     {
+        "id": "generic_image_enable",
+        "label": "Enable display of a generic Actor Image when only Gender is Found",
+        "type": "bool",
+        "default": "false"
+    },
+    {
         "id": "validate_image_keys",
         "label": "Remove Obsolete Images",
         "type": "bool",
