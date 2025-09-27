@@ -95,7 +95,7 @@ class PhoenixActors:
                         actorName = newActor.strip()
                         displayActorName = actorName.replace('\xc2\xa0', '').strip()
 
-                        (actorPhoto, gender) = actorDBfinder(displayActorName, metadata)
+                        (actorPhoto, gender) = actorDBfinder(displayActorName, metadata, 'actor')
                         if actorLink['gender']:
                             gender = actorLink['gender']
                         else:
@@ -115,7 +115,7 @@ class PhoenixActors:
                     req = None
 
                     if not Prefs['actor_cache_replace_enable']:
-                        (localActorPhoto, gender) = getFromLocalStorage(displayActorName, '', metadata) if Prefs['actor_cache_enable'] else ('', '')
+                        (localActorPhoto, gender) = getFromLocalStorage(displayActorName, 'actor', metadata) if Prefs['actor_cache_enable'] else ('', '')
 
                     if localActorPhoto:
                         actorPhoto = localActorPhoto
@@ -125,17 +125,17 @@ class PhoenixActors:
                         req = PAutils.HTTPRequest(actorPhoto, 'HEAD', bypass=False)
 
                         if req.ok and Prefs['actor_cache_enable']:
-                            (actorPhoto, gender) = cacheActorPhoto(actorPhoto, displayActorName, actorLink['gender'], bypass=False)
+                            (actorPhoto, gender) = cacheActorPhoto(actorPhoto, displayActorName, actorLink['gender'], 'actor', bypass=False)
 
                     if (not req or not req.ok) and not localActorPhoto:
-                        (actorPhoto, gender) = actorDBfinder(displayActorName, metadata)
+                        (actorPhoto, gender) = actorDBfinder(displayActorName, metadata, 'actor')
                         if not actorLink['gender']:
                             actorLink.update({'gender': gender})
                         else:
                             gender = actorLink['gender']
 
                         if actorPhoto and Prefs['actor_cache_enable']:
-                            (actorPhoto, gender) = cacheActorPhoto(actorPhoto, displayActorName, actorLink['gender'], bypass=False)
+                            (actorPhoto, gender) = cacheActorPhoto(actorPhoto, displayActorName, actorLink['gender'], 'actor', bypass=False)
                     elif actorLink['gender']:
                         gender = actorLink['gender']
                     elif Prefs['gender_enable']:
@@ -147,6 +147,9 @@ class PhoenixActors:
                         if actorLink['gender'] == 'male':
                             Log('Actor: %s %s' % (displayActorName, actorPhoto))
                             continue
+                    elif Prefs['gender_enable']:
+                        gender = genderCheck(actorName)
+                        actorLink.update({'gender': gender})
 
                     if actorPhoto:
                         actorPhoto = PAutils.getClearURL(actorPhoto)
@@ -201,7 +204,7 @@ class PhoenixActors:
                         directorName = newDirector.strip()
                         displayDirectorName = directorName.replace('\xc2\xa0', '').strip()
 
-                        (directorPhoto, gender) = actorDBfinder(displayDirectorName, metadata)
+                        (directorPhoto, gender) = actorDBfinder(displayDirectorName, metadata, 'director')
 
                         Log('Director: %s %s' % (displayDirectorName, directorPhoto))
                         director = metadata.directors.new()
@@ -209,12 +212,25 @@ class PhoenixActors:
                         director.photo = directorPhoto
                 else:
                     displayDirectorName = directorName.replace('\xc2\xa0', '').strip()
+                    localDirectorPhoto = ''
                     req = None
-                    if directorPhoto:
+
+                    if not Prefs['actor_cache_replace_enable']:
+                        (localDirectorPhoto, gender) = getFromLocalStorage(displayDirectorName, 'director', metadata) if Prefs['actor_cache_enable'] else ('', '')
+
+                    if localDirectorPhoto:
+                        directorPhoto = localDirectorPhoto
+                    elif directorPhoto:
                         req = PAutils.HTTPRequest(directorPhoto, 'HEAD', bypass=False)
 
+                        if req.ok and Prefs['actor_cache_enable']:
+                            (directorPhoto, gender) = cacheActorPhoto(directorPhoto, displayDirectorName, '', 'director', bypass=False)
+
                     if not req or not req.ok:
-                        (directorPhoto, gender) = actorDBfinder(displayDirectorName, metadata)
+                        (directorPhoto, gender) = actorDBfinder(displayDirectorName, metadata, 'director')
+
+                        if directorPhoto and Prefs['actor_cache_enable']:
+                            (directorPhoto, gender) = cacheActorPhoto(directorPhoto, displayDirectorName, '', 'director', bypass=False)
 
                     if directorPhoto:
                         directorPhoto = PAutils.getClearURL(directorPhoto)
@@ -269,7 +285,7 @@ class PhoenixActors:
                         producerName = newProducer.strip()
                         displayProducerName = producerName.replace('\xc2\xa0', '').strip()
 
-                        (producerPhoto, gender) = actorDBfinder(displayProducerName, metadata)
+                        (producerPhoto, gender) = actorDBfinder(displayProducerName, metadata, 'producer')
                         Log('Producer: %s %s' % (displayProducerName, producerPhoto))
 
                         producer = metadata.producers.new()
@@ -277,12 +293,25 @@ class PhoenixActors:
                         producer.photo = producerPhoto
                 else:
                     displayProducerName = producerName.replace('\xc2\xa0', '').strip()
+                    localProducerPhoto = ''
                     req = None
-                    if producerPhoto:
+
+                    if not Prefs['actor_cache_replace_enable']:
+                        (localProducerPhoto, gender) = getFromLocalStorage(displayProducerName, 'producer', metadata) if Prefs['actor_cache_enable'] else ('', '')
+
+                    if localProducerPhoto:
+                        producerPhoto = localProducerPhoto
+                    elif producerPhoto:
                         req = PAutils.HTTPRequest(producerPhoto, 'HEAD', bypass=False)
 
+                        if req.ok and Prefs['actor_cache_enable']:
+                            (producerPhoto, gender) = cacheActorPhoto(producerPhoto, displayProducerName, '', 'producer', bypass=False)
+
                     if not req or not req.ok:
-                        (producerPhoto, gender) = actorDBfinder(displayProducerName, metadata)
+                        (producerPhoto, gender) = actorDBfinder(displayProducerName, metadata, 'producer')
+
+                        if producerPhoto and Prefs['actor_cache_enable']:
+                            (producerPhoto, gender) = cacheActorPhoto(producerPhoto, displayProducerName, '', 'producer', bypass=False)
 
                     if producerPhoto:
                         producerPhoto = PAutils.getClearURL(producerPhoto)
@@ -293,7 +322,7 @@ class PhoenixActors:
                     producer.photo = producerPhoto
 
 
-def actorDBfinder(actorName, metadata):
+def actorDBfinder(actorName, metadata, type):
     actorEncoded = urllib.quote(re.sub(r'(?<=\w)\.\s(?=\w\.)', '', actorName).replace('.', ''))
 
     actorPhotoURL = ''
@@ -323,6 +352,11 @@ def actorDBfinder(actorName, metadata):
         if sourceName == 'Local Storage' and Prefs['actor_cache_replace_enable']:
             continue
 
+        if sourceName == 'Local Storage':
+            actorEncoded = type
+        else:
+            actorEncoded = urllib.quote(re.sub(r'(?<=\w)\.\s(?=\w\.)', '', actorName).replace('.', ''))
+
         url = None
         try:
             (url, gender) = task(actorName, actorEncoded, metadata)
@@ -337,7 +371,7 @@ def actorDBfinder(actorName, metadata):
     if actorPhotoURL:
         Log('%s found in %s ' % (actorName, databaseName))
         Log('PhotoURL: %s' % actorPhotoURL)
-    elif Prefs['gender_enable']:
+    elif Prefs['gender_enable'] and type == 'actor' and not gender:
         gender = genderCheck(actorName)
         Log('%s image not found' % actorName)
     else:
@@ -446,7 +480,7 @@ def getFromIndexxx(actorName, actorEncoded, metadata):
         img = actorPage.xpath('//img[@class="model-img"]/@src')
         if img:
             actorPhotoURL = img[0]
-            (actorPhotoURL, gender) = cacheActorPhoto(actorPhotoURL, actorName, 'female', headers={'Referer': actorPageURL})
+            (actorPhotoURL, gender) = cacheActorPhoto(actorPhotoURL, actorName, 'female', 'actor', headers={'Referer': actorPageURL})
 
     return actorPhotoURL, 'female'
 
@@ -679,9 +713,9 @@ def getFromJAVDatabase(actorName, actorEncoded, metadata):
 
 def getFromLocalStorage(actorName, actorEncoded, metadata):
     actorPhotoURL = ''
-
     actorsResourcesPath = os.path.join(Core.bundle_path, 'Contents', 'Resources')
-    filename = 'actor.' + actorName.replace(' ', '-').lower()
+    filename = '%s.%s' % (actorEncoded, actorName.replace(' ', '-').lower())
+
     for root, dirs, files in os.walk(actorsResourcesPath):
         for file in files:
             if filename == file.rsplit('.', 1)[0].split('_')[0]:
@@ -699,10 +733,10 @@ def getFromLocalStorage(actorName, actorEncoded, metadata):
 
 
 # fetches a copy of an actor image and stores it locally, then returns a URL from which Plex can fetch it later
-def cacheActorPhoto(url, actorName, gender, **kwargs):
+def cacheActorPhoto(url, actorName, gender, type, **kwargs):
     localPhoto = ''
     checkGender = gender if gender else ''
-    baseFileName = 'actor.%s' % actorName.replace(' ', '-').lower()
+    baseFileName = '%s.%s' % (type, actorName.replace(' ', '-').lower())
     validExtensions = ['.jpg', '.png', '.webp', '.tbn', '.jfif', '.jpe', '.jpeg']
 
     req = PAutils.HTTPRequest(url, **kwargs)
@@ -725,7 +759,7 @@ def cacheActorPhoto(url, actorName, gender, **kwargs):
         extension = '.%s' % url.split('.')[-1].split('?')[0]
 
     if extension and extension in validExtensions:
-        if not checkGender and Prefs['gender_enable']:
+        if not checkGender and Prefs['gender_enable'] and type == 'actor':
             checkGender = genderCheck(actorName)
 
         if checkGender:
@@ -735,7 +769,7 @@ def cacheActorPhoto(url, actorName, gender, **kwargs):
 
         filepath = os.path.join(actorsResourcesPath, filename)
 
-        Log('Saving actor image as: "%s"' % filename)
+        Log('Saving %s image as: "%s"' % (type, filename))
         with codecs.open(filepath, 'wb+') as file:
             file.write(req.content)
 
