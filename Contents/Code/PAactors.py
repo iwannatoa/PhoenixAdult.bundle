@@ -137,6 +137,7 @@ class PhoenixActors:
 
                         if actorPhoto and Prefs['actor_cache_enable']:
                             (actorPhoto, gender) = cacheActorPhoto(actorPhoto, displayActorName, actorLink['gender'], 'actor', bypass=False)
+                            actorLink['gender'] = gender
                     elif actorLink['gender']:
                         gender = actorLink['gender']
                     elif not actorLink['gender'] and Prefs['gender_enable']:
