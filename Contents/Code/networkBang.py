@@ -48,13 +48,9 @@ def search(results, lang, siteNum, searchData):
             sceneURL = PAsearchSites.getSearchBaseURL(siteNum) + sceneURL
         curID = PAutils.Encode(sceneURL)
 
-        try:
-            date = searchResult.xpath('.//span[@class="hidden xs:inline-block truncate"]/text()')[0].strip()
-        except:
-            date = ''
-
+        date = searchResult.xpath('.//span[@class="hidden xs:inline-block truncate"]')
         if date:
-            releaseDate = datetime.strptime(date, '%b %d, %Y').strftime('%Y-%m-%d')
+            releaseDate = datetime.strptime(date[0].text_content().split('\xe2\x80\xa2')[-1].strip(), '%b %d, %Y').strftime('%Y-%m-%d')
         else:
             releaseDate = searchData.dateFormat() if searchData.date else ''
         displayDate = releaseDate if date else ''
@@ -175,6 +171,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, 
     for idx, posterUrl in enumerate(art, 1):
         if not PAsearchSites.posterAlreadyExists(posterUrl, metadata):
             # Download image file for analysis
+            posterUrl = posterUrl.split('?')[0]
             try:
                 image = PAutils.HTTPRequest(posterUrl)
                 im = StringIO(image.content)
