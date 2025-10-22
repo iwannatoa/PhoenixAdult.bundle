@@ -158,7 +158,7 @@ xPathDB = {
 siteDB = {
     'Trick Your GF': [7, 4],
     'Make Him Cuckold': [9, 5],
-    'She Is Nerdy': [10, 12],
+    'She Is Nerdy': [10, 15],
     'Tricky Agent': [11, 4],
 }
 
@@ -255,7 +255,7 @@ sceneActorsDB = {
     'Iris Kiss': ['snc165', 'wnc1637'],
     'Isabel Stern': ['wfc1075'],
     'Iva Zan': ['wrygf536', 'wtag558', 'wnc745'],
-    'Izi Ashley': ['wfc978', 'wtag980', 'wnc97'],
+    'Izi Ashley': ['wfc978', 'wtag980', 'wnc97', 'wnc976'],
     'Jane Fox': ['wtag1235'],
     'Jenny Fer': ['wnc1330'],
     'Jenny Love': ['wrygf634', 'wfc607', 'wtag601'],
