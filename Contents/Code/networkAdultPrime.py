@@ -80,10 +80,10 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, 
         metadata.summary = summary
 
     # Studio
-    metadata.studio = 'Adult Prime'
+    metadata.studio = detailsPageElements.xpath('//p[@class="update-info-line regular"][./b[contains(., "Studio")]]//a')[0].text_content().strip()
 
     # Tagline and Collection(s)
-    tagline = detailsPageElements.xpath('//p[@class="update-info-line regular"][./b[contains(., "Studio")]]//a')[0].text_content().strip()
+    tagline = detailsPageElements.xpath('//p[@class="update-info-line regular"][./b[contains(., "Series")]]//a')[1].text_content().strip()
     metadata.tagline = tagline
     movieCollections.addCollection(tagline)
 
@@ -135,7 +135,11 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, 
             art.append(img)
 
     Log('Artwork found: %d' % len(art))
+    postersClean = list()
     for idx, posterUrl in enumerate(art, 1):
+        # Remove Timestamp and Token from URL
+        cleanUrl = posterUrl.split('?')[0]
+        postersClean.append(cleanUrl)
         if not PAsearchSites.posterAlreadyExists(posterUrl, metadata):
             # Download image file for analysis
             try:
@@ -152,6 +156,8 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, 
                     metadata.art[posterUrl] = Proxy.Media(image.content, sort_order=idx)
             except:
                 pass
+
+    art.extend(postersClean)
 
     return metadata
 
