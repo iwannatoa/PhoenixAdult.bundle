@@ -7,6 +7,29 @@ def search(results, lang, siteNum, searchData):
     req = PAutils.HTTPRequest(PAsearchSites.getSearchSearchURL(siteNum) + searchData.encoded)
     searchResults = HTML.ElementFromString(req.text)
 
+    googleResults = PAutils.getFromSearchEngine(searchData.title, siteNum)
+    for sceneURL in googleResults:
+        if 'trailers' in sceneURL and sceneURL not in searchResults.xpath('//div[@class="item-video hover"]//h4//@href'):
+            req = PAutils.HTTPRequest(sceneURL)
+            detailsPageElements = HTML.ElementFromString(req.text)
+
+            detailsPageElements = HTML.ElementFromString(req.text)
+            titleNoFormatting = PAutils.parseTitle(detailsPageElements.xpath('//h3')[0].text_content().strip(), siteNum)
+            curID = PAutils.Encode(sceneURL)
+
+            date = detailsPageElements.xpath('//div[@class="videoInfo clear"]/p/text()')[0].strip()
+            if date:
+                releaseDate = parse(date).strftime('%Y-%m-%d')
+            else:
+                releaseDate = searchData.dateFormat() if searchData.date else ''
+
+            if searchData.date and releaseDate:
+                score = 80 - Util.LevenshteinDistance(searchData.date, releaseDate)
+            else:
+                score = 80 - Util.LevenshteinDistance(searchData.title.lower(), titleNoFormatting.lower())
+
+            results.Append(MetadataSearchResult(id='%s|%d|%s' % (curID, siteNum, releaseDate), name='%s [%s] %s' % (titleNoFormatting, PAsearchSites.getSearchSiteName(siteNum), releaseDate), score=score, lang=lang))
+
     for searchResult in searchResults.xpath('//div[@class="item-video hover"]'):
         titleNoFormatting = PAutils.parseTitle(searchResult.xpath('.//h4')[0].text_content().strip(), siteNum)
         sceneURL = searchResult.xpath('.//h4//@href')[0]
@@ -39,7 +62,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, 
     metadata.title = PAutils.parseTitle(detailsPageElements.xpath('//h3')[0].text_content().strip(), siteNum)
 
     # Summary
-    metadata.summary = ' '.join(detailsPageElements.xpath('//div[@class="videoDetails clear"]//p/span//text()')).replace('FULL VIDEO', '')
+    metadata.summary = ' '.join(detailsPageElements.xpath('//div[@class="videoDetails clear"]//p/span//text()')).replace('FULL VIDEO', '').strip()
 
     # Tagline and Collection(s)
     tagline = PAsearchSites.getSearchSiteName(siteNum)
