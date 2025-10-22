@@ -75,9 +75,40 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, 
     sceneID = PAutils.Decode(metadata_id[0])
     sceneDate = metadata_id[2]
     searchPageURL = PAutils.Decode(metadata_id[3])
+    (siteKey, sitePages) = PAutils.getDictValuesFromKey(siteDB, PAsearchSites.getSearchSiteName(siteNum))
 
     req = PAutils.HTTPRequest(searchPageURL)
-    detailsPageElements = HTML.ElementFromString(req.text).xpath('//div[@class="movie-block"][.//*[contains(@src, "%s")]]' % sceneID)[0]
+    originalPageElements = HTML.ElementFromString(req.text).xpath('//div[@class="movie-block"][.//*[contains(@src, "%s")]]' % sceneID)
+
+    if originalPageElements:
+        detailsPageElements = originalPageElements[0]
+    else:
+        lastSearchPage = searchPageURL.split('/')[-1]
+        if lastSearchPage.isdigit():
+            startPage = int(lastSearchPage) + 1
+        else:
+            startPage = 2
+        searchPage = '%s%d' % (PAsearchSites.getSearchSearchURL(siteNum), startPage)
+        req = PAutils.HTTPRequest(searchPage)
+        searchResults = HTML.ElementFromString(req.text)
+
+        re_sceneid = re.compile(r'(?<=tour_thumbs/).*(?=\/)')
+        for idx in range(startPage, sitePages):
+            for searchResult in searchResults.xpath('//div[@class="movie-block"]'):
+                searchID = 0
+                m = re_sceneid.search(searchResult.xpath('.//li/img/@src')[0])
+                if m:
+                    searchID = m.group(0)
+
+                if searchID == sceneID:
+                    detailsPageElements = HTML.ElementFromString(req.text).xpath('//div[@class="movie-block"][.//*[contains(@src, "%s")]]' % sceneID)[0]
+                    break
+            else:
+                searchPage = '%s%d' % (PAsearchSites.getSearchSearchURL(siteNum), idx)
+                req = PAutils.HTTPRequest(searchPage)
+                searchResults = HTML.ElementFromString(req.text)
+                continue
+            break
 
     xPath = PAutils.getDictValuesFromKey(xPathDB, PAsearchSites.getSearchSiteName(siteNum))
 
@@ -158,7 +189,7 @@ xPathDB = {
 siteDB = {
     'Trick Your GF': [7, 4],
     'Make Him Cuckold': [9, 5],
-    'She Is Nerdy': [10, 12],
+    'She Is Nerdy': [10, 15],
     'Tricky Agent': [11, 4],
 }
 
@@ -255,7 +286,7 @@ sceneActorsDB = {
     'Iris Kiss': ['snc165', 'wnc1637'],
     'Isabel Stern': ['wfc1075'],
     'Iva Zan': ['wrygf536', 'wtag558', 'wnc745'],
-    'Izi Ashley': ['wfc978', 'wtag980', 'wnc97'],
+    'Izi Ashley': ['wfc978', 'wtag980', 'wnc97', 'wnc976'],
     'Jane Fox': ['wtag1235'],
     'Jenny Fer': ['wnc1330'],
     'Jenny Love': ['wrygf634', 'wfc607', 'wtag601'],

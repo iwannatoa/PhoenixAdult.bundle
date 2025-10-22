@@ -58,6 +58,8 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, 
 
     # Tagline and Collection(s)
     tagline = detailsPageElements.xpath('//h1//span[@class="sup-title"]//span')[0].text_content().strip()
+    if not tagline:
+        tagline = PAsearchSites.getSearchSiteName(siteNum)
     metadata.tagline = tagline
     movieCollections.addCollection(tagline)
 
@@ -68,10 +70,9 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, 
     metadata.year = metadata.originally_available_at.year
 
     # Genres
+    genres = []
     if tagline == 'KarupsHA':
         genres = ['Amateur']
-    if tagline == 'KarupsPC':
-        genres = []
     if tagline == 'KarupsOW':
         genres = ['MILF']
 

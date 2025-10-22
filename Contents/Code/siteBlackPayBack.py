@@ -3,7 +3,7 @@ import PAutils
 
 
 def search(results, lang, siteNum, searchData):
-    searchData.title = re.sub(r'\E\d+(?=\s)', '', searchData.title)
+    searchData.title = re.sub(r'\E\d+(?=\s)', '', searchData.title).strip()
     searchData.encoded = searchData.title.lower().replace(' ', '-')
     directURL = PAsearchSites.getSearchSearchURL(siteNum) + searchData.encoded + '.html'
 
@@ -38,6 +38,10 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, 
     IAFDStudioElements = HTML.ElementFromString(req.text)
 
     title = detailsPageElements.xpath('//h1')[0].text_content().strip()
+    titleFix = PAutils.getDictKeyFromValues(titleFixDB, title)
+
+    if titleFix:
+        title = titleFix[0]
 
     iafdURL = ''
     date = ''
@@ -53,7 +57,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, 
         IAFDSceneElements = HTML.ElementFromString(req.text)
 
         date = IAFDSceneElements.xpath('//p[contains(., "Release Date")]//following-sibling::p[@class="biodata"]')[0].text_content().strip()
-        actors = IAFDSceneElements.xpath('//div[@class="castbox"]')
+        actors = IAFDSceneElements.xpath('//div[@class="castbox"]//a')
 
     # Title
     metadata.title = title
@@ -120,3 +124,8 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, 
                 pass
 
     return metadata
+
+
+titleFixDB = {
+    'Birfday Bitch': ['ARIA CARSON 2'],
+}

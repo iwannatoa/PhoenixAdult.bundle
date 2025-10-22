@@ -1165,6 +1165,7 @@ ActorsReplaceStudios = {
         'Timea Bella': ['Luciana'],
         'Traci Lynn': ['Hallee'],
         'Tracy Gold': ['Noleta'],
+        'Tristan Summers': ['Tristan Taylor'],
         'Tyra Moon': ['Athina'],
         'Valerie Herrera': ['Valerie'],
         'Vanessa Monroe': ['Vanessa'],
@@ -1596,6 +1597,7 @@ ActorsReplaceStudios = {
     22: {  # Reality Kings
         'Agness Miller': ['Agness'],
         'Morgan Layne': ['Morgan'],
+        'Jessica Robbin': ['Jessica Rabbit'],
     },
     23: {  # WowGirls
         'Goldie Baby': ['Nikia'],
@@ -6109,13 +6111,23 @@ ActorsReplaceStudios = {
     69: {  # Adult Empire
         'Addison Vodka': ['Addison'],
         'Ariana Grand': ['Ariana'],
+        'Carol Foxxx': ['Carol Foxx'],
+        'Cherry Torn': ['Cherry Thorn'],
+        'Christina Stevens': ['Kristina'],
         'Christine DeShaffer': ['Christine De Shaffer'],
+        'Desiree Deluca': ['Desiree'],
         'Graycee Baybee': ['Grace Baybee'],
         'Ice La Fox': ['Ice LaFox'],
+        'Jana Malto': ['Jana'],
         'Jesus Reyes Vazquez': ['Jesus Reyes Vazqeuz'],
         'Red Julia': ['Judith'],
+        'Kalina Ryu': ['Lily Star'],
+        'Kay Carter': ['Kay Karter'],
+        'Kitti Skyway': ['Kitty Skyway'],
         'Kya Tropic': ['Kya Clover'],
+        'Eva Gomez': ['Kylina'],
         'Lutro Steel': ['Lutro Steele'],
+        'Mai Ly': ['Mai Lynn'],
         'Mandarine': ['Alexandrine'],
         'Mazzy Paige': ['Mazzie Paige', 'Mazzi'],
         'Maude Carolle': ['Aude Lecocq'],
@@ -6128,6 +6140,7 @@ ActorsReplaceStudios = {
         'Suzan Nielsen': ['Susan'],
         'Talon': ['Talon Valenti'],
         'Vanessa D\'Angely': ['Vanessa'],
+        'Will Ryder': ['Jeff Mullen'],
         'Zeus': ['Jesus "Zeus"Munoz'],
     },
     70: {  # Heavy on Hotties
@@ -6148,6 +6161,9 @@ ActorsReplaceStudios = {
     },
     71: {  # Brazzers
         'Alice Fabre': ['Alice']
+    },
+    72: {  # Kelly Madison Productions
+        'Ryan Madison': ['Madison']
     }
 }
 
@@ -6224,6 +6240,7 @@ ActorsStudioIndexes = {
     69: ['Adult Empire'],
     70: ['Heavy on Hotties'],
     71: ['Brazzers'],
+    72: ['Kelly Madison', 'TeenFidelity', 'PornFidelity'],
 }
 
 
