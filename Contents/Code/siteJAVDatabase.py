@@ -141,7 +141,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, 
             javID = '%s-0%s' % (javID.split('-')[0], javID.split('-')[-1])
 
     javBusURL = PAsearchSites.getSearchSearchURL(912) + javID
-    req = PAutils.HTTPRequest(javBusURL)
+    req = PAutils.HTTPRequest(javBusURL, cookies=javBusCookies)
     javbusPageElements = HTML.ElementFromString(req.text)
 
     if '404 Page' in req.text and date:
@@ -178,32 +178,36 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, 
 
     images = []
     posterExists = False
+    postersClean = list()
     Log('Artwork found: %d' % len(art))
     for idx, posterUrl in enumerate(art, 1):
-        if not PAsearchSites.posterAlreadyExists(posterUrl, metadata):
+        # Remove Timestamp and Token from URL
+        cleanUrl = posterUrl.split('?')[0]
+        postersClean.append(cleanUrl)
+        if not PAsearchSites.posterAlreadyExists(cleanUrl, metadata):
             # Download image file for analysis
             try:
                 image = PAutils.HTTPRequest(posterUrl)
                 if 'now_printing' not in image.url:
                     im = StringIO(image.content)
-                    images.append(image)
                     resized_image = Image.open(im)
                     width, height = resized_image.size
                     # Add the image proxy items to the collection
                     if height > width:
                         # Item is a poster
-                        metadata.posters[posterUrl] = Proxy.Media(image.content, sort_order=idx)
+                        metadata.posters[cleanUrl] = Proxy.Media(image.content, sort_order=idx)
 
                         if 'javbus.com/pics/thumb' not in posterUrl:
                             posterExists = True
                     if width > height:
                         # Item is an art item
-                        metadata.art[posterUrl] = Proxy.Media(image.content, sort_order=idx)
+                        images.append((image, cleanUrl))
+                        metadata.art[cleanUrl] = Proxy.Media(image.content, sort_order=idx)
             except:
                 pass
 
     if not posterExists:
-        for idx, image in enumerate(images, 1):
+        for idx, (image, cleanUrl) in enumerate(images, 1):
             try:
                 im = StringIO(image.content)
                 resized_image = Image.open(im)
@@ -211,9 +215,11 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, 
                 # Add the image proxy items to the collection
                 if width > 1:
                     # Item is a poster
-                    metadata.posters[art[idx - 1]] = Proxy.Media(image.content, sort_order=idx)
+                    metadata.posters[cleanUrl] = Proxy.Media(image.content, sort_order=idx)
             except:
                 pass
+
+    art.extend(postersClean)
 
     return metadata
 
@@ -701,4 +707,10 @@ crossSiteDB = {
 
 ignoreList = {
     'SEXY', 'MEEL', 'SKOT', 'SCD', 'GDSC'
+}
+
+
+javBusCookies = {
+    'existmag': 'all',
+    'dv': '1'
 }
