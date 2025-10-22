@@ -8,7 +8,7 @@ def search(results, lang, siteNum, searchData):
         url = PAsearchSites.getSearchSearchURL(siteNum) + '%s&page=%d' % (searchData.encoded, searchPageNum)
         req = PAutils.HTTPRequest(url)
         searchResults = HTML.ElementFromString(req.text)
-        for searchResult in searchResults.xpath('//div[contains(@class, "video-thumb") or contains(@class, "item-video")]'):
+        for searchResult in searchResults.xpath('//div[@class="item-updates"]//div[contains(@class, "item-update")]'):
             titleNoFormatting = PAutils.parseTitle(searchResult.xpath('(.//p[@class="text-thumb"] | .//div[@class="item-title"])/a')[0].text_content().strip(), siteNum)
             curID = PAutils.Encode(searchResult.xpath('(.//p[@class="text-thumb"] | .//div[@class="item-title"])/a/@href')[0])
             subSite = searchResult.xpath('.//p[@class="text-thumb"]/a[@class="badge"] | .//div[@class="item-sitename"]/a')[0].text_content().strip()
@@ -117,8 +117,12 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, 
                 art.append(poster)
 
     Log('Artwork found: %d' % len(art))
+    postersClean = list()
     for idx, posterUrl in enumerate(art, 1):
-        if not PAsearchSites.posterAlreadyExists(posterUrl, metadata):
+        # Remove Timestamp and Token from URL
+        cleanUrl = posterUrl.split('?')[0]
+        postersClean.append(cleanUrl)
+        if not PAsearchSites.posterAlreadyExists(cleanUrl, metadata):
             # Download image file for analysis
             try:
                 image = PAutils.HTTPRequest(posterUrl)
@@ -128,11 +132,13 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, 
                 # Add the image proxy items to the collection
                 if width > 1:
                     # Item is a poster
-                    metadata.posters[posterUrl] = Proxy.Media(image.content, sort_order=idx)
+                    metadata.posters[cleanUrl] = Proxy.Media(image.content, sort_order=idx)
                 if width > 100:
                     # Item is an art item
-                    metadata.art[posterUrl] = Proxy.Media(image.content, sort_order=idx)
+                    metadata.art[cleanUrl] = Proxy.Media(image.content, sort_order=idx)
             except:
                 pass
+
+    art.extend(postersClean)
 
     return metadata
