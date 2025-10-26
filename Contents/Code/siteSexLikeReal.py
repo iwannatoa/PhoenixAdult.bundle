@@ -45,48 +45,51 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, 
     metadata.title = detailsPageElements.xpath('//h1')[0].text_content().strip()
 
     # Summary
-    maybeSummary = detailsPageElements.xpath('//div[contains(@class, "u-lh--opt u-fs--fo u-wh")]')
-    if maybeSummary and len(maybeSummary) == 1:
-        metadata.summary = maybeSummary[0].text_content().strip()
+    maybeSummary = detailsPageElements.xpath('//p[contains(@class, "_s1jg1wcd75")]')
+    if maybeSummary and len(maybeSummary) > 0:
+        summary = []
+        for summaryPart in maybeSummary:
+            summaryText = summaryPart.text_content().strip()
+            if 'Video specifications' not in summaryText:
+                summary.append(summaryText)
+        metadata.summary = '\n'.join(summary)
 
     # Studio
-    metadata.studio = detailsPageElements.xpath('//div[contains(@class, "u-inline-block u-align-y--m u-relative u-fw--bold")]')[0].text_content().strip()
+    metadata.studio = detailsPageElements.xpath('//a[contains(@class, "_euacs6n160")]')[0].text_content().strip()
 
     # Tagline and Collection(s)
     movieCollections.addCollection(metadata.studio)
 
     # Release Date
-    maybeDate = detailsPageElements.xpath('//div[contains(@class, "u-flex u-flex-wrap u-align-i--center u-fs--fo u-dw u-mt--three u-flex-grow--one desktop:u-mt--four desktop:u-fs--si")]/time/@datetime')[0]
+    maybeDate = detailsPageElements.xpath('//p[contains(@class, "_38471wcd31")]/time/@datetime')[0]
     if maybeDate:
         date_object = parse(maybeDate)
         metadata.originally_available_at = date_object
         metadata.year = metadata.originally_available_at.year
-    else:
-        date = detailsPageElements.xpath('//time[contains(@class, "u-inline-block u-align-y--m")]/@datetime')[0]
-        date_object = parse(date)
-        metadata.originally_available_at = date_object
-        metadata.year = metadata.originally_available_at.year
 
     # Genres
-    for genreName in detailsPageElements.xpath('//meta[@property="video:tag"]/@content'):
-        movieGenres.addGenre(genreName)
+    for genreName in detailsPageElements.xpath('//a[contains(@class, "_1xdu1wcd88 ")]/span'):
+        movieGenres.addGenre(genreName.text_content().strip())
 
     # Actor(s)
-    actors = detailsPageElements.xpath('//meta[@property="video:actor"]/@content')
-    for actorName in actors:
-        actorLink = '/pornstars/' + actorName.replace(' ', '-').lower()
+    actors = detailsPageElements.xpath('//a[contains(@class, "_n7wm1ua719")]')
+    for actor in actors:
+        actorName = actor.text_content().strip()
+        actorLink = actor.xpath('./@href')[0]
         actorPageURL = PAsearchSites.getSearchBaseURL(siteNum) + actorLink
 
         req = PAutils.HTTPRequest(actorPageURL)
         actorPage = HTML.ElementFromString(req.text)
-        actorPhotoURL = actorPage.xpath('//div[@class="u-ratio u-ratio--top u-ratio--model u-radius--two u-mb--four"]/img/@src')[0]
-
+        actorPhotoURL = ''
+        maybeActorPhotoURL = actorPage.xpath('//div[contains(@class, "_z763mqyu24 avatar avatar-size-32 outlined")]/img/@src')
+        if len(maybeActorPhotoURL) > 0:
+            actorPhotoURL = maybeActorPhotoURL[0]
         movieActors.addActor(actorName, actorPhotoURL)
 
     # Posters/Background
     xpaths = [
         '//meta[@property="og:image"]/@content',
-        '//a[contains(@class, "u-ratio--lightbox")]/@href',
+        '//img[contains(@class, "_30hk1wta22")]/@src',
     ]
 
     for xpath in xpaths:
@@ -98,7 +101,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, 
         if not PAsearchSites.posterAlreadyExists(posterUrl, metadata):
             # Download image file for analysis
             try:
-                image = PAutils.HTTPRequest(posterUrl)
+                image = PAutils.HTTPRequest(posterUrl.replace('.webp', '.jpg'))
                 im = StringIO(image.content)
                 resized_image = Image.open(im)
                 width, height = resized_image.size
