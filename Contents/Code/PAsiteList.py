@@ -929,7 +929,7 @@ searchSites = {
     731: ('Love Her Feet', 'https://www.loveherfeet.com', '/tour/search.php?query='),
     732: ('MomPOV', 'http://www.mompov.com', '/tour/?s='),
     733: ('Property Sex', 'https://www.propertysex.com', 'https://site-api.project1service.com'),
-    734: ('DMM', 'https://video.dmm.co.jp', '/list/?key='),
+    734: ('DMM', 'https://www.dmm.co.jp', 'https://video.dmm.co.jp/list/?key='),
     735: ('Fucked and Bound', 'http://www.kink.com', '/search?channelIds=fuckedandbound&q='),
     736: ('Captive Male', 'http://www.kink.com', '/search?channelIds=captivemale&q='),
     737: ('TransAngels', 'https://www.transangels.com', 'https://site-api.project1service.com'),

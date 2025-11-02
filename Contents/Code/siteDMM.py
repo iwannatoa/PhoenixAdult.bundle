@@ -5,16 +5,23 @@ import operator
 
 cookies = {
     'age_check_done': '1',
+    'check_done_login': 'true',
+    'ckcy': '1',
+    'cklg': 'ja'
 }
 
 
 def search(results, lang, siteNum, searchData):
     searchJAVID = None
     splitSearchTitle = searchData.title.split()
+    directJAVIDs = []
+    JAVID = None
     if len(splitSearchTitle) > 1:
         if unicode(splitSearchTitle[1], 'UTF-8').isdigit():
             searchJAVID = '%s%%20%s' % (splitSearchTitle[0], splitSearchTitle[1])
-            directJAVID = ('%s%5s' % (splitSearchTitle[0], splitSearchTitle[1])).replace(' ', '')
+            JAVID = ('%s%5s' % (splitSearchTitle[0], splitSearchTitle[1])).replace(' ', '0')
+            directJAVIDs.append(JAVID)
+            directJAVIDs.append(('%s%s' % (splitSearchTitle[0], splitSearchTitle[1])).replace(' ', ''))
 
     if searchJAVID:
         searchData.encoded = searchJAVID
@@ -37,17 +44,25 @@ def search(results, lang, siteNum, searchData):
 
             results.Append(MetadataSearchResult(id='%s|%d|%s' % (curID, siteNum, JAVID), name='[%s] %s' % (JAVID, titleNoFormatting), score=score, lang=lang))
 
-    if directJAVID:
-        sceneURL = PAsearchSites.getSearchBaseURL(siteNum) + '/digital/videoa/-/detail/=/cid=' + directJAVID
-        req = PAutils.HTTPRequest(sceneURL, cookies=cookies)
-        searchResult = HTML.ElementFromString(req.text)
-        errSign = searchResult.xpath('//span[@class="d-txten"]')
-        if not errSign or not operator.contains(errSign[0].text_content(), '404'):
-            javTitle = searchResult.xpath('//h1[@id="title"]')[0].text_content().strip()
-            JAVID = '%s-%s' % (directJAVID[0:-5], int(directJAVID[-5:]))
-            curID = PAutils.Encode(sceneURL)
-            score = 100
-            results.Append(MetadataSearchResult(id='%s|%d|%s' % (curID, siteNum, JAVID), name='[Direct][%s] %s' % (JAVID, javTitle), score=score, lang=lang))
+    # legend and private
+    directUrls = []
+    directUrls.append('/digital/videoa/-/detail/=/cid=')
+    directUrls.append('/digital/videoc/-/detail/=/cid=')
+    if directJAVIDs:
+        for directJAVID in directJAVIDs:
+            for directUrl in directUrls:
+                Log('direct %s %s' % (directJAVID, directUrl))
+                sceneURL = PAsearchSites.getSearchBaseURL(siteNum) + directUrl + directJAVID
+                req = PAutils.HTTPRequest(sceneURL, cookies=cookies)
+                searchResult = HTML.ElementFromString(req.text)
+                errSign = searchResult.xpath('//span[@class="d-txten"]')
+                if not errSign or not operator.contains(errSign[0].text_content(), '404'):
+                    javTitle = searchResult.xpath('//h1[@id="title"]')[0].text_content().strip()
+                    JAVID = '%s-%s' % (JAVID[0:-5], int(JAVID[-5:]))
+                    curID = PAutils.Encode(sceneURL)
+                    score = 100
+                    results.Append(MetadataSearchResult(id='%s|%d|%s' % (curID, siteNum, JAVID), name='[Direct][%s] %s' % (JAVID, javTitle), score=score, lang=lang))
+                    return results
     return results
 
 
