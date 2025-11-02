@@ -38,14 +38,14 @@ def search(results, lang, siteNum, searchData):
             if searchData.date and releaseDate:
                 score = 100 - Util.LevenshteinDistance(searchData.date, releaseDate)
             else:
-                score = 100 - Util.LevenshteinDistance(searchData.title.lower(), titleNoFormatting.lower())
+                score = 100 - Util.LevenshteinDistance(searchData.title.lower(), titleNoFormatting.replace('Parody', '').lower().strip())
 
             results.Append(MetadataSearchResult(id='%s|%d' % (curID, siteNum), name='[%s] %s in %s %s' % (PAsearchSites.getSearchSiteName(siteNum), girlName, titleNoFormatting, releaseDate), score=score, lang=lang))
 
     return results
 
 
-def update(metadata, lang, siteNum, movieGenres, movieActors, art):
+def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, art):
     metadata_id = str(metadata.id).split('|')
     sceneURL = PAutils.Decode(metadata_id[0])
     if not sceneURL.startswith('http'):
@@ -65,7 +65,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
     # Tagline and Collection(s)
     tagline = PAsearchSites.getSearchSiteName(siteNum)
     metadata.tagline = tagline
-    metadata.collections.add(tagline)
+    movieCollections.addCollection(tagline)
 
     # Release Date
     sceneDate = detailsPageElements.xpath('//p[@itemprop="uploadDate"]/@content')
@@ -92,7 +92,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
         except:
             actorPhotoURL = ''
 
-        movieActors.addActor(actorName, actorPhotoURL)
+        movieActors.addActor(actorName, actorPhotoURL, gender='female')
 
     # Posters
     xpaths = [
@@ -135,7 +135,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
                     images.append((image, posterUrl))
                     metadata.art[posterUrl] = Proxy.Media(image.content, sort_order=idx)
             except:
-                pass
+                break
         elif PAsearchSites.posterOnlyAlreadyExists(posterUrl, metadata):
             posterExists = True
 

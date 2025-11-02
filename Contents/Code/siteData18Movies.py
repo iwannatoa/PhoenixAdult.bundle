@@ -77,10 +77,10 @@ def search(results, lang, siteNum, searchData):
 
                         # Studio
                         try:
-                            studio = detailsPageElements.xpath('//b[contains(., "Network")]//following-sibling::b')[0].text_content().strip()
+                            studio = detailsPageElements.xpath('//b[contains(., "Studio") or contains(., "Network")]//following-sibling::b')[0].text_content().strip()
                         except:
                             try:
-                                studio = detailsPageElements.xpath('//b[contains(., "Studio")]//following-sibling::b')[0].text_content().strip()
+                                studio = detailsPageElements.xpath('//b[contains(., "Studio") or contains(., "Network")]//following-sibling::a')[0].text_content().strip()
                             except:
                                 try:
                                     studio = detailsPageElements.xpath('//p[contains(., "Site:")]//following-sibling::a[@class="bold"]')[0].text_content().strip()
@@ -121,7 +121,7 @@ def search(results, lang, siteNum, searchData):
             req = PAutils.HTTPRequest(searchURL, headers={'Referer': 'https://www.data18.com'}, cookies={'data_user_captcha': '1'})
             searchPageElements = HTML.ElementFromString(req.text)
 
-    googleResults = PAutils.getFromGoogleSearch(searchData.title, siteNum)
+    googleResults = PAutils.getFromSearchEngine(searchData.title, siteNum)
     for movieURL in googleResults:
         movieURL = movieURL.split('-')[0].replace('http:', 'https:')
         if ('/movies/' in movieURL and '.html' not in movieURL and movieURL not in searchResults and movieURL not in siteResults):
@@ -202,7 +202,7 @@ def search(results, lang, siteNum, searchData):
     return results
 
 
-def update(metadata, lang, siteNum, movieGenres, movieActors, art):
+def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, art):
     metadata_id = str(metadata.id).split('|')
     sceneURL = PAutils.Decode(metadata_id[0])
     sceneDate = metadata_id[2]
@@ -215,7 +215,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
 
     if len(metadata_id) > 3:
         Log('Switching to Data18Scenes')
-        siteData18Scenes.update(metadata, lang, siteNum, movieGenres, movieActors, art)
+        siteData18Scenes.update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, art)
         return metadata
 
     # Title
@@ -242,10 +242,10 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
         metadata.studio = studio
 
     # Tagline and Collection(s)
-    metadata.collections.add(metadata.studio)
+    movieCollections.addCollection(metadata.studio)
     try:
         tagline = detailsPageElements.xpath('//p[contains(., "Movie Series")]//a[@title]')[0].text_content().strip()
-        metadata.collections.add(tagline)
+        movieCollections.addCollection(tagline)
     except:
         tagline = ''
     metadata.tagline = tagline
@@ -295,7 +295,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
     # Posters
     photos = []
     xpaths = [
-        '//a[@id="enlargecover"]//@href',
+        '//a[@id="enlargecover"]//@data-featherlight',
         '//img[@id="backcoverzone"]//@src',
         '//img[@id="imgposter"]//@src',
         '//img[contains(@src, "th8")]/@src',

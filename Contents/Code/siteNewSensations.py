@@ -11,7 +11,7 @@ def search(results, lang, siteNum, searchData):
         PAsearchSites.getSearchSearchURL(siteNum) + 'dvds/' + searchData.encoded + '.html'
     ]
 
-    googleResults = PAutils.getFromGoogleSearch(searchData.title, siteNum)
+    googleResults = PAutils.getFromSearchEngine(searchData.title, siteNum)
     for sceneURL in googleResults:
         if sceneURL not in searchResultsURLs:
             if ('/updates/' in sceneURL or '/dvds/' in sceneURL or '/scenes/' in sceneURL) and ('/tour_ns/' in sceneURL or '/tour_famxxx/' in sceneURL) and sceneURL not in searchResultsURLs:
@@ -36,7 +36,7 @@ def search(results, lang, siteNum, searchData):
     return results
 
 
-def update(metadata, lang, siteNum, movieGenres, movieActors, art):
+def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, art):
     metadata_id = str(metadata.id).split('|')
     sceneURL = PAutils.Decode(metadata_id[0])
     if not sceneURL.startswith('http'):
@@ -63,7 +63,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
         metadata.summary = detailsPageElements.xpath('//div[@class="description"]/h2/text() | //div[@class="description"]//span/following-sibling::text()')[0].replace('Description:', '').strip()
 
         # Tagline and Collection(s)
-        metadata.collections.add(PAsearchSites.getSearchSiteName(siteNum))
+        movieCollections.addCollection(PAsearchSites.getSearchSiteName(siteNum))
 
         # No genres for scenes
 
@@ -100,7 +100,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
         # Tagline and Collection(s)
         dvdName = title
         metadata.tagline = dvdName
-        metadata.collections.add(dvdName)
+        movieCollections.addCollection(dvdName)
 
         # Genres
         genres = detailsPageElements.xpath('//div[@class="textLink"]//a')

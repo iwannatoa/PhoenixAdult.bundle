@@ -9,7 +9,7 @@ def search(results, lang, siteNum, searchData):
     req = PAutils.HTTPRequest(PAsearchSites.getSearchSearchURL(siteNum) + searchData.encoded)
     searchPageElements = HTML.ElementFromString(req.text)
 
-    googleResults = PAutils.getFromGoogleSearch(searchData.title, siteNum)
+    googleResults = PAutils.getFromSearchEngine(searchData.title, siteNum)
     for sceneURL in googleResults:
         sceneURL = sceneURL.split('?')[0]
         if 'com/video/' in sceneURL and 'index.php/' not in sceneURL not in searchResults:
@@ -37,20 +37,20 @@ def search(results, lang, siteNum, searchData):
 
         results.Append(MetadataSearchResult(id='%s|%d|%s' % (curID, siteNum, releaseDate), name='%s [%s] %s' % (titleNoFormatting, PAsearchSites.getSearchSiteName(siteNum), displayDate), score=score, lang=lang))
 
-    for searchResult in searchPageElements.xpath('//div[contains(@class, "movie-preview")]'):
-        titleNoFormatting = PAutils.parseTitle(searchResult.xpath('./a/div')[0].text_content().strip(), siteNum)
-        sceneURL = searchResult.xpath('./a[@class="group"]/@href')[0]
+    for searchResult in searchPageElements.xpath('//div[contains(@class, "movie-preview") or contains(@class, "video_container")]'):
+        sceneURL = searchResult.xpath('./a[contains(@class, "group")]/@href')[0]
+        if 'dvd' in sceneURL:
+            titleNoFormatting = PAutils.parseTitle(searchResult.xpath('./a/div')[0].text_content().strip(), siteNum)
+        else:
+            titleNoFormatting = PAutils.parseTitle(searchResult.xpath('./a/span')[0].text_content().strip(), siteNum)
+
         if 'http' not in sceneURL:
             sceneURL = PAsearchSites.getSearchBaseURL(siteNum) + sceneURL
         curID = PAutils.Encode(sceneURL)
 
-        try:
-            date = searchResult.xpath('.//span[@class="hidden xs:inline-block truncate"]/text()')[0].strip()
-        except:
-            date = ''
-
+        date = searchResult.xpath('.//span[@class="hidden xs:inline-block truncate"]')
         if date:
-            releaseDate = datetime.strptime(date, '%b %d, %Y').strftime('%Y-%m-%d')
+            releaseDate = datetime.strptime(date[0].text_content().split('\xe2\x80\xa2')[-1].strip(), '%b %d, %Y').strftime('%Y-%m-%d')
         else:
             releaseDate = searchData.dateFormat() if searchData.date else ''
         displayDate = releaseDate if date else ''
@@ -66,7 +66,7 @@ def search(results, lang, siteNum, searchData):
     return results
 
 
-def update(metadata, lang, siteNum, movieGenres, movieActors, art):
+def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, art):
     metadata_id = str(metadata.id).split('|')
     sceneURL = PAutils.Decode(metadata_id[0])
     sceneDate = metadata_id[2]
@@ -88,15 +88,15 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
     tagline = ""
     dvdTitle = ""
     try:
-        tagline = re.sub(r'bang(?=(\s|$))(?!\!)', 'Bang!', PAutils.parseTitle(detailsPageElements.xpath('//p[contains(., "eries:")]/a[contains(@href, "video")]')[0].text_content().strip(), siteNum), flags=re.IGNORECASE)
+        tagline = re.sub(r'bang(?=(\s|$))(?!\!)', 'Bang!', PAutils.parseTitle(detailsPageElements.xpath('//p[contains(., "eries:")]/a[contains(@href, "originals") or contains(@href, "videos")]')[0].text_content().strip(), siteNum), flags=re.IGNORECASE)
     except:
         pass
 
     if tagline:
         metadata.tagline = tagline
-        metadata.collections.add(tagline)
+        movieCollections.addCollection(tagline)
     else:
-        metadata.collections.add(metadata.studio)
+        movieCollections.addCollection(metadata.studio)
 
     try:
         dvdTitle = PAutils.parseTitle(detailsPageElements.xpath('//p[contains(., "Movie")]/a[contains(@href, "dvd")]')[0].text_content(), siteNum)
@@ -104,7 +104,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
         pass
 
     if dvdTitle and siteNum == 1365:
-        metadata.collections.add(dvdTitle)
+        movieCollections.addCollection(dvdTitle)
 
     # Release Date
     date = videoPageElements['datePublished']
@@ -119,11 +119,11 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
 
     # Actor(s)
     if siteNum == 1365:
-        actorXPATH = '//div[contains(@class, "clear-both")]//a[contains(@href, "pornstar")]'
+        actorXpath = '//div[contains(@class, "clear-both")]//a[contains(@href, "pornstar")]'
     else:
-        actorXPATH = '//div[contains(@class,"overflow-hidden")]//div[contains(@class, "name")]/a[contains(@href, "pornstar") and not(@aria-label)]'
+        actorXpath = '//div[contains(@class, "name")]/a[contains(@href, "pornstar") and not(@aria-label)]'
 
-    for actorLink in detailsPageElements.xpath(actorXPATH):
+    for actorLink in detailsPageElements.xpath(actorXpath):
         actorPhotoURL = ''
         if siteNum == 1365:
             actorName = actorLink.text_content()
@@ -171,6 +171,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
     for idx, posterUrl in enumerate(art, 1):
         if not PAsearchSites.posterAlreadyExists(posterUrl, metadata):
             # Download image file for analysis
+            posterUrl = posterUrl.split('?')[0]
             try:
                 image = PAutils.HTTPRequest(posterUrl)
                 im = StringIO(image.content)

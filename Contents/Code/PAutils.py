@@ -2,6 +2,7 @@ import gzip
 import uuid
 
 import googlesearch
+import ddgsearch
 import fake_useragent
 import base58
 import cloudscraper
@@ -208,7 +209,7 @@ def HTTPRequest(url, method='GET', **kwargs):
     return req
 
 
-def getFromGoogleSearch(searchText, site='', **kwargs):
+def getFromSearchEngine(searchText, site='', **kwargs):
     stop = kwargs.pop('stop', 10)
     lang = kwargs.pop('lang', 'en')
 
@@ -217,21 +218,25 @@ def getFromGoogleSearch(searchText, site='', **kwargs):
         if site.startswith('www.'):
             site = site.replace('www.', '', 1)
 
-    googleResults = []
+    results = []
     searchTerm = 'site:%s %s' % (site, searchText) if site else searchText
 
     if not searchText:
-        return googleResults
+        return results
 
-    Log('Using Google Search "%s"' % searchTerm)
-
+    Log('Using Google Search "%s"' % searchText)
     try:
-        googleResults = list(googlesearch.search(searchText, site, lang=lang, sleep_interval=1))
+        results = list(googlesearch.search(searchText, site, lang=lang, sleep_interval=1))
     except:
         Log('Google Search Error')
-        pass
 
-    return googleResults
+        Log('Using Duck Duck Go Search "%s"' % searchTerm)
+        try:
+            results = list(ddgsearch.search(searchTerm, site, lang=lang, sleep_interval=1))
+        except:
+            Log('Duck Duck Go Search Error')
+
+    return results
 
 
 def Encode(text):
@@ -289,14 +294,17 @@ def parseTitle(s, siteNum):
     s = re.sub(r'\,(?![\s|\d])', ', ', s)
     s = s.replace('_', ' ')
     s = s.replace('’', '\'')
+    s = s.replace('´', '\'')
     s = preParseTitle(s)
     word_list = re.split(' ', s)
 
+    pattern = re.compile(r'\W')
     firstWord = parseWord(word_list[0], siteNum)
-    if len(firstWord) > 1:
+    cleanfirstWord = re.sub(pattern, '', firstWord)
+    if len(cleanfirstWord) > 1:
         firstWord = firstWord[0].capitalize() + firstWord[1:]
     else:
-        firstWord = firstWord.capitalize()
+        firstWord = firstWord.upper()
 
     final = [firstWord]
 
@@ -395,11 +403,13 @@ def postParseTitle(output):
     # Remove single period at end of title
     output = re.sub(r'(?<=[^\.].)(?<=\w)(?:\.)$', '', output)
     # Remove space between word and certain punctuation
-    output = re.sub(r'\s+(?=[.,!:\'\)])', '', output)
+    output = re.sub(r'\s+(?=[.,!\'\)]|(:(?!\))))', '', output)
     # Add space between word and opening quote
     output = re.sub(r'(?<=\S)([\"]\S+)', lambda m: ' ' + m.group(1), output)
     # Remove space between punctuation and word
     output = re.sub(r'(?<=[#\(\"])\s+', '', output)
+    # Add space after closing double quote
+    output = re.sub(r'"(?!\s)(?=(?:(?:[^"]*"){2})*[^"]*$)', '" ', output)
     # Override lowercase if word follows a punctuation
     output = re.sub(ur'(?<!vs\.)(?<=!|:|\?|\.|-|\u2013)(\s)(\S)', lambda m: m.group(1) + m.group(2).upper(), output)
     # Override lowercase if word follows certain punctuation
@@ -408,6 +418,10 @@ def postParseTitle(output):
     output = re.sub(r'\S+[\]\)\"\~\:]', lambda m: m.group(0)[0].capitalize() + m.group(0)[1:], output)
     # Override lowercase if last word
     output = re.sub(r'\S+$', lambda m: m.group(0)[0].capitalize() + m.group(0)[1:], output)
+    # Add period at end of string for Initials
+    output = re.sub(r'^\w\.\s\w(?<=$)', lambda m: m.group(0) + '.', output)
+    # Remove space between initials
+    output = re.sub(r'^(\w\.)\s(\w\.)', lambda m: m.group(1) + m.group(2), output)
 
     if re.search(r'(,\sthe)(?=:|\s\()', output, re.IGNORECASE):
         output = re.sub(r'(,\sthe)(?=:|\s\()', '', output, flags=re.IGNORECASE)
@@ -428,7 +442,8 @@ def postParseTitle(output):
 def preParseTitle(input):
     exceptions_corrections = {
         (r'(?<!\S)t\sshirt', 'tshirt'), (r'j\smac|jmac', 'jmac'), (r'\bmr(?=\s)', 'mr.'), (r'\bmrs(?=\s)', 'mrs.'),
-        (r'\bms(?=\s)', 'ms.'), (r'\bdr(?=\s)', 'dr.'), (r'\bvs(?=\s)', 'vs.'), (r'\bst(?=\s)', 'st.'), (r'\s\s+', ' ')
+        (r'\bms(?=\s)', 'ms.'), (r'\bdr(?=\s)', 'dr.'), (r'\bvs(?=\s)', 'vs.'), (r'\bst(?=\s)', 'st.'), (r'\s\s+', ' '),
+        (r'\bvol(?=\s)', 'vol.')
     }
 
     output = input.replace('\xc2\xa0', ' ')
@@ -466,12 +481,12 @@ def manualWordFix(word):
     exceptions = (
         'im', 'theyll', 'cant', 'ive', 'shes', 'theyre', 'tshirt', 'dont', 'wasnt', 'youre', 'ill', 'whats', 'didnt',
         'isnt', 'senor', 'senorita', 'thats', 'gstring', 'milfs', 'oreilly', 'bangbros', 'bday', 'dms', 'bffs',
-        'ohmy', 'wont', 'whos', 'shouldnt', 'lasirena'
+        'ohmy', 'wont', 'whos', 'shouldnt', 'lasirena', 'espanol'
     )
     corrections = (
         'I\'m', 'They\'ll', 'Can\'t', 'I\'ve', 'She\'s', 'They\'re', 'T-Shirt', 'Don\'t', 'Wasn\'t', 'You\'re', 'I\'ll', 'What\'s', 'Didn\'t',
         'Isn\'t', 'Señor', 'Señorita', 'That\'s', 'G-String', 'MILFs', 'O\'Reilly', 'BangBros', 'B-Day', 'DMs', 'BFFs',
-        'OhMy', 'Won\'t', 'Who\'s', 'Shouldn\'t', 'LaSirena'
+        'OhMy', 'Won\'t', 'Who\'s', 'Shouldn\'t', 'LaSirena', 'español'
     )
     pattern = re.compile(r'\d|\W')
     cleanWord = re.sub(pattern, '', word)
@@ -523,7 +538,7 @@ def getDictValuesFromKey(dictDB, identifier):
     for key, values in dictDB.items():
         keys = list(key) if type(key) == tuple else [key]
         for key in keys:
-            if key.lower() == identifier.lower():
+            if str(key).lower() == str(identifier).lower():
                 return values
 
     return []
@@ -533,7 +548,7 @@ def getDictKeyFromValues(dictDB, identifier):
     keys = []
     for key, values in dictDB.items():
         for item in values:
-            if item.lower() == identifier.lower():
+            if str(item).lower() == str(identifier).lower():
                 keys.append(key)
                 break
 
@@ -556,3 +571,15 @@ def strip_tags(html):
     s = MLStripper()
     s.feed(html)
     return s.get_data()
+
+
+def functionTimer(fun, msg, *args):
+    start_time = time.time()
+    fun(*args)
+    end_time = time.time()
+    Log('%s: %s' % (msg, str(timedelta(seconds=(end_time - start_time)))))
+
+
+def rreplace(s, r, n, o):
+    li = s.rsplit(r, o)
+    return n.join(li)

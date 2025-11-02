@@ -38,7 +38,7 @@ def search(results, lang, siteNum, searchData):
     return results
 
 
-def update(metadata, lang, siteNum, movieGenres, movieActors, art):
+def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, art):
     metadata_id = str(metadata.id).split('|')
     sceneURL = PAutils.Decode(metadata_id[0])
     if not sceneURL.startswith('http'):
@@ -69,7 +69,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
     # Tagline and Collection(s)
     tagline = PAsearchSites.getSearchSiteName(siteNum)
     metadata.tagline = tagline
-    metadata.collections.add(tagline)
+    movieCollections.addCollection(tagline)
 
     # Release Date
     date = detailsPageElements.xpath('//meta[@property="article:published_time"]/@content')[0].split('T')[0].strip()
@@ -88,7 +88,11 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
         movieGenres.addGenre(genreName)
 
     # Actor(s)
-    for actorLink in detailsPageElements.xpath('//div[contains(@class, "tagsmodels")][./img[@alt="model icon"]]//a'):
+    if siteNum == 896:
+        actorXpath = '//div[contains(@class, "tagsmodels")]//a'
+    else:
+        actorXpath = '//div[contains(@class, "tagsmodels")][./img[@alt="model icon"]]//a'
+    for actorLink in detailsPageElements.xpath(actorXpath):
         actorName = actorLink.text_content().strip()
         actorPhotoURL = ''
 

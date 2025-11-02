@@ -19,7 +19,7 @@ def search(results, lang, siteNum, searchData):
     return results
 
 
-def update(metadata, lang, siteNum, movieGenres, movieActors, art):
+def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, art):
     metadata_id = str(metadata.id).split('|')
     sceneURL = PAutils.Decode(metadata_id[0])
     if not sceneURL.startswith('http'):
@@ -34,7 +34,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
     metadata.studio = PAsearchSites.getSearchSiteName(siteNum)
 
     # Tagline and Collection(s)
-    metadata.collections.add(metadata.studio)
+    movieCollections.addCollection(metadata.studio)
 
     # Release Date
     sceneDate = detailsPageElements.xpath('//div[contains(@class, "info mt-5")]')[0].text_content().split('•')[1].strip()
@@ -47,7 +47,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
     if description:
         metadata.summary = description[0].text_content().strip()
     else:
-        metadata.summary = detailsPageElements.xpath('//p[@class="description"]')[0].text_content().strip()
+        metadata.summary = detailsPageElements.xpath('//details[@class="description"]')[0].text_content().strip()
 
     # Genres
     for genreLink in detailsPageElements.xpath('//div[contains(@class, "tag-list")]'):

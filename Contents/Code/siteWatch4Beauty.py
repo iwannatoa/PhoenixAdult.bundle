@@ -31,7 +31,7 @@ def search(results, lang, siteNum, searchData):
         # no model matches, so try to get the scene info with the searchData.title
         Log('No model matches, attempting to match scene title')
 
-        modelsReq = PAutils.HTTPRequest('%s/%s/models' % (w4bApiUrl('scene'), searchData.title.replace(' ', '-').lower()))
+        modelsReq = PAutils.HTTPRequest('%s/%s/models' % (w4bApiUrl('scene'), slugify(searchData.title)))
         modelsJson = modelsReq.json()
         if modelsJson:
             modelsJson = json.loads(modelsReq.text)
@@ -61,7 +61,7 @@ def search(results, lang, siteNum, searchData):
     return results
 
 
-def update(metadata, lang, siteNum, movieGenres, movieActors, art):
+def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, art):
     metadata_id = str(metadata.id).split('|')
 
     modelString = metadata_id[0]
@@ -91,7 +91,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
     # Tagline and Collection(s)
     tagline = PAsearchSites.getSearchSiteName(siteNum)
     metadata.tagline = tagline
-    metadata.collections.add(tagline)
+    movieCollections.addCollection(tagline)
 
     # Release Date
     dateObj = parse(scene.get('issue_datetime'))
@@ -147,9 +147,9 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
 
 
 def w4bApiUrl(type):
-    key = '3yAjOB66l2A566U' if type == 'model' else '7Wywy44w9G9Bbtf'
+    key = 'models' if type == 'model' else 'issues'
     return 'https://www.watch4beauty.com/api/%s' % key
 
 
 def w4bArtUrl():
-    return 'https://s5q3w2t8.ssl.hwcdn.net/production/'
+    return 'https://mh-c75c2d6726.watch4beauty.com/production/'

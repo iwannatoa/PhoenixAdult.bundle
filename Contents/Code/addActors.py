@@ -39,7 +39,7 @@ def search(results, lang, siteNum, searchData):
     return results
 
 
-def update(metadata, lang, siteNum, movieGenres, movieActors, art):
+def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, art):
     metadata_id = str(metadata.id).split('|')
     sceneActors = PAutils.Decode(metadata_id[0])
     sceneDate = metadata_id[2]
@@ -58,11 +58,11 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
     # Studio
     if siteName:
         metadata.studio = siteName
-        metadata.collections.add(siteName)
+        movieCollections.addCollection(siteName)
 
     # Tagline and Collection(s)
     tagline = 'Actors Manually Added'
-    metadata.collections.add(tagline)
+    movieCollections.addCollection(tagline)
 
     # Release Date
     if sceneDate:

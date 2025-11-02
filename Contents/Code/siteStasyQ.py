@@ -31,7 +31,7 @@ def search(results, lang, siteNum, searchData):
     return results
 
 
-def update(metadata, lang, siteNum, movieGenres, movieActors, art):
+def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, art):
     metadata_id = str(metadata.id).split('|')
     sceneURL = PAutils.Decode(metadata_id[0])
     releaseDate = metadata_id[2]
@@ -52,7 +52,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
     metadata.studio = 'StasyQ'
 
     # Tagline and Collection(s)
-    metadata.collections.add('StasyQ')
+    movieCollections.addCollection('StasyQ')
 
     # Release Date
     if releaseDate:

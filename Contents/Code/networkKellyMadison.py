@@ -10,25 +10,23 @@ def search(results, lang, siteNum, searchData):
         searchData.title = searchData.title.replace(parts[0], '', 1).strip()
 
     searchData.encoded = urllib.quote(searchData.title)
-    req = PAutils.HTTPRequest(PAsearchSites.getSearchSearchURL(siteNum) + searchData.encoded, cookies={'nats': 'MC4wLjMuNTguMC4wLjAuMC4w'})
-    searchResults = HTML.ElementFromString(req.json()['html'])
-    for searchResult in searchResults.xpath('//div[@class="card episode"]'):
-        titleNoFormatting = searchResult.xpath('.//a[@class="text-km"] | .//a[@class="text-pf"] | .//a[@class="text-tf"]')[0].text_content().strip()
+    searchUrl = '%s%s&type=episodes' % (PAsearchSites.getSearchSearchURL(siteNum), searchData.encoded)
+    req = PAutils.HTTPRequest(searchUrl, cookies={'nats': 'MC4wLjMuNTguMC4wLjAuMC4w'})
+    searchResults = HTML.ElementFromString(req.text)
+    for searchResult in searchResults.xpath('//a[contains(@class, "video-card")]'):
+        titleNoFormatting = searchResult.xpath('.//h3')[0].text_content().strip()
 
-        sceneURL = searchResult.xpath('.//a[@class="text-km"] | .//a[@class="text-pf"] | .//a[@class="text-tf"]')[0].get('href')
-        episodeID = searchResult.xpath('.//span[@class="card-footer-item"]')[-1].text_content().split('#')[-1].strip()
+        sceneURL = searchResult.get('href')
+        episodeID = searchResult.xpath('.//span[@class="video-title"]')[0].text_content().split('#')[-1].strip()
         searchID = sceneURL.split('/')[-1]
+        subsite = searchResult.xpath('.//span[@class="badge badge-brand"]')[0].text_content().strip().replace('PF', 'PornFidelity').replace('TF', 'TeenFidelity').replace('KM', 'Kelly Madison')
         curID = PAutils.Encode(sceneURL)
 
-        title = PAutils.Encode(titleNoFormatting)
-        result = PAutils.Encode(HTML.StringFromElement(searchResult))
-
-        date = searchResult.xpath('.//span[.//i[@class="far fa-calendar-alt"]]')
-        try:
-            releaseDate = datetime.strptime(date[0].text_content().strip(), '%b %d, %Y').strftime('%Y-%m-%d')
-        except:
+        date = searchResult.xpath('.//time')
+        if date:
+            releaseDate = datetime.strptime(date[0].text_content().strip(), '%m/%d/%y').strftime('%Y-%m-%d')
+        else:
             releaseDate = searchData.dateFormat() if searchData.date else ''
-
         displayDate = releaseDate if date else ''
 
         if sceneID and int(sceneID) == int(episodeID):
@@ -40,12 +38,12 @@ def search(results, lang, siteNum, searchData):
         else:
             score = 100 - Util.LevenshteinDistance(searchData.title.lower(), titleNoFormatting.lower())
 
-        results.Append(MetadataSearchResult(id='%s|%d|%s|%s|%s' % (curID, siteNum, releaseDate, title, result), name='%s [%s] %s' % (titleNoFormatting, PAsearchSites.getSearchSiteName(siteNum), displayDate), score=score, lang=lang))
+        results.Append(MetadataSearchResult(id='%s|%d|%s' % (curID, siteNum, releaseDate), name='%s [%s] %s' % (titleNoFormatting, subsite, displayDate), score=score, lang=lang))
 
     return results
 
 
-def update(metadata, lang, siteNum, movieGenres, movieActors, art):
+def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, art):
     metadata_id = str(metadata.id).split('|')
     sceneURL = PAutils.Decode(metadata_id[0])
     sceneDate = metadata_id[2]
@@ -57,16 +55,16 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
 
     try:
         # Title
-        metadata.title = PAutils.parseTitle(detailsPageElements.xpath('//div[@class="level-left"]')[0].text_content().strip(), siteNum)
+        metadata.title = PAutils.parseTitle(detailsPageElements.xpath('//h1[contains(@class, "title")]')[0].text_content().strip(), siteNum)
 
         # Summary
-        metadata.summary = detailsPageElements.xpath('//div[@class="column is-three-fifths"]')[0].text_content().replace('Episode Summary', '').strip()
+        metadata.summary = detailsPageElements.xpath('//div[contains(., "Episode Summary")]/p')[0].text_content().strip()
 
         # Studio
         metadata.studio = 'Kelly Madison Productions'
 
         # Actors
-        actors = detailsPageElements.xpath('//a[@class="is-underlined"]')
+        actors = detailsPageElements.xpath('//p[contains(., "Starring")]//a[contains(@href, "/models/")]')
     except:
         # Title
         metadata.title = PAutils.parseTitle(title, siteNum)
@@ -85,12 +83,12 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
     else:
         tagline = PAsearchSites.getSearchSiteName(siteNum)
     metadata.tagline = tagline
-    metadata.collections.add(tagline)
+    movieCollections.addCollection(tagline)
 
     # Release Date
-    date = detailsPageElements.xpath('//li[.//i[@class="fas fa-calendar"]]')
+    date = detailsPageElements.xpath('//p[contains(., "Published")]/strong')
     if date:
-        date_object = datetime.strptime(date[0].text_content().split(':')[-1].strip(), '%Y-%m-%d')
+        date_object = datetime.strptime(date[0].text_content().strip(), '%Y-%m-%d')
         metadata.originally_available_at = date_object
         metadata.year = metadata.originally_available_at.year
     elif sceneDate:
@@ -122,8 +120,9 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
             movieActors.addActor(actorName, actorPhotoURL)
 
     # Posters/Background
-    art.append('https://tour-cdn.kellymadisonmedia.com/content/episode/poster_image/%s/poster.jpg' % sceneURL.rsplit('/')[-1])
-    art.append('https://tour-cdn.kellymadisonmedia.com/content/episode/episode_thumb_image_1/%s/1.jpg' % sceneURL.rsplit('/')[-1])
+    art.append('https://tour-content-cdn.kellymadisonmedia.com/episode/poster_image/%s/poster.jpg' % sceneURL.rsplit('/')[-1])
+    art.append('https://tour-content-cdn.kellymadisonmedia.com/episode/episode_thumb_image_1/%s/1.jpg' % sceneURL.rsplit('/')[-1])
+    art.append('https://tour-content-cdn.kellymadisonmedia.com/episode/episode_thumb_image_1/%s/01.jpg' % sceneURL.rsplit('/')[-1])
 
     Log('Artwork found: %d' % len(art))
     for idx, posterUrl in enumerate(art, 1):

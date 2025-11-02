@@ -20,7 +20,7 @@ def search(results, lang, siteNum, searchData):
     return results
 
 
-def update(metadata, lang, siteNum, movieGenres, movieActors, art):
+def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, art):
     metadata_id = str(metadata.id).split('|')
     sceneURL = PAutils.Decode(metadata_id[0])
     sceneDate = ''
@@ -41,8 +41,12 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
     metadata.studio = '5Kporn'
 
     # Tagline and Collection(s)
-    metadata.tagline = PAsearchSites.getSearchSiteName(siteNum)
-    metadata.collections.add(metadata.tagline)
+    if '5KT' in sceneURL:
+        tagline = '5Kteens'
+    else:
+        tagline = PAsearchSites.getSearchSiteName(siteNum)
+    metadata.tagline = tagline
+    movieCollections.addCollection(metadata.tagline)
 
     # Date
     date = detailsPageElements.xpath('//h5[contains(., "Published")]')
@@ -93,11 +97,12 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
 
     Log('Artwork found: %d' % len(art))
     images = []
+    postersClean = list()
     posterExists = False
     for idx, posterUrl in enumerate(art, 1):
         # Remove Timestamp and Token from URL
         cleanUrl = re.sub(r'\/expiretime=.*?(?<=\/).*?(?=\/)', '', posterUrl.split('?')[0])
-        art[idx - 1] = cleanUrl
+        postersClean.append(cleanUrl)
         if not PAsearchSites.posterAlreadyExists(cleanUrl, metadata):
             # Download image file for analysis
             try:
@@ -131,5 +136,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
                     metadata.posters[cleanUrl] = Proxy.Media(image.content, sort_order=idx)
             except:
                 pass
+
+    art.extend(postersClean)
 
     return metadata

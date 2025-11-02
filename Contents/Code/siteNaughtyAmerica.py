@@ -36,7 +36,7 @@ def search(results, lang, siteNum, searchData):
     else:
         sceneID = None
 
-    searchURL = PAsearchSites.getSearchSearchURL(siteNum) + slugify(searchData.title, separator='+')
+    searchURL = '%s%s&_gl=1' % (PAsearchSites.getSearchSearchURL(siteNum), slugify(searchData.title, separator='+'))
     if sceneID:
         scenePageElements = getNaughtyAmerica(sceneID)
         titleNoFormatting = PAutils.parseTitle(scenePageElements['title'], siteNum)
@@ -66,7 +66,7 @@ def search(results, lang, siteNum, searchData):
             pagination = 3
 
         if 'pornstar' in req.url:
-            searchxPath = '//div[@class="scene-item"]'
+            searchxPath = '//div[contains(@class, "scene-item")]'
         else:
             searchxPath = '//div[@class="scene-grid-item"]'
 
@@ -75,7 +75,7 @@ def search(results, lang, siteNum, searchData):
                 titleNoFormatting = PAutils.parseTitle(searchResult.xpath('./a//@title')[0].strip(), siteNum)
                 curID = int(searchResult.xpath('./a/@data-scene-id')[0])
                 releaseDate = parse(searchResult.xpath('./p[@class="entry-date"]/text()')[0]).strftime('%Y-%m-%d')
-                siteName = searchResult.xpath('./a[@class="site-title"]')[0].text_content()
+                siteName = searchResult.xpath('.//a[@class="site-title"]')[0].text_content()
 
                 if searchData.date:
                     score = 100 - Util.LevenshteinDistance(searchData.date, releaseDate)
@@ -96,7 +96,7 @@ def search(results, lang, siteNum, searchData):
     return results
 
 
-def update(metadata, lang, siteNum, movieGenres, movieActors, art):
+def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, art):
     metadata_id = str(metadata.id).split('|')
     sceneID = metadata_id[0]
 
@@ -114,7 +114,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
     # Tagline and Collection(s)
     tagline = detailsPageElements['site']
     metadata.tagline = tagline
-    metadata.collections.add(tagline)
+    movieCollections.addCollection(tagline)
 
     # Release Date
     date_object = detailsPageElements['published_at']
@@ -136,10 +136,10 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
         actorName = actorLink
         actorPhotoURL = ''
 
-        actorsPageURL = 'https://www.naughtyamerica.com/pornstar/' + actorName.lower().replace(' ', '-').replace("'", '')
+        actorsPageURL = 'https://www.naughtyamerica.com/pornstar/%s' % actorName.lower().replace(' ', '-').replace("'", '')
         req = PAutils.HTTPRequest(actorsPageURL)
         actorsPageElements = HTML.ElementFromString(req.text)
-        img = actorsPageElements.xpath('//img[@class="performer-pic"]/@src')
+        img = actorsPageElements.xpath('//img[contains(@class, "performer-pic")]/@data-src')
         if img:
             actorPhotoURL = 'https:' + img[0]
 

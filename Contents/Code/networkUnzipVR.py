@@ -20,11 +20,11 @@ def search(results, lang, siteNum, searchData):
     return results
 
 
-def update(metadata, lang, siteNum, movieGenres, movieActors, art):
+def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, art):
     metadata_id = str(metadata.id).split('|')
     sceneId = PAutils.Decode(metadata_id[0])
     basePath = PAsearchSites.getSearchBaseURL(siteNum).replace('www', 'content')
-    sceneURL = basePath + '/api/content/v1/videos/' + sceneId
+    sceneURL = '%s/api/content/v1/videos/%s' % (basePath, sceneId)
     req = PAutils.HTTPRequest(sceneURL)
     detailsPageElements = req.json()['data']['item']
 
@@ -32,20 +32,15 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
     metadata.title = detailsPageElements['title']
 
     # Summary
-    try:
-        raw = detailsPageElements['description']
-        summary = HTML.ElementFromString(raw).xpath('//p')[0].text_content().strip()
-        metadata.summary = summary
-    except:
-        pass
+    metadata.summary = PAutils.strip_tags(detailsPageElements['description'])
 
     # Studio
-    metadata.studio = 'VR Bangers'
+    metadata.studio = 'Unzip VR'
 
     # Tagline and Collection(s)
     tagline = PAsearchSites.getSearchSiteName(siteNum)
     metadata.tagline = tagline
-    metadata.collections.add(tagline)
+    movieCollections.addCollection(tagline)
 
     # Release Date
     date = detailsPageElements['publishedAt']
@@ -62,9 +57,19 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
     for actorLink in detailsPageElements['models']:
         actorName = actorLink['title']
         actorPhotoURL = ''
+
         if 'featuredImage' in actorLink and 'permalink' in actorLink['featuredImage']:
             actorPhotoURL = basePath + actorLink['featuredImage']['permalink']
-        movieActors.addActor(actorName, actorPhotoURL)
+        else:
+            try:
+                modelURL = '%s/api/content/v1/models/%s' % (basePath, actorLink['slug'])
+                req = PAutils.HTTPRequest(modelURL)
+                modelPageElements = req.json()['data']['item']
+                actorPhotoURL = basePath + modelPageElements['featuredImage']['permalink']
+            except:
+                pass
+
+        movieActors.addActor(actorName, actorPhotoURL, gender='female')
 
     # Posters
     maybeSlider = detailsPageElements['sliderImage']

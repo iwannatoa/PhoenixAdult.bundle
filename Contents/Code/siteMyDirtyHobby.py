@@ -4,93 +4,114 @@ import PAutils
 supported_lang = ['en', 'de', 'fr', 'es', 'it']
 
 
-def search(results, lang, siteNum, searchData):
-    url = PAsearchSites.getSearchSearchURL(siteNum) + searchData.encoded
+def getJSONfromAPI(query, lang, siteNum):
+    params = json.dumps({'country': 'us', 'keyword': query, 'user_language': lang})
+    headers = {
+        'Content-Type': 'application/json',
+        'Accept-Language': lang,
+    }
+    data = PAutils.HTTPRequest(PAsearchSites.getSearchSearchURL(siteNum), headers=headers, params=params).json()
 
-    headers = {}
+    return data['items']
+
+
+def getJSONfromPage(url, lang, siteNum):
+    headers = {
+        'Referer': PAsearchSites.getSearchBaseURL(siteNum)
+    }
+    cookies = {'AGEGATEPASSED': '1'}
+
     if lang in supported_lang:
-        url = url.replace('://en.', '://%s.' % lang, 1)
+        url = url.replace('://www.', '://%s.' % lang, 1)
         headers['Accept-Language'] = lang
 
-    req = PAutils.HTTPRequest(url, headers=headers)
-    searchResults = HTML.ElementFromString(req.text)
-    for searchResult in searchResults.xpath('//div[@id="search-results"]//li[contains(@class, "video-panel-item")]'):
-        sceneURL = searchResult.xpath('.//a/@href')[0]
-        titleNoFormatting = searchResult.xpath('.//h4')[0].text_content().strip()
+    req = PAutils.HTTPRequest(url, headers=headers, cookies=cookies)
+    detailsPageElements = HTML.ElementFromString(req.text)
 
-        curID = PAutils.Encode(sceneURL)
+    if req:
+        scriptData = detailsPageElements.xpath('//div[./div[@id="profile_page"]]/script')[0].text_content()
+        jsonData = re.search(r'\{.*\}', scriptData)
+        return json.loads(jsonData.group(0))
 
-        date = searchResult.xpath('//i[contains(@class, "fa-calendar")]/parent::dd')[0].text_content().strip()
-        releaseDate = parse(date).strftime('%Y-%m-%d')
+    return None
 
-        if searchData.date and releaseDate:
-            score = 100 - Util.LevenshteinDistance(searchData.date, releaseDate)
-        else:
-            score = 100 - Util.LevenshteinDistance(searchData.title.lower(), titleNoFormatting.lower())
 
-        results.Append(MetadataSearchResult(id='%s|%d' % (curID, siteNum), name='%s [MyDirtyHobby] %s' % (titleNoFormatting, releaseDate), score=score, lang=lang))
+def search(results, lang, siteNum, searchData):
+    searchResults = getJSONfromAPI(searchData.title, lang, siteNum)
+    for searchResult in searchResults:
+        if searchResult['contentType'] == 'video':
+            titleNoFormatting = searchResult['title']
+            userId = searchResult['u_id']
+            userVideoId = searchResult['uv_id']
+            userNickname = searchResult['nick']
+            cleanTitle = slugify(titleNoFormatting, separator='-', regex_pattern=r'[^-A-z0-9]+')
+            sceneURL = '%s/profil/%s-%s/videos/%s-%s' % (PAsearchSites.getSearchBaseURL(siteNum), userId, userNickname, userVideoId, cleanTitle)
+            curID = PAutils.Encode(sceneURL)
+
+            date = searchResult['onlineAt']
+            if date:
+                try:
+                    releaseDate = datetime.strptime(date, '%d/%m/%y').strftime('%Y-%m-%d')
+                except:
+                    releaseDate = parse(searchResult['latestPictureChange'].split('T')[0].strip()).strftime('%Y-%m-%d')
+            else:
+                releaseDate = searchData.dateFormat() if searchData.date else ''
+
+            displayDate = releaseDate if date else ''
+
+            if searchData.date and displayDate:
+                score = 100 - Util.LevenshteinDistance(searchData.date, releaseDate)
+            else:
+                score = 100 - Util.LevenshteinDistance(searchData.title.lower(), titleNoFormatting.lower())
+
+            results.Append(MetadataSearchResult(id='%s|%d|%s' % (curID, siteNum, releaseDate), name='%s [%s/%s] %s' % (PAutils.parseTitle(titleNoFormatting, siteNum), PAsearchSites.getSearchSiteName(siteNum), userNickname, displayDate), score=score, lang=lang))
 
     return results
 
 
-def update(metadata, lang, siteNum, movieGenres, movieActors, art):
+def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, art):
     metadata_id = str(metadata.id).split('|')
     sceneURL = PAutils.Decode(metadata_id[0])
 
-    if not sceneURL.startswith('http'):
-        sceneURL = PAsearchSites.getSearchBaseURL(siteNum) + sceneURL
-
-    headers = {}
-    if lang in supported_lang:
-        sceneURL = sceneURL.replace('://en.', '://%s.' % lang, 1)
-        headers['Accept-Language'] = lang
-
-    req = PAutils.HTTPRequest(sceneURL, headers=headers)
-    detailsPageElements = HTML.ElementFromString(req.text)
+    detailsPageElements = getJSONfromPage(sceneURL, lang, siteNum)
+    videoPageElements = detailsPageElements['content']
+    userPageElements = detailsPageElements['profileHeader']['profileAvatar']
 
     # Title
-    metadata.title = detailsPageElements.xpath('//h1')[0].text_content().strip()
+    metadata.title = PAutils.parseTitle(videoPageElements['title']['text'], siteNum).strip()
 
     # Summary
-    summary = detailsPageElements.xpath('//div[contains(@class, "video-description")]/p/text()')[0].strip()
-    metadata.summary = summary
+    metadata.summary = videoPageElements['description']['text'].strip()
 
     # Studio
-    metadata.studio = 'MyDirtyHobby'
+    metadata.studio = 'My Dirty Hobby'
 
     # Tagline and Collection(s)
-    tagline = detailsPageElements.xpath('//div[@class="info-wrapper"]//a')[0].text_content().strip()
+    tagline = userPageElements['title'].strip()
     metadata.tagline = tagline
-    metadata.collections.add(tagline)
-    metadata.collections.add('MyDirtyHobby')
+    movieCollections.addCollection(tagline)
 
     # Release Date
-    date = detailsPageElements.xpath('//i[contains(@class, "fa-calendar")]/parent::dd')[0].text_content().strip()
+    date = videoPageElements['subtitle']['text'].strip()
     if date:
         date_object = parse(date)
         metadata.originally_available_at = date_object
         metadata.year = metadata.originally_available_at.year
 
     # Genres
-    for genreLink in detailsPageElements.xpath('//dd/a[@title and contains(@href, "/videos/")]'):
-        genreName = genreLink.text_content().strip().lower()
+    for genreLink in videoPageElements['categories']['items']:
+        genreName = genreLink['text'].strip().lower()
 
         movieGenres.addGenre(genreName)
 
     # Actor(s)
-    for actorLink in detailsPageElements.xpath('//div[contains(@class, "profile-head-wrapper")]'):
-        actorName = actorLink.xpath('.//span[contains(@class, "profile")]')[0].text_content().strip()
-        actorPhotoURL = actorLink.xpath('.//div[@id="profile-avatar"]//img/@src')[0]
+    actorName = userPageElements['title'].strip()
+    actorPhotoURL = userPageElements['thumbImg']['src'].strip()
 
-        movieActors.addActor(actorName, actorPhotoURL)
+    movieActors.addActor(actorName, actorPhotoURL)
 
     # Posters
-    xpaths = [
-        '//div[@class="video-preview-image"]//img/@src',
-    ]
-    for xpath in xpaths:
-        for poster in detailsPageElements.xpath(xpath):
-            art.append(poster)
+    art.append(videoPageElements['videoNotPurchased']['thumbnail']['src'].strip())
 
     Log('Artwork found: %d' % len(art))
     for idx, posterUrl in enumerate(art, 1):

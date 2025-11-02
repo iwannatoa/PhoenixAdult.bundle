@@ -8,7 +8,8 @@ class PhoenixActors:
     directorsTable = []
     producersTable = []
 
-    def addActor(self, newActor, newPhoto):
+    def addActor(self, newActor, newPhoto, **kwargs):
+        newGender = kwargs.pop('gender', '')
         newActor = newActor.encode('UTF-8') if isinstance(newActor, unicode) else newActor
         newPhoto = newPhoto.encode('UTF-8') if isinstance(newPhoto, unicode) else newPhoto
 
@@ -16,6 +17,7 @@ class PhoenixActors:
             self.actorsTable.append({
                 'name': newActor,
                 'photo': newPhoto,
+                'gender': newGender,
             })
 
     def addDirector(self, newDirector, newPhoto):
@@ -79,6 +81,7 @@ class PhoenixActors:
 
                             if searchStudioIndex == 32 and actorName != 'QueenSnake':
                                 actorName = '%s QueenSnake' % actorName
+                            searchActorName = actorName.lower()
 
                             break
 
@@ -92,7 +95,11 @@ class PhoenixActors:
                         actorName = newActor.strip()
                         displayActorName = actorName.replace('\xc2\xa0', '').strip()
 
-                        (actorPhoto, gender) = actorDBfinder(displayActorName, metadata)
+                        (actorPhoto, gender) = actorDBfinder(displayActorName, metadata, 'actor')
+                        if actorLink['gender']:
+                            gender = actorLink['gender']
+                        else:
+                            actorLink['gender'] = gender
                         Log('Actor: %s %s' % (displayActorName, actorPhoto))
                         Log('Gender: %s' % gender)
                         if Prefs['gender_enable']:
@@ -104,20 +111,43 @@ class PhoenixActors:
                         role.photo = actorPhoto
                 else:
                     displayActorName = actorName.replace('\xc2\xa0', '').strip()
+                    localActorPhoto = ''
                     req = None
-                    if actorPhoto:
+
+                    if not Prefs['actor_cache_replace_enable']:
+                        (localActorPhoto, gender) = getFromLocalStorage(displayActorName, 'actor', metadata) if Prefs['actor_cache_enable'] else ('', '')
+
+                    if localActorPhoto:
+                        actorPhoto = localActorPhoto
+                        if gender:
+                            actorLink['gender'] = gender
+                    elif actorPhoto:
                         req = PAutils.HTTPRequest(actorPhoto, 'HEAD', bypass=False)
 
-                    if not req or not req.ok:
-                        (actorPhoto, gender) = actorDBfinder(displayActorName, metadata)
-                        Log('Gender: %s' % gender)
-                        if Prefs['gender_enable']:
-                            if gender == 'male':
-                                continue
-                    elif Prefs['gender_enable']:
+                        if req.ok and Prefs['actor_cache_enable']:
+                            (actorPhoto, gender) = cacheActorPhoto(actorPhoto, displayActorName, actorLink['gender'], 'actor', bypass=False)
+                            actorLink['gender'] = gender
+
+                    if (not req or not req.ok) and not localActorPhoto:
+                        (actorPhoto, gender) = actorDBfinder(displayActorName, metadata, 'actor')
+                        if not actorLink['gender']:
+                            actorLink['gender'] = gender
+                        else:
+                            gender = actorLink['gender']
+
+                        if actorPhoto and Prefs['actor_cache_enable']:
+                            (actorPhoto, gender) = cacheActorPhoto(actorPhoto, displayActorName, actorLink['gender'], 'actor', bypass=False)
+                            actorLink['gender'] = gender
+                    elif actorLink['gender']:
+                        gender = actorLink['gender']
+                    elif not actorLink['gender'] and Prefs['gender_enable']:
                         gender = genderCheck(actorName)
+                        actorLink['gender'] = gender
+
+                    if Prefs['gender_enable']:
                         Log('Gender: %s' % gender)
-                        if gender == 'male':
+                        if actorLink['gender'] == 'male':
+                            Log('Actor: %s %s' % (displayActorName, actorPhoto))
                             continue
 
                     if actorPhoto:
@@ -173,7 +203,7 @@ class PhoenixActors:
                         directorName = newDirector.strip()
                         displayDirectorName = directorName.replace('\xc2\xa0', '').strip()
 
-                        (directorPhoto, gender) = actorDBfinder(displayDirectorName, metadata)
+                        (directorPhoto, gender) = actorDBfinder(displayDirectorName, metadata, 'director')
 
                         Log('Director: %s %s' % (displayDirectorName, directorPhoto))
                         director = metadata.directors.new()
@@ -181,12 +211,25 @@ class PhoenixActors:
                         director.photo = directorPhoto
                 else:
                     displayDirectorName = directorName.replace('\xc2\xa0', '').strip()
+                    localDirectorPhoto = ''
                     req = None
-                    if directorPhoto:
+
+                    if not Prefs['actor_cache_replace_enable']:
+                        (localDirectorPhoto, gender) = getFromLocalStorage(displayDirectorName, 'director', metadata) if Prefs['actor_cache_enable'] else ('', '')
+
+                    if localDirectorPhoto:
+                        directorPhoto = localDirectorPhoto
+                    elif directorPhoto:
                         req = PAutils.HTTPRequest(directorPhoto, 'HEAD', bypass=False)
 
+                        if req.ok and Prefs['actor_cache_enable']:
+                            (directorPhoto, gender) = cacheActorPhoto(directorPhoto, displayDirectorName, '', 'director', bypass=False)
+
                     if not req or not req.ok:
-                        (directorPhoto, gender) = actorDBfinder(displayDirectorName, metadata)
+                        (directorPhoto, gender) = actorDBfinder(displayDirectorName, metadata, 'director')
+
+                        if directorPhoto and Prefs['actor_cache_enable']:
+                            (directorPhoto, gender) = cacheActorPhoto(directorPhoto, displayDirectorName, '', 'director', bypass=False)
 
                     if directorPhoto:
                         directorPhoto = PAutils.getClearURL(directorPhoto)
@@ -241,7 +284,7 @@ class PhoenixActors:
                         producerName = newProducer.strip()
                         displayProducerName = producerName.replace('\xc2\xa0', '').strip()
 
-                        (producerPhoto, gender) = actorDBfinder(displayProducerName, metadata)
+                        (producerPhoto, gender) = actorDBfinder(displayProducerName, metadata, 'producer')
                         Log('Producer: %s %s' % (displayProducerName, producerPhoto))
 
                         producer = metadata.producers.new()
@@ -249,12 +292,25 @@ class PhoenixActors:
                         producer.photo = producerPhoto
                 else:
                     displayProducerName = producerName.replace('\xc2\xa0', '').strip()
+                    localProducerPhoto = ''
                     req = None
-                    if producerPhoto:
+
+                    if not Prefs['actor_cache_replace_enable']:
+                        (localProducerPhoto, gender) = getFromLocalStorage(displayProducerName, 'producer', metadata) if Prefs['actor_cache_enable'] else ('', '')
+
+                    if localProducerPhoto:
+                        producerPhoto = localProducerPhoto
+                    elif producerPhoto:
                         req = PAutils.HTTPRequest(producerPhoto, 'HEAD', bypass=False)
 
+                        if req.ok and Prefs['actor_cache_enable']:
+                            (producerPhoto, gender) = cacheActorPhoto(producerPhoto, displayProducerName, '', 'producer', bypass=False)
+
                     if not req or not req.ok:
-                        (producerPhoto, gender) = actorDBfinder(displayProducerName, metadata)
+                        (producerPhoto, gender) = actorDBfinder(displayProducerName, metadata, 'producer')
+
+                        if producerPhoto and Prefs['actor_cache_enable']:
+                            (producerPhoto, gender) = cacheActorPhoto(producerPhoto, displayProducerName, '', 'producer', bypass=False)
 
                     if producerPhoto:
                         producerPhoto = PAutils.getClearURL(producerPhoto)
@@ -265,10 +321,11 @@ class PhoenixActors:
                     producer.photo = producerPhoto
 
 
-def actorDBfinder(actorName, metadata):
+def actorDBfinder(actorName, metadata, type):
     actorEncoded = urllib.quote(re.sub(r'(?<=\w)\.\s(?=\w\.)', '', actorName).replace('.', ''))
 
     actorPhotoURL = ''
+    gender = ''
     databaseName = ''
 
     searchResults = {
@@ -291,6 +348,14 @@ def actorDBfinder(actorName, metadata):
     for sourceName in searchOrder:
         task = searchResults[sourceName]
 
+        if sourceName == 'Local Storage' and Prefs['actor_cache_replace_enable']:
+            continue
+
+        if sourceName == 'Local Storage':
+            actorEncoded = type
+        else:
+            actorEncoded = urllib.quote(re.sub(r'(?<=\w)\.\s(?=\w\.)', '', actorName).replace('.', ''))
+
         url = None
         try:
             (url, gender) = task(actorName, actorEncoded, metadata)
@@ -305,14 +370,30 @@ def actorDBfinder(actorName, metadata):
     if actorPhotoURL:
         Log('%s found in %s ' % (actorName, databaseName))
         Log('PhotoURL: %s' % actorPhotoURL)
+    elif (Prefs['gender_enable'] or Prefs['generic_image_enable']) and type == 'actor' and not gender:
+        gender = genderCheck(actorName)
+        Log('%s image not found' % actorName)
     else:
         Log('%s not found' % actorName)
+
+    if Prefs['generic_image_enable']:
+        if gender == 'female' and not actorPhotoURL:
+            actorPhotoURL = 'https://t3.ftcdn.net/jpg/00/97/03/72/360_F_97037264_ZZfCG8aa12o7NEZmnhVHGW49VOdfYcxy.jpg'
+        elif gender == 'male' and not actorPhotoURL:
+            actorPhotoURL = 'https://t3.ftcdn.net/jpg/01/13/46/18/240_F_113461869_W12s5AqhOOZF0YT3n3izlwQLzj82MGsj.jpg'
 
     return actorPhotoURL, gender
 
 
 def genderCheck(actorName):
     actorEncoded = urllib.quote(re.sub(r'(?<=\w)\.\s(?=\w\.)', '', actorName).replace('.', ''))
+    period_corrections = {
+        (r'^dr%20', 'Dr%2E%20'), (r'%20st%20', '%20St.%20'), (r'^j%20', 'J%2E%20')
+    }
+
+    for value in period_corrections:
+        actorEncoded = re.sub(value[0], value[1], actorEncoded, flags=re.IGNORECASE)
+
     gender = ''
 
     url = 'http://www.iafd.com/results.asp?searchtype=comprehensive&searchstring=' + actorEncoded
@@ -404,26 +485,74 @@ def getFromIndexxx(actorName, actorEncoded, metadata):
         img = actorPage.xpath('//img[@class="model-img"]/@src')
         if img:
             actorPhotoURL = img[0]
-            actorPhotoURL = cacheActorPhoto(actorPhotoURL, actorName, headers={'Referer': actorPageURL})
+            (actorPhotoURL, gender) = cacheActorPhoto(actorPhotoURL, actorName, 'female', 'actor', headers={'Referer': actorPageURL})
 
     return actorPhotoURL, 'female'
 
 
 def getFromAdultDVDEmpire(actorName, actorEncoded, metadata):
+    token = Prefs['adultempire_login_token']
+    if token:
+        cookies = {
+            'ageConfirmed': 'true',
+            'etoken': token
+        }
+    else:
+        cookies = {'ageConfirmed': 'true'}
+
     actorPhotoURL = ''
+    gender = ''
+    results = []
 
-    req = PAutils.HTTPRequest('https://www.adultdvdempire.com/performer/search?q=' + actorEncoded)
-    actorSearch = HTML.ElementFromString(req.text)
-    actorPageURL = actorSearch.xpath('//div[@id="performerlist"]/div//a/@href')
-    if actorPageURL:
-        actorPageURL = 'https://www.adultdvdempire.com' + actorPageURL[0]
-        req = PAutils.HTTPRequest(actorPageURL)
-        actorPage = HTML.ElementFromString(req.text)
-        img = actorPage.xpath('//div[contains(@class, "performer-image-container")]/a/@href')
-        if img:
-            actorPhotoURL = img[0]
+    req = PAutils.HTTPRequest('https://www.adultdvdempire.com/performer/search?fq=ag_cast_gender%3AF&fq=' + actorEncoded, cookies=cookies)
+    femaleActorSearch = HTML.ElementFromString(req.text)
+    req = PAutils.HTTPRequest('https://www.adultdvdempire.com/performer/search?fq=ag_cast_gender%3AT&fq=' + actorEncoded, cookies=cookies)
+    transActorSearch = HTML.ElementFromString(req.text)
+    req = PAutils.HTTPRequest('https://www.adultdvdempire.com/hottest-pornstars.html?fq=ag_cast_gender%3AM&fq=' + actorEncoded, cookies=cookies)
+    maleActorSearch = HTML.ElementFromString(req.text)
 
-    return actorPhotoURL, ''
+    searchResults = femaleActorSearch.xpath('//div[@id="performerlist"]/div')
+    searchResults.extend(transActorSearch.xpath('//div[@id="performerlist"]/div'))
+
+    lastScore = 100
+    for actor in searchResults:
+        actorSeachName = actor.text_content().strip()
+
+        resultScore = Util.LevenshteinDistance(actorName, actorSeachName)
+
+        if 'nophoto' in actor.xpath('.//a//img/@src')[0]:
+            resultScore = resultScore + 1
+
+        if resultScore == lastScore:
+            results.append([actor, 'female'])
+        elif resultScore < lastScore:
+            lastScore = resultScore
+            results = [[actor, 'female']]
+
+    for actor in maleActorSearch.xpath('//div[@id="performerlist"]/div'):
+        actorSeachName = actor.text_content().strip()
+
+        resultScore = Util.LevenshteinDistance(actorName, actorSeachName)
+
+        if 'nophoto' in actor.xpath('.//a//img/@src')[0]:
+            resultScore = resultScore + 1
+
+        if resultScore == lastScore:
+            results.append([actor, 'male'])
+        elif resultScore < lastScore:
+            lastScore = resultScore
+            results = [[actor, 'male']]
+
+    if results:
+        actor = random.choice(results)
+        imgLink = actor[0].xpath('.//a//img/@src')[0]
+        imgID = imgLink.split('actor/')[-1].split('_')[0].split('/')[-1]
+
+        if imgID != 'nophoto':
+            gender = actor[1]
+            actorPhotoURL = 'https://imgs1cdn.adultempire.com/actors/%sh.jpg' % imgID
+
+    return actorPhotoURL, gender
 
 
 def getFromBoobpedia(actorName, actorEncoded, metadata):
@@ -455,10 +584,16 @@ def getFromBabesandStars(actorName, actorEncoded, metadata):
 def getFromIAFD(actorName, actorEncoded, metadata):
     actorPhotoURL = ''
     gender = ''
-    req = PAutils.HTTPRequest('http://www.iafd.com/results.asp?searchtype=comprehensive&searchstring=' + actorEncoded.replace('.', ''))
+    period_corrections = {
+        (r'^dr%20', 'Dr%2E%20'), (r'%20st%20', '%20St.%20'), (r'^j%20', 'J%2E%20')
+    }
+
+    for value in period_corrections:
+        actorEncoded = re.sub(value[0], value[1], actorEncoded, flags=re.IGNORECASE)
+
+    req = PAutils.HTTPRequest('http://www.iafd.com/results.asp?searchtype=comprehensive&searchstring=' + actorEncoded)
 
     actorSearch = HTML.ElementFromString(req.text)
-    actorThumbs = actorSearch.xpath('//table[@id="tblFem" or @id="tblMal"]//tbody//td[1]//a')
     actorResults = actorSearch.xpath('//table[@id="tblFem" or @id="tblMal"]//tbody//td[2]//a')
     actorAlias = actorSearch.xpath('//table[@id="tblFem" or @id="tblMal"]//tbody//td[@class="text-left"]')
     maleActorURLs = actorSearch.xpath('//table[@id="tblMal"]//tbody//td[2]//a/@href')
@@ -478,22 +613,24 @@ def getFromIAFD(actorName, actorEncoded, metadata):
                 if metadata.studio.replace(' ', '').lower() in actorAlias[idx].text_content().replace(' ', '').lower():
                     resultScore = 0
 
-            if 'th_iafd_ad' not in actorThumbs[idx].xpath('.//@src')[0]:
-                if resultScore == score:
-                    results.append(actor)
-                elif resultScore < score:
-                    score = resultScore
-                    results = [actor]
+            if resultScore == score:
+                results.append(actor)
+            elif resultScore < score:
+                score = resultScore
+                results = [actor]
 
         if results:
             actor = random.choice(results)
             actorPageURL = actor.xpath('./@href')[0]
 
     if actorPageURL:
-        req = PAutils.HTTPRequest('http://www.iafd.com' + actorPageURL)
+        if not actorPageURL.startswith('http'):
+            actorPageURL = 'http://www.iafd.com' + actorPageURL
+
+        req = PAutils.HTTPRequest(actorPageURL)
         actorPage = HTML.ElementFromString(req.text)
         img = actorPage.xpath('//div[@id="headshot"]//img/@src')
-        if img and 'nophoto' not in img[0]:
+        if img and 'nophoto' not in img[0] and 'th_iafd_ad' not in img[0]:
             actorPhotoURL = img[0]
 
         gender = 'male' if actorPageURL in maleActorURLs else 'female'
@@ -583,12 +720,12 @@ def getFromJAVDatabase(actorName, actorEncoded, metadata):
 
 def getFromLocalStorage(actorName, actorEncoded, metadata):
     actorPhotoURL = ''
-
     actorsResourcesPath = os.path.join(Core.bundle_path, 'Contents', 'Resources')
-    filename = filename = 'actor.' + actorName.replace(' ', '-').lower()
+    filename = '%s.%s' % (actorEncoded, actorName.replace(' ', '-').lower())
+
     for root, dirs, files in os.walk(actorsResourcesPath):
         for file in files:
-            if file.startswith(filename):
+            if filename == file.rsplit('.', 1)[0].split('_')[0]:
                 filename = file
                 break
         break
@@ -597,12 +734,17 @@ def getFromLocalStorage(actorName, actorEncoded, metadata):
     if localPhoto:
         actorPhotoURL = localPhoto
 
-    return actorPhotoURL, ''
+    gender = filename.split('_')[-1].split('.')[0] if '_' in filename else ''
+
+    return actorPhotoURL, gender
 
 
 # fetches a copy of an actor image and stores it locally, then returns a URL from which Plex can fetch it later
-def cacheActorPhoto(url, actorName, **kwargs):
+def cacheActorPhoto(url, actorName, gender, type, **kwargs):
     localPhoto = ''
+    checkGender = gender if gender else ''
+    baseFileName = '%s.%s' % (type, actorName.replace(' ', '-').lower())
+    validExtensions = ['.jpg', '.png', '.webp', '.tbn', '.jfif', '.jpe', '.jpeg']
 
     req = PAutils.HTTPRequest(url, **kwargs)
 
@@ -610,12 +752,31 @@ def cacheActorPhoto(url, actorName, **kwargs):
     if not os.path.exists(actorsResourcesPath):
         os.makedirs(actorsResourcesPath)
 
-    extension = mimetypes.guess_extension(req.headers['Content-Type'])
-    if extension:
-        filename = 'actor.' + actorName.replace(' ', '-').lower() + extension
+    # Check if file already exists
+    if not Prefs['actor_cache_replace_enable']:
+        for root, dirs, files in os.walk(actorsResourcesPath):
+            for file in files:
+                if baseFileName == file.rsplit('.', 1)[0].split('_')[0]:
+                    checkGender = file.split('_')[-1].split('.')[0] if '_' in file else checkGender
+                    return Resource.ExternalPath(file), checkGender
+
+    try:
+        extension = mimetypes.guess_extension(req.headers['Content-Type'], strict=False).replace('jpe', 'jpg')
+    except:
+        extension = '.%s' % url.split('.')[-1].split('?')[0]
+
+    if extension and extension in validExtensions:
+        if not checkGender and Prefs['gender_enable'] and type == 'actor':
+            checkGender = genderCheck(actorName)
+
+        if checkGender:
+            filename = '%s_%s%s' % (baseFileName, checkGender, extension)
+        else:
+            filename = '%s%s' % (baseFileName, extension)
+
         filepath = os.path.join(actorsResourcesPath, filename)
 
-        Log('Saving actor image as: "%s"' % filename)
+        Log('Saving %s image as: "%s"' % (type, filename))
         with codecs.open(filepath, 'wb+') as file:
             file.write(req.content)
 
@@ -623,4 +784,4 @@ def cacheActorPhoto(url, actorName, **kwargs):
         if not localPhoto:
             localPhoto = ''
 
-    return localPhoto, ''
+    return localPhoto, checkGender

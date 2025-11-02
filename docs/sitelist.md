@@ -70,8 +70,6 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
   - Jonathan Jordan XXX
   - Kaiia Eve
   - Kings of Fetish
-  - Lethal Hardcore
-  - Lethal Hardcore VR
   - LeWood
   - Only 3x
   - Pornstar Stroker
@@ -173,6 +171,7 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
     - Teen Sneaks
   - FameDigital
     - AllGirlMassage
+    - BSkow
     - CumshotOasis
     - DevilsFilm
     - FantasyMassage
@@ -198,7 +197,9 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
     - SextapeLesbians
     - SilviaSaint
     - SoapyMassage
+    - TabooHeat
     - TeraPatrick
+    - TouchMyWife
     - TrickySpa
     - WebYoung
     - WeLikeGirls
@@ -206,7 +207,6 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
 + #### AllAnalAllTheTime | ✅
 + #### AllHerLuv | ✓
 + #### ALS Angels | ❌ - **Actress name with subject, Date Add**
-+ #### AmateurBoxxx | ✓
 + #### Amateur Allure | ✓
 + #### AmourAngels | ❌ - **SceneID**
 + #### AnalVids | ✅
@@ -230,6 +230,7 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
   - BabeVR
   - BaDoinkVR
   - KinkVR
+  - PassthroughVR
   - VRCosplayX
 + #### BAMVisions | ✓
 + #### Bang Bros Network | ✅
@@ -286,12 +287,11 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
   - Tugjobs
   - Working Latinas
 + #### BangBros Other Sites | ✅
-  - Sex Selector
-+ #### BangBros Other Sites | ✓ - **Title only**
-  - Black Patrol
   - Blacks On Moms
   - Filthy Family
   - Mia Khalifa
+  - MyGF
+  - Sex Selector
   - XXXPawn
 + #### Bang! | ✓ - **Title only**
 + #### Bang! Movies | ✓ - **Title only**
@@ -367,6 +367,10 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
   - Teens Like It Black
   - ZZ Series
 + #### BurningAngel | ✅
++ #### Caramel Cash | ✅
+  - Alex Legend
+  - Cuckold Wish
+  - VrpmvBay
 + #### Caribbeancom | ❌ - **SceneID**
 + #### CherryPimps Network | ✅
   - BCM.XXX
@@ -474,8 +478,6 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
   - Hot Legs & Feet
   - House of Taboo
   - Only Blowjob
-+ #### DefeatedSexFight | ✅
-+ #### DefeatedXXX | ✅
 + #### Deranged Dollars | ✅
   - Assylum
   - SlaveMouth
@@ -596,7 +598,7 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
 + #### FamilyHookups | ✅
 + #### FemdomEmpire / Feminized | ✅
 + #### Femjoy | ✓ - **Model or Title (but not both), Date Add**
-+ #### FilthyKings | ✅
++ #### Filthy Kings | ✅
   - Fill Up My Mom
   - Filthy Blowjobs
   - Filthy Massage
@@ -606,6 +608,7 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
   - FK BTS
   - Hot Girls Raw
   - Its Anal
+  - MYLF Seeker
   - Night Creep
 + #### FinishesTheJob | ✅ - **Date Add**
   - ManoJob
@@ -633,6 +636,23 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
   - POV Perverts
   - Twisted Visual
 + #### Gangbang Creampie | ✅
++ #### GASM | ✅
+  - Butt Formation
+  - Cosplay Babes
+  - Filthy and Fisting
+  - Fun Movies
+  - Harmony Vision
+  - Herzog
+  - Hot Gold
+  - Inflagranti
+  - JapanHD
+  - Leche69
+  - Magma Film
+  - MMV Films
+  - Paradise Films
+  - PornXN
+  - Pure XXX Films
+  - The Undercover Lover
 + #### Gender X | ✅
 + #### Girl Grind | ✅
 + #### GirlfriendsFilms | ✅
@@ -649,12 +669,13 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
   - TGirl Japan Hardcore
   - TGirls.porn
   - TGirls.xxx
++ #### Heavy on Hotties | ✅
 + #### Hegre | ✓ - **Title only**
 + #### HentaiPros | ✅
-+ #### HighTechVR Network | ❌ - **SceneID**
-  - SexBabesVR
-  - SinsVR
-  - StasyQVR
++ #### HighTechVR Network | ❌
+  - SexBabesVR - **Direct URL**
+  - SinsVR - **Direct URL**
+  - StasyQVR - **SceneID**
 + #### Holly Randall | ✓
 + #### HotwifeXXX | ✅
 + #### HuCows | ✅
@@ -697,6 +718,7 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
 + #### JavBus (via JavBus - Censored & Uncensored JAV) | ✅ - **SceneID (in form of JAVID)**
 + #### JavDatabase (via JavDatabase) | ✅ - **SceneID (in form of JAVID)**
 + #### JavLibrary (via JavLibrary - Censored JAV Only) | ✅ - **SceneID (in form of JAVID)**
++ #### Jesse Loads Monster Facials | ✅ - **Actor only**
 + #### JulesJordan Network | ✅  **Movies Not Supported**
   - GirlGirl
   - JulesJordan
@@ -758,6 +780,28 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
   - WhippedAss
   - WiredPussy
 + #### Kinky Spa | ✓
++ #### Lethal Hardcore | ✅
+  - Lethal Hardcore
+  - Lethal Hardcore VR
++ #### LetsDoeIt Network | ✅
+  - A Girl Knows
+  - Bitches Abroad
+  - Bums Besuch
+  - Bums Buero
+  - BumsBus
+  - Doe Girls
+  - Doe Projects
+  - Her Limit
+  - Horny Hostel
+  - Kinky Inlaws
+  - My Naughty Album
+  - Porno Academie
+  - Quest for Orgasm
+  - Relaxxxed
+  - Scam Angels
+  - The White Boxxx
+  - Xchimera
+  - XXXShades
 + #### Little Caprice | ✅
   - Buttmuse
   - Caprice Divas
@@ -788,6 +832,7 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
   - MetArtX
   - Rylsky Art
   - SexArt
+  - Straplezz
   - Stunning18
   - TheLifeErotic
   - Viv Thomas
@@ -1045,6 +1090,7 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
   - Anal Overdose
   - Banging Beauties
   - Chocolate BJs
+  - DP Diva
   - Oral Overdose
   - Up Her Asshole
 + #### PJGirls | ✅
@@ -1092,52 +1138,33 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
   - Teen From Bohemia
   - VR Porn CZ
 + #### Porndoe Premium Network | ✅
-  - A Girl Knows
   - Badtime Stories
-  - Bitches Abroad
-  - Bums Besuch
-  - Bums Buero
-  - BumsBus
   - Carne Del Mercado
   - Casting Alla Italiana
   - Casting Francais
   - Chicas Loca
   - Crowd Bondage
   - Deutchland Report
-  - Doe Girls
-  - Doe Projects
   - Exposed Casting
   - Fucked In Traffic
   - Hausfrau Ficken
   - Her Big Ass
-  - Her Limit
-  - Horny Hostel
-  - Kinky Inlaws
   - La Cochonne
   - La Novice
   - Las Folladoras
   - Los Consoladores
-  - My Naughty Album
   - Narcos X
   - Operacion Limpieza
   - PinUp Sex
-  - Porndoe Premium
   - Porndoepedia
-  - Porno Academie
-  - Quest for Orgasm
   - Reife Swinger
-  - Relaxxxed
-  - Scam Angels
   - Scambisti Maturi
   - Special Feet Force
   - STG
-  - The White Boxxx
   - Trans Taboo
   - Transbella
   - Tu Venganza
-  - Xchimera
   - XXX Omas
-  - XXXShades
 + #### PornPortal | ✅
   - 3dxstar Channel PornPortal
   - Anal Channel PornPortal
@@ -1151,41 +1178,45 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
   - Stepfamily Channel PornPortal
   - Teen Channel PornPortal
   - VR Channel PornPortal
-+ #### PornPros Network | ✅
-  - 18YearsOld
-  - 40ozBounce
-  - CockCompetition
-  - CrueltyParty
-  - CumDisgrace
-  - CumshotSurprise
-  - DeepThroatLove
-  - Disgraced18
-  - EuroHumpers
-  - FreaksOfBoobs
-  - FreaksOfCock
++ #### PornPros Network | ✅ - **Title Only** (Must match the title in the URL after last /)
+  - 18 Years Old
+  - 40oz Bounce
+  - Cock Competition
+  - Cruelty Party
+  - Cum Disgrace
+  - Cumshot Surprise
+  - Deep Throat Love
+  - Disgraced 18
+  - Euro Humpers
+  - Freaks Of Boobs
+  - Freaks Of Cock
   - GirlCum
-  - JurassicCock
-  - MassageCreep
-  - MilfHumiliation
-  - PimpParade
+  - Jurassic Cock
+  - Massage Creep
+  - Milf Humiliation
+  - Pimp Parade
   - PornPros
-  - RealExGirlfriends
-  - ShadyPi
-  - SquirtDisgrace
+  - Real ExGirlfriends
+  - Shady Pi
+  - Squirt Disgrace
   - TeenBFF
-+ #### PornPros Other Sites | ✅
++ #### PornPros Other Sites | ✅ - **Title Only** (Must match the title in the URL after last /)
   - Asians Exploited
   - Baeb
-  - BBCPie
   - BBC POVD
+  - BBCPie
+  - Bikini Smash
   - Caged Sex
   - CastingCouch-X
   - Creepy Pa
   - Cum4K
+  - Double Trouble
   - Exotic4k
   - Exploited Cheerleaders
+  - Facials Galore
   - Facials4k
   - FantasyHD
+  - Game On
   - Girl Scout Sex
   - GloryHole 4K
   - Holed
@@ -1193,18 +1224,26 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
   - Lubed
   - Mom4k
   - MomCum
-  - MyVeryFirstTime
+  - My Very First Time
   - NannySpy
+  - Passion Fuck
   - Passion-HD
   - PornPlus
   - POVD
   - Property Exploits
   - PureMature
+  - RV Adventures
   - School of Cock
+  - Sexercise
   - Shower 4K
   - SpyFam
+  - Squirt Bomb
+  - Strippers 4K
+  - Throat Creampies
   - Tiny4k
+  - Waxxxed
   - WetVR
+  - Zoom POV
 + #### PornstarPlatinum | ✅
 + #### POVR | ✓
 + #### PrettyDirty | ✅
@@ -1240,20 +1279,69 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
 + #### QueenSnake | ❌ - **Exact Title Only**
 + #### Radical Cash | ✅
   - AltErotic
+  - Amazing Films
+  - Bemefi
   - Benefit Monkey
-  - BJRAW
-  - ComeInside - **Actor Name Only**
+  - BJ Raw
+  - BlackBullChallenge
+  - Cannon Prod
+  - Come Inside - **Actor Name Only**
+  - Dark Shade
+  - Dick HD Daily
+  - Dire Desires
   - Divine-DD
+  - FreakMobMedia
   - GotFilled
+  - Hard Werk
+  - Hoby Buchanon
   - Inserted
   - JAV888
+  - LegendaryX
   - Lezkey
+  - Lucid Flix
+  - Nick Marxx
+  - Passion POV
+  - POV Perv
+  - Purity VR
+  - Queer Crush
   - Ricky's Room
+  - S3XUS
   - Sexy Modern Bull
   - Side Chick
-+ #### Other Radical Cash Sites | ✅
+  - Top Web Models
+    - 2 Girls 1 Camera
+    - Big Gulp Girls
+    - Cougar Season
+    - Deep Throat Sirens
+    - Facials Forever
+    - Pounded Petite
+    - She's Brand New
+  - TwoWebMedia
+    - BoppingBabes
+    - DownblouseJerk
+    - LingerieTales
+    - RealBikiniGirls
+    - UpskirtJerk
+    - WankItNow
+  - VRHush
+  - XFul
+  - Yes Girlz
+  - Z Filmz Originals
++ #### Radical Cash Other Sites | ✅
+  - Hitzefrei
+    - Unleashed
+    - CityCheck
+    - Milf Hunters
+    - Cuff em All
+    - fANALarm
+    - Fuck On Arrival
+    - Family Affairs
+    - Patti's Anal
+  - Gonzo Living
+    - Milf Gonzo
+    - Teen Gonzo
   - PurgatoryX
-  - ToughLoveX - **Actor Name Only or Title Name Only**
+  - ToughLoveX - **Actor Name Only or Title Only**
 + #### Reality Kings Network | ✅
   - 40 Inch Plus
   - 8th Street Latinas
@@ -1310,7 +1398,7 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
   - Wives in Pantyhose
 + #### Reality Kings Other Sites | ✅
   - Lil Humpers
-+ #### RealJamVR | ✅
++ #### RealJamVR | ❌ - **Direct URL**
 + #### ReidMyLips | ❌ - **Direct URL**
 + #### Romero Multimedia Network | ✓
   - Deafeated XXX
@@ -1320,6 +1408,8 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
   - Hentaied
   - Parasited
   - Plants vs Cunts
+  - Voodooed
+  - Vored
 + #### SapphiX Network | Matching type: ✅
   - Fist Flush
   - Give Me Pink
@@ -1344,9 +1434,13 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
   - Pissing in Action
   - Slime Wave
 + #### Spizoo | ✓
+  - Cream Her
+  - DrDaddyPOV
   - FirstClassPOV
+  - Goth Girlfriends
   - IntimateLesbians
   - JessicaJaymesXXX
+  - MrLuckyLIFE
   - MrLuckyPOV
   - MrLuckyRAW
   - PornGoesPro
@@ -1362,7 +1456,6 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
   - Nymphos
   - Swallowed
   - TrueAnal
-+ #### Straplezz | ❌ - **Direct URL**
 + #### StraponCum | ❌ - **Direct URL**
 + #### Strike3 Network | ✅
   - Blacked
@@ -1373,6 +1466,7 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
   - Tushy
   - TushyRaw
   - Vixen
+  - Wifey
 + #### Sunny Lane Live | ✅
 + #### Swallow Bay | ❌ - **Direct URL**
 + #### Swallow Salon | ✓
@@ -1581,14 +1675,6 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
   - Over 40 Handjobs
   - Shady Spa
   - Teen Tugs
-+ #### Top Web Models | ✅
-  - 2 Girls 1 Camera
-  - Big Gulp Girls
-  - Cougar Season
-  - Deepthroat Sirens
-  - Facials Forever
-  - Pounded Petite
-  - She's Brand New
 + #### TransAngels | ✅
 + #### True Amateurs | ✅
 + #### Twistys | ✅
@@ -1597,21 +1683,19 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
   - Twistys
   - TwistysHard
   - WhenGirlsPlay
-+ #### TwoWebMedia | ✅
-  - Bopping Babes
-  - Downblouse Jerk
-  - Lingerie Tales
-  - Real Bikini Girls
-  - Upskirt Jerk
-  - Wank It Now
 + #### Ultrafilms | ✓
++ #### Unzip VR | ✅
+  - Blow VR
+  - VR Bangers
+  - VR Conk
+  - VRB Gay
+  - VRB Trans
 + #### VIPissy | ✓
 + #### VirtualPorn | ✅
 + #### VirtualRealPorn | ❌ - **Direct URL**
 + #### VirtualTaboo | ✓ - **Title only**
 + #### Vivid Network | ✅ - **Title only for DVDs**
 + #### VNA Network | ✅
-  - Alex Legend
   - All Anal All The Time
   - Angelina Castro Live
   - Bobbi Eden Live
@@ -1654,8 +1738,6 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
   - Women By Julia Ann
 + #### VogoV | ✓ - **Title only**
 + #### VRAllure | ❌ - Direct URL
-+ #### VRBangers | ✅
-+ #### VRConk | ✅
 + #### VRHush | ❌ - **Direct URL**
 + #### VRLatina | ✅
 + #### VRP Films | ✅
@@ -1708,6 +1790,7 @@ If you're having difficulty finding the SceneID, double-check [PAsiteList.py](..
   - WowPorn
 + #### X-Art | ✅
 + #### XConfessions | ✓
+  - LustCinema
 + #### XEmpire | ✅
   - AllBlackX
   - Darkx

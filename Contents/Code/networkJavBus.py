@@ -4,6 +4,7 @@ import operator
 
 cookies = {
     'existmag': 'all',
+    'dv': '1'
 }
 
 
@@ -60,7 +61,7 @@ def search(results, lang, siteNum, searchData):
     return results
 
 
-def update(metadata, lang, siteNum, movieGenres, movieActors, art):
+def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, art):
     metadata_id = str(metadata.id).split('|')
     sceneURL = PAutils.Decode(metadata_id[0])
 
@@ -97,9 +98,9 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
     metadata.tagline = ', '.join(['%s: %s' % (key, value) for key, value in data.items()])
     if label:
         metadata.tagline = label[0].text_content().strip()
-        metadata.collections.add(metadata.tagline)
+        movieCollections.addCollection(metadata.tagline)
     else:
-        metadata.collections.add(metadata.studio)
+        movieCollections.addCollection(metadata.studio)
 
     # Release Date
     dateOrigin = detailsPageElements.xpath('//div[@class="col-md-3 info"]/p[2]')[0].text_content()

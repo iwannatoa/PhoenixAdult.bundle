@@ -3,12 +3,14 @@ import PAutils
 
 
 def search(results, lang, siteNum, searchData):
+    cookies = {'warningHidden': 'hide'}
     searchData.encoded = searchData.title.replace(' ', '-')
-    req = PAutils.HTTPRequest(PAsearchSites.getSearchSearchURL(siteNum) + searchData.encoded + '/')
-    actressearchResults = HTML.ElementFromString(req.text)
+    searchURL = '%s%s/' % (PAsearchSites.getSearchSearchURL(siteNum), searchData.encoded)
+    req = PAutils.HTTPRequest(searchURL, cookies=cookies)
+    actressSearchResults = HTML.ElementFromString(req.text)
 
-    actressPageUrl = actressearchResults.xpath('//div[@class="item-inside"]//a/@href')[0]
-    req = PAutils.HTTPRequest(actressPageUrl)
+    actressPageUrl = actressSearchResults.xpath('//div[@class="item-inside"]//a/@href')[0]
+    req = PAutils.HTTPRequest(actressPageUrl, cookies=cookies)
     searchResults = HTML.ElementFromString(req.text)
     for searchResult in searchResults.xpath('//div[contains(@class, "listing-videos")]//div[@class="item"]'):
         titleNoFormatting = searchResult.xpath('.//span[@class="title"]')[0].text_content()
@@ -33,12 +35,13 @@ def search(results, lang, siteNum, searchData):
     return results
 
 
-def update(metadata, lang, siteNum, movieGenres, movieActors, art):
+def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, art):
+    cookies = {'warningHidden': 'hide'}
     metadata_id = metadata.id.split('|')
     sceneURL = PAutils.Decode(metadata_id[0])
     if not sceneURL.startswith('http'):
         sceneURL = PAsearchSites.getSearchBaseURL(siteNum) + sceneURL
-    req = PAutils.HTTPRequest(sceneURL)
+    req = PAutils.HTTPRequest(sceneURL, cookies=cookies)
     detailsPageElements = HTML.ElementFromString(req.text)
 
     # Title
@@ -55,8 +58,10 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
 
     # Tagline and Collection(s)
     tagline = detailsPageElements.xpath('//h1//span[@class="sup-title"]//span')[0].text_content().strip()
+    if not tagline:
+        tagline = PAsearchSites.getSearchSiteName(siteNum)
     metadata.tagline = tagline
-    metadata.collections.add(tagline)
+    movieCollections.addCollection(tagline)
 
     # Release Date
     date = detailsPageElements.xpath('//span[@class="date"]/span[@class="content"]')[0].text_content().replace(tagline, '').replace('Video added on', '').strip()
@@ -65,10 +70,9 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
     metadata.year = metadata.originally_available_at.year
 
     # Genres
+    genres = []
     if tagline == 'KarupsHA':
         genres = ['Amateur']
-    if tagline == 'KarupsPC':
-        genres = []
     if tagline == 'KarupsOW':
         genres = ['MILF']
 
@@ -82,7 +86,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
         actorName = actorLink.text_content().strip()
 
         actorPageURL = actorLink.get('href')
-        req = PAutils.HTTPRequest(actorPageURL)
+        req = PAutils.HTTPRequest(actorPageURL, cookies=cookies)
         actorPageElements = HTML.ElementFromString(req.text)
         actorPhotoURL = actorPageElements.xpath('//div[@class="model-thumb"]//img/@src')[0]
 

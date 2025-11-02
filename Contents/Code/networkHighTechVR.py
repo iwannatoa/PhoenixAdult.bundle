@@ -33,8 +33,7 @@ xPathMap = {
 
 
 def search(results, lang, siteNum, searchData):
-    siteName = PAsearchSites.getSearchSiteName(siteNum).lower() + '-'
-    searchData.encoded = searchData.filename.lower().replace(' ', '-').replace('_', ' ').replace(siteName, '')
+    searchData.encoded = slugify(searchData.title.lower())
     req = PAutils.HTTPRequest(PAsearchSites.getSearchSearchURL(siteNum) + searchData.encoded)
     searchResults = HTML.ElementFromString(req.text)
 
@@ -57,7 +56,7 @@ def search(results, lang, siteNum, searchData):
     return results
 
 
-def update(metadata, lang, siteNum, movieGenres, movieActors, art):
+def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, art):
     metadata_id = str(metadata.id).split('|')
     sceneURL = PAsearchSites.getSearchSearchURL(siteNum) + metadata_id[0]
     req = PAutils.HTTPRequest(sceneURL)
@@ -85,7 +84,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
         tagline = tagline.split('-')[0].strip()
 
     metadata.tagline = tagline
-    metadata.collections.add(tagline)
+    movieCollections.addCollection(tagline)
 
     # Release Date
     maybeDate = detailsPageElements.xpath(siteXPath['date'])

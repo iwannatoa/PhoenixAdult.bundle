@@ -80,7 +80,7 @@ def search(results, lang, siteNum, searchData):
             req = PAutils.HTTPRequest(searchURL, headers={'Referer': 'https://www.data18.com'}, cookies={'data_user_captcha': '1'})
             searchPageElements = HTML.ElementFromString(req.text)
 
-    googleResults = PAutils.getFromGoogleSearch(searchData.title, siteNum)
+    googleResults = PAutils.getFromSearchEngine(searchData.title, siteNum)
     for sceneURL in googleResults:
         sceneURL = sceneURL.replace('/content/', '/scenes/').replace('http:', 'https:')
         if ('/scenes/' in sceneURL and '.html' not in sceneURL and sceneURL not in searchResults and sceneURL not in siteResults):
@@ -96,10 +96,10 @@ def search(results, lang, siteNum, searchData):
             break
 
         try:
-            siteName = detailsPageElements.xpath('//b[contains(., "Network")]//following-sibling::b')[0].text_content().strip()
+            siteName = detailsPageElements.xpath('//b[contains(., "Studio") or contains(., "Network")]//following-sibling::b')[0].text_content().strip()
         except:
             try:
-                siteName = detailsPageElements.xpath('//b[contains(., "Studio")]//following-sibling::a')[0].text_content().strip()
+                siteName = detailsPageElements.xpath('//b[contains(., "Studio") or contains(., "Network")]//following-sibling::a')[0].text_content().strip()
             except:
                 siteName = ''
 
@@ -149,7 +149,7 @@ def search(results, lang, siteNum, searchData):
     return results
 
 
-def update(metadata, lang, siteNum, movieGenres, movieActors, art):
+def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, art):
     metadata_id = str(metadata.id).split('|')
     sceneURL = PAutils.Decode(metadata_id[0])
     sceneDate = metadata_id[2]
@@ -191,38 +191,64 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
 
     # Tagline and Collection(s)
     try:
-        try:
-            tagline = detailsPageElements.xpath('//p[contains(., "Site:")]//following-sibling::a[@class="bold"]')[0].text_content().strip()
-        except:
-            try:
-                tagline = detailsPageElements.xpath('//b[contains(., "Network")]//following-sibling::a')[0].text_content().strip()
-            except:
-                tagline = detailsPageElements.xpath('//p[contains(., "Movie:")]/a')[0].text_content()
-                metadata.collections.add(metadata.studio)
-
-        if len(metadata_id) > 3:
-            Log('Using original series information')
-            tagline = detailsPageElements.xpath('//p[contains(., "Serie")]//a[@title]')[0].text_content().strip()
-            metadata.title = ("%s [Scene %s]" % (metadata_id[3], metadata_id[4]))
-        if not metadata.studio:
-            metadata.studio = tagline
-        else:
-            metadata.tagline = tagline
-        metadata.collections.add(tagline)
+        siteName = detailsPageElements.xpath('//p[contains(., "Site:")]//following-sibling::a[@class="bold"]')[0].text_content().strip()
     except:
-        metadata.collections.add(metadata.studio)
+        siteName = None
+
+    try:
+        subSite = detailsPageElements.xpath('//b[contains(., "Network")]//following-sibling::a')[0].text_content().strip()
+    except:
+        try:
+            subSite = detailsPageElements.xpath('//b[contains(., "Network")]//following-sibling::text()')[2].split('|')[-1].strip()
+            if subSite not in ['Brazzers Exxtra', 'Brazzers Live', 'Bangbros Clips']:
+                subSite = None
+        except:
+            subSite = None
+
+    try:
+        serieName = detailsPageElements.xpath('//p[contains(., "Webserie:") or contains(., "Miniserie")/a')[0].text_content().strip()
+    except:
+        serieName = None
+
+    try:
+        movieName = detailsPageElements.xpath('//p[contains(., "Movie:")]/a')[0].text_content().strip()
+    except:
+        movieName = None
+
+    if len(metadata_id) > 3:
+        tagline = detailsPageElements.xpath('//p[contains(., "Serie")]//a[@title]')[0].text_content().strip()
+        metadata.title = ("%s [Scene %s]" % (metadata_id[3], metadata_id[4]))
+    elif siteName:
+        tagline = siteName
+    elif subSite:
+        tagline = subSite
+    elif serieName:
+        tagline = serieName
+    elif movieName:
+        tagline = movieName
+    else:
+        tagline = ''
+
+    tagline = PAutils.parseTitle(tagline, siteNum)
+
+    if not metadata.studio:
+        metadata.studio = tagline
+    elif metadata.studio.replace(' ', '').lower() != tagline.replace(' ', '').lower():
+        metadata.tagline = tagline
+
+    if tagline:
+        movieCollections.addCollection(tagline)
+    else:
+        movieCollections.addCollection(metadata.studio)
 
     # Release Date
     date = detailsPageElements.xpath('//span[contains(., "Release date")]')
-    Log('date: %s', repr(date))
     if date:
         date = date[0].text_content().strip()
-        Log('date: %s', date)
         date = date.replace("Release date: ", "")
         date = date.replace(", more updates...\n[Nav X]", "")
         date = date.replace("* Movie Release", "")
         date = date.strip()
-        Log('date: %s', repr(date))
     else:
         date = sceneDate if sceneDate else None
 
@@ -276,7 +302,8 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
 
             for xpath in xpaths:
                 for img in photoPageElements.xpath(xpath):
-                    art.append(img.replace('/th8', '').replace('-th8', ''))
+                    if '/th8_2' not in img:
+                        art.append(img.replace('/th8', '').replace('-th8', ''))
     except:
         pass
 

@@ -12,7 +12,7 @@ def search(results, lang, siteNum, searchData):
         sceneURL = PAsearchSites.getSearchBaseURL(siteNum) + '/t1/refstat.php?lid=%s&sid=584' % sceneID
         searchResults.append(sceneURL)
 
-    googleResults = PAutils.getFromGoogleSearch(searchData.title, siteNum)
+    googleResults = PAutils.getFromSearchEngine(searchData.title, siteNum)
     for result in googleResults:
         match = re.search(r'((?<=\dpp\/)|(?<=\dbbwd\/)|(?<=\dhsp\/)|(?<=\dbbbj\/)|(?<=\dpatp\/)|(?<=\dftf\/)|(?<=\dbgb\/))\d+(?=\/)', result)
         if match:
@@ -48,7 +48,7 @@ def search(results, lang, siteNum, searchData):
     return results
 
 
-def update(metadata, lang, siteNum, movieGenres, movieActors, art):
+def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, art):
     metadata_id = str(metadata.id).split('|')
     sceneURL = PAutils.Decode(metadata_id[0])
     sceneDate = metadata_id[2]
@@ -85,7 +85,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
         metadata.tagline = tagline
     else:
         tagline = metadata.studio
-    metadata.collections.add(tagline)
+    movieCollections.addCollection(tagline)
 
     # Release Date
     if sceneDate:

@@ -22,8 +22,8 @@ def search(results, lang, siteNum, searchData):
     searchPageElements = HTML.ElementFromString(req.text)
     for searchResult in searchPageElements.xpath('//div[contains(@class, "card h-100")]'):
         titleNoFormatting = PAutils.parseTitle(searchResult.xpath('.//div[@class="mt-auto"]/a')[0].text_content().strip(), siteNum)
-        JAVID = searchResult.xpath('.//p[@class="display-6"]/a')[0].text_content().strip()
-        sceneURL = searchResult.xpath('.//p[@class="display-6"]/a/@href')[0].strip()
+        JAVID = searchResult.xpath('.//p//a[contains(@class, "cut-text")]')[0].text_content().strip()
+        sceneURL = searchResult.xpath('.//p//a[contains(@class, "cut-text")]/@href')[0].strip()
         curID = PAutils.Encode(sceneURL)
 
         date = searchResult.xpath('.//div[@class="mt-auto"]/text()')
@@ -36,8 +36,6 @@ def search(results, lang, siteNum, searchData):
 
         if searchJAVID:
             score = 100 - Util.LevenshteinDistance(searchJAVID.lower(), JAVID.lower())
-        elif searchData.date and displayDate:
-            score = 100 - Util.LevenshteinDistance(searchData.date, releaseDate)
         else:
             score = 100 - Util.LevenshteinDistance(searchData.title.lower(), titleNoFormatting.lower())
 
@@ -46,15 +44,15 @@ def search(results, lang, siteNum, searchData):
     return results
 
 
-def update(metadata, lang, siteNum, movieGenres, movieActors, art):
+def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, art):
     metadata_id = str(metadata.id).split('|')
     sceneURL = PAutils.Decode(metadata_id[0])
     req = PAutils.HTTPRequest(sceneURL)
     detailsPageElements = HTML.ElementFromString(req.text)
 
     # Title
-    javID = detailsPageElements.xpath('//tr[./td[contains(., "DVD ID")]]//td[@class="tablevalue"]')[0].text_content().strip()
-    title = detailsPageElements.xpath('//tr[./td[contains(., "Translated")]]//td[@class="tablevalue"]')[0].text_content().replace(javID, '').strip()
+    javID = detailsPageElements.xpath('//meta[@property="og:title"]/@content')[0].strip()
+    title = detailsPageElements.xpath('//*[text()="Title: "]/following-sibling::text()')[0].strip()
 
     for word, correction in censoredWordsDB.items():
         if word in title:
@@ -67,7 +65,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
         metadata.title = '[%s] %s' % (javID.upper(), PAutils.parseTitle(title, siteNum))
 
     # Studio
-    studio = detailsPageElements.xpath('//tr[./td[contains(., "Studio")]]//td[@class="tablevalue"]')
+    studio = detailsPageElements.xpath('//*[text()="Studio: "]/following-sibling::span/a')
     if studio:
         studioClean = studio[0].text_content().strip()
         for word, correction in censoredWordsDB.items():
@@ -76,38 +74,27 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
 
         metadata.studio = studioClean
 
-    # Tagline and Collection(s)
-    tagline = detailsPageElements.xpath('//tr[./td[contains(., "Label")]]//td[@class="tablevalue"]')
-    if tagline and tagline[0].text_content().strip():
-        taglineClean = tagline[0].text_content().strip()
-        for word, correction in censoredWordsDB.items():
-            if word in taglineClean:
-                taglineClean = taglineClean.replace(word, correction)
-
-        metadata.tagline = taglineClean
-        metadata.collections.add(metadata.tagline)
-    elif studio and metadata.studio:
-        metadata.collections.add(metadata.studio)
+    if studio and metadata.studio:
+        movieCollections.addCollection(metadata.studio)
     else:
-        metadata.collections.add('Japan Adult Video')
+        movieCollections.addCollection('Japan Adult Video')
 
     # Release Date
-    date = detailsPageElements.xpath('//tr[./td[contains(., "Release Date")]]//td[@class="tablevalue"]')
+    date = detailsPageElements.xpath('//*[text()="Release Date: "]/following-sibling::text()[1]')
     if date:
-        date_object = datetime.strptime(date[0].text_content().strip(), '%Y-%m-%d')
+        date_object = datetime.strptime(date[0], '%Y-%m-%d')
         metadata.originally_available_at = date_object
         metadata.year = metadata.originally_available_at.year
 
     # Genres
-    for genreLink in detailsPageElements.xpath('//tr[./td[contains(., "Genre")]]//td[@class="tablevalue"]//a'):
+    for genreLink in detailsPageElements.xpath('//*[text()="Genre(s): "]/following-sibling::*/a'):
         genreName = genreLink.text_content().strip()
-
         movieGenres.addGenre(genreName)
 
     # Actor(s)
-    for actor in detailsPageElements.xpath('//div/div[./h2[contains(., "Idols")]]//div[@class="idol-thumb"]'):
-        actorName = actor.xpath('.//@alt')[0].strip().split('(')[0].replace(')', '')
-        actorPhotoURL = actor.xpath('.//img/@src')[0].replace('melody-marks', 'melody-hina-marks')
+    for actor in detailsPageElements.xpath('//div[./h4[contains(., "Actress/Idols")]]//div[contains(@class, "card-body")]'):
+        actorName = actor.xpath('.//a[@class="cut-text"]')[0].text_content().strip()
+        actorPhotoURL = actor.xpath('.//div[@class="idol-thumb"]//img/@src')[0].replace('thumb/', 'full/').replace('melody-marks', 'melody-hina-marks')
 
         req = PAutils.HTTPRequest(actorPhotoURL)
         if 'unknown.' in req.url:
@@ -120,10 +107,9 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
                 movieActors.addActor(actorName, actorPhotoURL)
 
     # Director
-    directorLink = detailsPageElements.xpath('//tr[./td[contains(., "Director")]]//td[@class="tablevalue"]')
+    directorLink = detailsPageElements.xpath('//*[text()="Director: "]/following-sibling::span/a')
     if directorLink:
         directorName = directorLink[0].text_content().strip()
-
         movieActors.addDirector(directorName, '')
 
     # Manually Add Actors By JAV ID
@@ -155,7 +141,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
             javID = '%s-0%s' % (javID.split('-')[0], javID.split('-')[-1])
 
     javBusURL = PAsearchSites.getSearchSearchURL(912) + javID
-    req = PAutils.HTTPRequest(javBusURL)
+    req = PAutils.HTTPRequest(javBusURL, cookies=javBusCookies)
     javbusPageElements = HTML.ElementFromString(req.text)
 
     if '404 Page' in req.text and date:
@@ -192,32 +178,36 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
 
     images = []
     posterExists = False
+    postersClean = list()
     Log('Artwork found: %d' % len(art))
     for idx, posterUrl in enumerate(art, 1):
-        if not PAsearchSites.posterAlreadyExists(posterUrl, metadata):
+        # Remove Timestamp and Token from URL
+        cleanUrl = posterUrl.split('?')[0]
+        postersClean.append(cleanUrl)
+        if not PAsearchSites.posterAlreadyExists(cleanUrl, metadata):
             # Download image file for analysis
             try:
                 image = PAutils.HTTPRequest(posterUrl)
                 if 'now_printing' not in image.url:
                     im = StringIO(image.content)
-                    images.append(image)
                     resized_image = Image.open(im)
                     width, height = resized_image.size
                     # Add the image proxy items to the collection
                     if height > width:
                         # Item is a poster
-                        metadata.posters[posterUrl] = Proxy.Media(image.content, sort_order=idx)
+                        metadata.posters[cleanUrl] = Proxy.Media(image.content, sort_order=idx)
 
                         if 'javbus.com/pics/thumb' not in posterUrl:
                             posterExists = True
                     if width > height:
                         # Item is an art item
-                        metadata.art[posterUrl] = Proxy.Media(image.content, sort_order=idx)
+                        images.append((image, cleanUrl))
+                        metadata.art[cleanUrl] = Proxy.Media(image.content, sort_order=idx)
             except:
                 pass
 
     if not posterExists:
-        for idx, image in enumerate(images, 1):
+        for idx, (image, cleanUrl) in enumerate(images, 1):
             try:
                 im = StringIO(image.content)
                 resized_image = Image.open(im)
@@ -225,9 +215,11 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
                 # Add the image proxy items to the collection
                 if width > 1:
                     # Item is a poster
-                    metadata.posters[art[idx - 1]] = Proxy.Media(image.content, sort_order=idx)
+                    metadata.posters[cleanUrl] = Proxy.Media(image.content, sort_order=idx)
             except:
                 pass
+
+    art.extend(postersClean)
 
     return metadata
 
@@ -715,4 +707,10 @@ crossSiteDB = {
 
 ignoreList = {
     'SEXY', 'MEEL', 'SKOT', 'SCD', 'GDSC'
+}
+
+
+javBusCookies = {
+    'existmag': 'all',
+    'dv': '1'
 }

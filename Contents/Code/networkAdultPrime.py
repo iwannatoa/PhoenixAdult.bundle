@@ -36,7 +36,7 @@ def search(results, lang, siteNum, searchData):
         for idx in range(2):
             for searchResult in searchPageElements.xpath('//ul[@id="studio-videos-container"]/li'):
                 titleNoFormatting = PAutils.parseTitle(searchResult.xpath('.//span[contains(@class, "title")]')[0].text_content().strip(), siteNum)
-                galleryID = searchResult.xpath('.//a/@href')[0].split('=')[-1]
+                galleryID = searchResult.xpath('.//div[contains(@class, "overlay inline-preview")]/@data-id')[0]
                 sceneURL = '%s/studios/video/%s' % (PAsearchSites.getSearchBaseURL(siteNum), galleryID)
                 curID = PAutils.Encode(sceneURL)
 
@@ -63,7 +63,7 @@ def search(results, lang, siteNum, searchData):
     return results
 
 
-def update(metadata, lang, siteNum, movieGenres, movieActors, art):
+def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, art):
     metadata_id = str(metadata.id).split('|')
     sceneURL = PAutils.Decode(metadata_id[0])
     sceneDate = metadata_id[2]
@@ -72,7 +72,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
     detailsPageElements = HTML.ElementFromString(req.text)
 
     # Title
-    metadata.title = PAutils.parseTitle(detailsPageElements.xpath('//h2')[0].text_content().strip(), siteNum)
+    metadata.title = PAutils.parseTitle(detailsPageElements.xpath('//h1')[0].text_content().split(':')[-1].split('Full video by')[0].strip(), siteNum)
 
     # Summary
     summary = detailsPageElements.xpath('//p[contains(@class, "description")]')[0].text_content().strip()
@@ -80,12 +80,12 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
         metadata.summary = summary
 
     # Studio
-    metadata.studio = 'Adult Prime'
+    metadata.studio = detailsPageElements.xpath('//p[@class="update-info-line regular"][./b[contains(., "Studio")]]//a')[0].text_content().strip()
 
     # Tagline and Collection(s)
-    tagline = detailsPageElements.xpath('//p[@class="update-info-line regular"][./b[contains(., "Studio")]]//a')[0].text_content().strip()
+    tagline = detailsPageElements.xpath('//p[@class="update-info-line regular"][./b[contains(., "Series")]]//a')[1].text_content().strip()
     metadata.tagline = tagline
-    metadata.collections.add(tagline)
+    movieCollections.addCollection(tagline)
 
     # Release Date
     date = detailsPageElements.xpath('//p[@class="update-info-line regular"]/b[1][./preceding-sibling::i[contains(@class, "calendar")]]')
@@ -135,7 +135,11 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
             art.append(img)
 
     Log('Artwork found: %d' % len(art))
+    postersClean = list()
     for idx, posterUrl in enumerate(art, 1):
+        # Remove Timestamp and Token from URL
+        cleanUrl = posterUrl.split('?')[0]
+        postersClean.append(cleanUrl)
         if not PAsearchSites.posterAlreadyExists(posterUrl, metadata):
             # Download image file for analysis
             try:
@@ -152,6 +156,8 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
                     metadata.art[posterUrl] = Proxy.Media(image.content, sort_order=idx)
             except:
                 pass
+
+    art.extend(postersClean)
 
     return metadata
 

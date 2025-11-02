@@ -11,13 +11,14 @@ import time
 import urllib
 import urlparse
 from cStringIO import StringIO
-from datetime import datetime
+from datetime import datetime, timedelta
 from dateutil.parser import parse
 from PIL import Image
 from slugify import slugify
 from traceback import format_exc
 import PAactors
 import PAgenres
+import PAcollections
 import PAsearchSites
 import PAsiteList
 import PAutils
@@ -59,16 +60,6 @@ class PhoenixAdultAgent(Agent.Movies):
             Log('Skipping Search for Manual Override')
             return
 
-        if not media.name and media.primary_metadata.title:
-            media.name = media.primary_metadata.title
-
-        title = PAutils.getSearchTitleStrip(media.name)
-        title = PAutils.getCleanSearchTitle(title)
-
-        Log('***MEDIA TITLE [from media.name]*** %s' % title)
-        searchSettings = PAsearchSites.getSearchSettings(title)
-        Log(searchSettings)
-
         filepath = None
         filename = None
         if media.filename:
@@ -76,13 +67,27 @@ class PhoenixAdultAgent(Agent.Movies):
             filename = str(os.path.splitext(os.path.basename(filepath))[0])
             filename = PAutils.getSearchTitleStrip(filename)
 
+        if not media.name and media.primary_metadata.title:
+            media.name = media.primary_metadata.title
+
+        title = PAutils.getSearchTitleStrip(media.name)
+
+        if filename and '5.1080p' in filename.lower():
+            title = title.replace(' 080p', ' 5 1080p').strip()
+
+        title = PAutils.getCleanSearchTitle(title)
+
+        Log('***MEDIA TITLE [from media.name]*** %s' % title)
+        searchSettings = PAsearchSites.getSearchSettings(title, filename)
+        Log(searchSettings)
+
         if searchSettings['siteNum'] is None and filepath:
             directory = str(os.path.split(os.path.dirname(filepath))[1])
             directory = PAutils.getSearchTitleStrip(directory)
 
             newTitle = PAutils.getCleanSearchTitle(directory)
             Log('***MEDIA TITLE [from directory]*** %s' % newTitle)
-            searchSettings = PAsearchSites.getSearchSettings(newTitle)
+            searchSettings = PAsearchSites.getSearchSettings(newTitle, filename)
 
             if searchSettings['siteNum'] is None:
                 if title == newTitle and title != filename:
@@ -90,7 +95,7 @@ class PhoenixAdultAgent(Agent.Movies):
 
                 newTitle = '%s %s' % (newTitle, title)
                 Log('***MEDIA TITLE [from directory + media.name]*** %s' % newTitle)
-                searchSettings = PAsearchSites.getSearchSettings(newTitle)
+                searchSettings = PAsearchSites.getSearchSettings(newTitle, filename)
 
         providerName = None
         siteNum = searchSettings['siteNum']
@@ -125,12 +130,14 @@ class PhoenixAdultAgent(Agent.Movies):
         results.Sort('score', descending=True)
 
     def update(self, metadata, media, lang):
+        movieCollections = PAcollections.PhoenixCollections()
         movieGenres = PAgenres.PhoenixGenres()
         movieActors = PAactors.PhoenixActors()
         valid_images = list()
 
         HTTP.ClearCache()
         metadata.collections.clear()
+        movieCollections.clearCollections()
 
         metadata.genres.clear()
         movieGenres.clearGenres()
@@ -158,7 +165,11 @@ class PhoenixAdultAgent(Agent.Movies):
         if provider is not None:
             providerName = getattr(provider, '__name__')
             Log('Provider: %s' % providerName)
-            provider.update(metadata, lang, siteNum, movieGenres, movieActors, valid_images)
+            provider.update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, valid_images)
+
+        # Cleanup Collections and Add
+        Log('Collections')
+        movieCollections.processCollections(metadata, siteNum)
 
         # Cleanup Genres and Add
         Log('Genres')

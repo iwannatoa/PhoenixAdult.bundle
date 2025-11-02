@@ -3,7 +3,8 @@ import PAutils
 
 
 def getJSONfromPage(url):
-    req = PAutils.HTTPRequest(url)
+    cookies = {'age_verified': 'yes'}
+    req = PAutils.HTTPRequest(url, cookies=cookies)
 
     if req:
         jsonData = re.search(r'window\.__INITIAL_STATE__ = (.*);', req.text)
@@ -18,7 +19,7 @@ def search(results, lang, siteNum, searchData):
     directURL = PAsearchSites.getSearchSearchURL(siteNum) + directURL
     searchResultsURLs = [directURL]
 
-    googleResults = PAutils.getFromGoogleSearch(searchData.title, siteNum)
+    googleResults = PAutils.getFromSearchEngine(searchData.title, siteNum)
 
     for sceneURL in googleResults:
         sceneURL = sceneURL.rsplit('?', 1)[0]
@@ -62,7 +63,7 @@ def search(results, lang, siteNum, searchData):
     return results
 
 
-def update(metadata, lang, siteNum, movieGenres, movieActors, art):
+def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, art):
     metadata_id = str(metadata.id).split('|')
     sceneName = metadata_id[0]
     sceneDate = metadata_id[2]
@@ -85,7 +86,7 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
     else:
         subSite = PAsearchSites.getSearchSiteName(siteNum)
     metadata.tagline = subSite
-    metadata.collections.add(subSite)
+    movieCollections.addCollection(subSite)
 
     # Release Date
     if sceneDate:
@@ -96,8 +97,12 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
     # Actor(s)
     actors = detailsPageElements['models']
     for actorLink in actors:
-        actorID = actorLink['modelId']
-        actorName = actorLink['modelName']
+        try:
+            actorID = actorLink['modelId']
+            actorName = actorLink['modelName']
+        except:
+            actorID = actorLink['id']
+            actorName = actorLink['name']
         actorPhotoURL = ''
 
         try:

@@ -24,6 +24,15 @@ def getReleaseDateAndDisplayDate(detailsPageElements, searchData=None):
 
 
 def search(results, lang, siteNum, searchData):
+    token = Prefs['adultempire_login_token']
+    if token:
+        cookies = {
+            'ageConfirmed': 'true',
+            'etoken': token
+        }
+    else:
+        cookies = {'ageConfirmed': 'true'}
+
     searchResults = []
     siteResults = []
     temp = []
@@ -44,7 +53,7 @@ def search(results, lang, siteNum, searchData):
     if not directID:
         searchData.encoded = searchData.title.replace('&', '').replace('\'', '').replace(',', '').replace('#', '').replace(' ', '+')
         searchURL = '%s%s' % (PAsearchSites.getSearchSearchURL(siteNum), searchData.encoded)
-        req = PAutils.HTTPRequest(searchURL, headers={'Referer': 'http://www.data18.empirestores.co'})
+        req = PAutils.HTTPRequest(searchURL, headers={'Referer': 'http://www.data18.empirestores.co'}, cookies=cookies)
         searchPageElements = HTML.ElementFromString(req.text)
 
         for searchResult in searchPageElements.xpath('//div[@class="product-details__item-title"]'):
@@ -68,7 +77,7 @@ def search(results, lang, siteNum, searchData):
 
                 if score > 70:
                     sceneURL = PAutils.Decode(curID)
-                    req = PAutils.HTTPRequest(sceneURL)
+                    req = PAutils.HTTPRequest(sceneURL, cookies=cookies)
                     detailsPageElements = HTML.ElementFromString(req.text)
 
                     # Find date on movie specific page
@@ -129,14 +138,14 @@ def search(results, lang, siteNum, searchData):
                     else:
                         results.Append(MetadataSearchResult(id='%s|%d|%s' % (curID, siteNum, releaseDate), name='%s [%s] %s' % (titleNoFormatting, resultType, displayDate), score=score, lang=lang))
 
-        googleResults = PAutils.getFromGoogleSearch(searchData.title, siteNum)
+        googleResults = PAutils.getFromSearchEngine(searchData.title, siteNum)
         for movieURL in googleResults:
             cleanURL = movieURL.rsplit('/', 1)[0]
             if ('movies' in movieURL and '.html' not in movieURL and cleanURL not in searchResults and cleanURL not in siteResults):
                 searchResults.append(cleanURL)
 
     for movieURL in searchResults:
-        req = PAutils.HTTPRequest(movieURL)
+        req = PAutils.HTTPRequest(movieURL, cookies=cookies)
         detailsPageElements = HTML.ElementFromString(req.text)
 
         urlID = re.sub(r'.*/', '', movieURL)
@@ -203,12 +212,20 @@ def search(results, lang, siteNum, searchData):
     return results
 
 
-def update(metadata, lang, siteNum, movieGenres, movieActors, art):
+def update(metadata, lang, siteNum, movieGenres, movieActors, movieCollections, art):
+    token = Prefs['adultempire_login_token']
+    if token:
+        cookies = {
+            'ageConfirmed': 'true',
+            'etoken': token
+        }
+    else:
+        cookies = {'ageConfirmed': 'true'}
     splitScene = False
     metadata_id = str(metadata.id).split('|')
     sceneURL = PAutils.Decode(metadata_id[0])
     sceneDate = metadata_id[2]
-    req = PAutils.HTTPRequest(sceneURL)
+    req = PAutils.HTTPRequest(sceneURL, cookies=cookies)
     detailsPageElements = HTML.ElementFromString(req.text)
 
     if len(metadata_id) > 3:
@@ -241,16 +258,16 @@ def update(metadata, lang, siteNum, movieGenres, movieActors, art):
     metadata.studio = studio
 
     # Tagline and Collection(s)
-    metadata.collections.add(metadata.studio)
+    movieCollections.addCollection(metadata.studio)
     try:
         tagline = re.sub(r'\(.*\)', '', detailsPageElements.xpath('//h2/a[@label="Series"]/text()')[0].strip().split('"')[1]).strip()
         tagline = PAutils.parseTitle(tagline, siteNum)
 
         metadata.tagline = tagline
-        metadata.collections.add(tagline)
+        movieCollections.addCollection(tagline)
     except:
         if splitScene:
-            metadata.collections.add(PAutils.parseTitle(detailsPageElements.xpath('//h1/text()')[0], siteNum).strip())
+            movieCollections.addCollection(PAutils.parseTitle(detailsPageElements.xpath('//h1/text()')[0], siteNum).strip())
 
     # Release Date
     if sceneDate:
